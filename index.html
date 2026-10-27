@@ -1,0 +1,3448 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HVR Halloween">
+<meta name="theme-color" content="#141414">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>HVR Halloween Special</title>
+<style>
+  :root {
+    --bg: #141414;
+    --card: #222;
+    --ink: #fff;
+    --orange: #ff8a00;
+    --green: #7CFF4A;
+    --purple: #9b5de5;
+    --red: #ff4d2e;
+    --muted: #3a3a3a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+  html { color-scheme: dark; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    position: fixed;
+    overflow: hidden;
+  }
+  button, input, textarea { font: inherit; color: inherit; -webkit-appearance: none; appearance: none; }
+  input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+    touch-action: manipulation;
+  }
+  button {
+    border: 0;
+    border-radius: 16px;
+    cursor: pointer;
+    min-height: 48px;
+    padding: 6px 12px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    background: var(--muted);
+    color: #fff;
+    width: 100%;
+    text-align: left;
+  }
+  button:active { transform: scale(0.98); }
+  button.on { outline: 4px solid #fff; }
+  .find { margin-bottom: 12px; }
+  .keys { color: #ddd; font-size: 0.95rem; font-weight: 700; margin: 8px 0 0; }
+  .score-type { text-align: center; font-size: 2.2rem; margin-top: 8px; }
+  @media (pointer: coarse) {
+    .keys { display: none; }
+  }
+  @media (any-pointer: coarse) {
+    .corners { display: none; }
+  }
+  @media (any-hover: hover) and (any-pointer: fine) {
+    button:hover { filter: brightness(1.08); }
+    button:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
+  }
+  h1 { font-size: 2.15rem; line-height: 1.2; margin: 4px 0 8px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.15rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: 0.04em; }
+  p { margin: 0 0 10px; font-size: 1.12rem; font-weight: 650; line-height: 1.4; }
+  #app {
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    top: var(--vvtop, 0px);
+    height: var(--vvh, 100dvh);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding: calc(env(safe-area-inset-top) + 6px) calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 8px) calc(env(safe-area-inset-left) + 12px);
+    gap: 8px;
+  }
+  header { flex: 0 0 auto; }
+  .brand { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.08em; color: var(--orange); }
+  .scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  footer { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 0 0 auto; position: relative; z-index: 3; background: var(--bg); }
+  footer button { text-align: center; font-size: 1.35rem; line-height: 1.1; white-space: normal; min-height: 48px; }
+  footer button:last-child:nth-child(3) { grid-column: 1 / -1; }
+  .bubbles {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior: contain;
+    padding: 2px 2px 4px;
+    scroll-snap-type: x mandatory;
+  }
+  .bubble {
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 1.45rem;
+    font-weight: 900;
+    padding: 0;
+    background: #2c2c2c;
+    color: #fff;
+    scroll-snap-align: center;
+  }
+  .bubble.active { background: var(--orange); color: #141414; }
+  .bubble.done { background: var(--green); color: #141414; }
+  .bubble.active.done { box-shadow: inset 0 0 0 5px var(--orange); }
+  .rule {
+    display: inline-block;
+    color: var(--orange);
+    background: #3a2208;
+    font-size: 1rem;
+    line-height: 1.3;
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin: 0 0 8px;
+  }
+  .progress { font-size: 1.25rem; margin: 8px 0 12px; }
+  .progress b { font-size: 1.7rem; color: var(--orange); font-variant-numeric: tabular-nums; }
+  .sub { display: block; font-size: 0.95rem; font-weight: 700; line-height: 1.3; opacity: 0.82; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  @media (max-width: 999px) { .cols { grid-template-columns: 1fr; } }
+  .col { background: #1b1b1b; border-radius: 20px; padding: 10px; min-width: 0; }
+  .col h2 { padding: 8px 10px; border-radius: 14px; position: sticky; top: 0; }
+  .todo h2 { background: #3a2208; color: var(--orange); }
+  .donecol h2 { background: #14300c; color: var(--green); }
+  .person {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 2rem;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+  .who { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+  .nm { display: block; line-height: 1.1; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .res { flex: 0 0 auto; font-variant-numeric: tabular-nums; font-size: 1.2rem; letter-spacing: 0.02em; }
+  .todo .person { background: var(--orange); color: #141414; }
+  .donecol .person { background: var(--green); color: #141414; }
+  .row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 8px; }
+  .row .grow { flex: 1; }
+  .row .side { width: 112px; text-align: center; background: #333; }
+  .field {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 16px;
+    border: 3px solid #555;
+    background: #101010;
+    padding: 8px 12px;
+    font-size: 1.7rem;
+    font-weight: 800;
+  }
+  .go { background: var(--green); color: #141414; text-align: center; font-size: 1.45rem; min-height: 52px; }
+  .pump { background: var(--orange); color: #141414; text-align: center; font-size: 1.35rem; }
+  .purp { background: var(--purple); color: #fff; text-align: center; }
+  .danger { background: var(--red); color: #fff; text-align: center; }
+  .calm { background: #2a2a2a; color: #fff; text-align: center; border: 3px solid #888; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stack { display: grid; gap: 10px; }
+  .watch {
+    background: #1b1b1b;
+    border: 4px solid var(--purple);
+    border-radius: 22px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .watch-title, .maxtime { text-align: center; font-weight: 800; margin: 0; }
+  .watch-title { font-size: 1rem; letter-spacing: 0.08em; color: #ddd; }
+  .maxtime { font-size: 1.45rem; color: var(--purple); margin-top: 4px; }
+  .clock {
+    font-size: 4.6rem;
+    font-weight: 900;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .tenth { font-size: 0.5em; opacity: 0.8; }
+  .timecall { text-align: center; font-size: 1.55rem; font-weight: 900; margin: 0 0 10px; color: #fff; }
+  .watch.timeup { background: #10260c; border-color: var(--green); }
+  .watch.timeup .clock, .watch.timeup .timecall, .watch.timeup .maxtime { color: var(--green); }
+  @media (prefers-reduced-motion: no-preference) {
+    .watch.pulse { animation: pop 0.45s ease 3; }
+  }
+  @keyframes pop { 50% { transform: scale(1.015); } }
+  .banner {
+    width: 100%;
+    text-align: center;
+    background: #3a2208;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .flash { background: var(--purple); color: #fff; text-align: center; padding: 12px; border-radius: 14px; font-weight: 900; margin-bottom: 8px; }
+  .flash.bad, .err { background: var(--red); color: #fff; text-align: center; padding: 12px; border-radius: 14px; font-weight: 900; margin-bottom: 8px; }
+  .board {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 8px;
+    align-items: start;
+    grid-auto-columns: minmax(280px, 1fr);
+    scroll-snap-type: x proximity;
+  }
+  .gcol { background: var(--card); border-radius: 18px; padding: 8px; min-height: 180px; border: 4px solid transparent; scroll-snap-align: start; }
+  .gcol.over { border-color: var(--green); }
+  .gcol.loose { border-color: var(--purple); }
+  .chip {
+    min-height: 0;
+    cursor: pointer;
+    background: #333;
+    border-radius: 16px;
+    padding: 4px 14px;
+    margin-bottom: 6px;
+    font-size: 2rem;
+    line-height: 1.15;
+    font-weight: 800;
+    text-align: left;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chip.sel { outline: 4px solid var(--orange); background: #4a3010; }
+  .ghost {
+    position: fixed;
+    z-index: 80;
+    pointer-events: none;
+    background: var(--orange);
+    color: #141414;
+    font-weight: 900;
+    font-size: 1.3rem;
+    padding: 14px 16px;
+    border-radius: 16px;
+    transform: translate(-50%, -60%);
+    max-width: 260px;
+  }
+  .stepper { display: grid; grid-template-columns: 88px 1fr 88px; gap: 8px; align-items: center; }
+  .stepper button { text-align: center; font-size: 2rem; padding: 0; }
+  .numbig { text-align: center; font-size: 2.4rem; font-weight: 900; }
+  .modal-back {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--vvtop, 0px);
+    height: var(--vvh, 100dvh);
+    background: rgba(0,0,0,.78);
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  }
+  .sheet {
+    width: min(760px, 100%);
+    max-width: 100%;
+    max-height: calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: #1a1a1a;
+    border: 4px solid var(--orange);
+    border-radius: 24px;
+    padding: 14px;
+  }
+  .sheet.danger-sheet { border-color: var(--red); }
+  .score-num { font-size: 4.5rem; font-weight: 900; text-align: center; line-height: 1; margin: 6px 0; font-variant-numeric: tabular-nums; }
+  .podium { display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: 18px; padding: 12px; margin-bottom: 10px; }
+  .podium > div { min-width: 0; flex: 1; }
+  .stand-name { font-size: 2rem; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  button.podium { width: 100%; color: inherit; text-align: left; }
+  button.podium.zero { opacity: 0.55; }
+  button.podium.isout { box-shadow: inset 0 0 0 3px #666; }
+  .stand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .stand-grid .place { width: 56px; height: 56px; font-size: 1.45rem; }
+  .stand-grid h2 { font-size: 1.45rem; }
+  @media (max-width: 699px) { .stand-grid { grid-template-columns: 1fr; } }
+  .place {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 2rem; font-weight: 900; color: #141414; flex: 0 0 auto;
+    background: var(--orange);
+  }
+  .place.p2 { background: var(--purple); color: #fff; }
+  .place.p3 { background: var(--green); }
+  .gameblock { margin-top: 16px; padding-top: 8px; border-top: 3px solid #333; }
+  .line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 1.25rem; font-weight: 800; padding: 10px 0; border-bottom: 1px solid #333; }
+  .line .res { display: flex; gap: 12px; align-items: baseline; }
+  .medal { color: var(--orange); font-size: 0.95rem; font-weight: 800; }
+  .hint { color: #d8d8d8; font-weight: 650; line-height: 1.4; }
+  .saved { color: #9d9; font-size: 0.95rem; font-weight: 700; }
+  .round { text-align: center; font-size: 1.35rem; font-weight: 900; margin: 0 0 6px; color: var(--orange); }
+  .darkbanner { text-align: center; background: #2a1848; color: #e6d4ff; border-radius: 14px; padding: 10px; font-weight: 900; }
+  footer .wide { grid-column: 1 / -1; }
+  footer.three { grid-template-columns: 1fr 1fr 1fr; }
+  footer.three button { text-align: center; font-size: 1rem; padding: 10px 6px; }
+  body.dragging, body.dragging .chip { cursor: grabbing; }
+  .gcard { background: #1b1b1b; border-radius: 18px; padding: 10px; margin-bottom: 12px; }
+  .row .nudge { width: 108px; flex: 0 0 auto; text-align: center; font-size: 0.95rem; padding: 8px; }
+  .row .label {
+    flex: 1; background: #2a2a2a; border-radius: 18px; padding: 12px 14px; min-height: 72px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .nudge.off { opacity: 0.35; }
+  button.slim { min-height: 56px; font-size: 1.05rem; margin-top: 8px; }
+  .tags, .reuse { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .tag {
+    display: flex; align-items: center; gap: 8px;
+    background: #3a2208; color: var(--orange);
+    border-radius: 999px; padding: 4px 4px 4px 14px;
+    font-weight: 900; font-size: 1.05rem;
+  }
+  .tag button, .reuse button { width: auto; min-height: 52px; border-radius: 999px; padding: 8px 12px; }
+  .gearline { background: #3a2208; border-radius: 14px; padding: 10px 12px; }
+  .gearline b { color: var(--orange); }
+  .advice { margin-top: 18px; padding-top: 12px; border-top: 3px solid #333; }
+  .corners { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+  .corners span { position: absolute; font-size: 2.6rem; line-height: 1; opacity: 0.72; filter: drop-shadow(0 2px 0 #000); }
+  .corners .a { top: 6px; left: 8px; }
+  .corners .b { top: 6px; right: 8px; }
+  .corners .c { bottom: calc(10px + env(safe-area-inset-bottom)); left: calc(8px + env(safe-area-inset-left)); }
+  .corners .d { bottom: calc(10px + env(safe-area-inset-bottom)); right: calc(8px + env(safe-area-inset-right)); }
+  .filepick { position: fixed; left: -200px; top: 0; width: 1px; height: 1px; opacity: 0; }
+  .pin { position: sticky; top: 0; z-index: 5; background: #141414; padding-bottom: 8px; }
+  .tip { background: #3a2208; color: #fff; border-radius: 16px; padding: 12px; margin-bottom: 10px; }
+  .tip p { margin: 0; }
+  .undo-bar { flex: 0 0 auto; text-align: center; white-space: normal; }
+  .undo-bar .sub { display: block; color: #fff; font-weight: 700; }
+  .undo-bar.oops { background: var(--red); min-height: 84px; font-size: 1.35rem; line-height: 1.15; }
+  .heats { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 8px; -webkit-overflow-scrolling: touch; }
+  .heats button { width: auto; flex: 0 0 auto; min-height: 64px; padding: 8px 12px; }
+  .heats button.on { background: var(--orange); color: #141414; border-color: var(--orange); }
+  .topbar { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .topbar .brand { flex: 1; margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .fs {
+    width: auto;
+    flex: 0 0 auto;
+    min-height: 44px;
+    min-width: 128px;
+    text-align: center;
+    background: var(--orange);
+    color: #141414;
+    font-size: 1.2rem;
+    padding: 6px 12px;
+  }
+  .topbar .fs.on { background: #2a2a2a; color: #fff; border: 3px solid #fff; }
+  .ring {
+    position: relative;
+    container-type: inline-size;
+    width: min(100%, 720px, calc(var(--vvh, 100dvh) - 240px));
+    aspect-ratio: 1;
+    margin: 4px auto 12px;
+  }
+  .ring.ring-groups { width: min(100%, 560px, calc(var(--vvh, 100dvh) - 340px)); }
+  .ring-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    overflow: hidden;
+  }
+  .ring-center .ring-ico { font-size: clamp(2rem, 6vh, 3.2rem); line-height: 1; }
+  .ring-center .ring-label {
+    margin: 2px 0 0;
+    font-size: clamp(1.5rem, 3.4vh, 2.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ring-seat {
+    position: absolute;
+    width: var(--seat, 28%);
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    padding: 4px 8px;
+    line-height: 1;
+    text-align: center;
+    overflow: hidden;
+  }
+  .ring-seat .ico { display: block; font-size: clamp(1.15rem, 2.4vh, 1.6rem); line-height: 1; }
+  .ring-seat .seat-name {
+    display: block;
+    font-size: clamp(1.5rem, 5.5cqw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .ring-seat .sub { font-size: 1.05rem; opacity: 1; }
+  .ring-seat.on { background: var(--orange); color: #141414; outline: 4px solid #fff; }
+  .ring.ring-groups .ring-center { width: 44%; }
+  .group-names { min-width: 0; }
+  .ring .clock { font-size: clamp(1.8rem, 6vw, 3rem); }
+  .ring .watch { margin: 0; padding: 8px; }
+  .ring .watch .stack { grid-template-columns: 1fr; }
+  .emblem.wait { opacity: 0.38; }
+  .emblem.sat, .ring-seat.sat { background: #14300c; color: #d8ffc8; }
+  .emblem.on, .ring-seat.live { outline: 4px solid var(--orange); }
+  .ring-seat.last { outline: 4px solid var(--green); background: var(--green); color: #141414; }
+  .choice .sub, .stack .sub { display: block; font-size: 1rem; font-weight: 700; opacity: 0.95; }
+  .ico-inline { font-size: 1.4rem; }
+  .heats { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 8px; -webkit-overflow-scrolling: touch; }
+  .heats button { width: auto; flex: 0 0 auto; min-height: 64px; max-width: 240px; padding: 8px 14px; font-size: 1.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .heats button.on { background: var(--orange); color: #141414; border-color: var(--orange); }
+  .chip.isout { opacity: 0.55; }
+  .leavers { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+  .leavers button { width: auto; min-height: 52px; }
+  .tip button { margin-top: 8px; text-align: center; }
+  .play-side, .play-main { min-width: 0; }
+  .play-main .find { position: sticky; top: 0; z-index: 5; background: #141414; padding: 4px 0 8px; }
+  .play-main.with-find .col h2 { position: static; }
+  .sheet-actions { position: sticky; bottom: 0; background: #1a1a1a; padding-top: 10px; z-index: 2; }
+  .watch .stack { grid-template-columns: 1fr 1fr; }
+  .watch .stack button { text-align: center; font-size: 1rem; }
+  @media (pointer: fine) { .chip { touch-action: none; cursor: grab; } }
+  @media (max-width: 999px) {
+    .board { grid-auto-columns: minmax(260px, 82%); }
+  }
+  @media (min-width: 1000px) {
+    .scroll:has(.play) { display: flex; flex-direction: column; overflow: hidden; }
+    .play { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 14px; }
+    .play-side, .play-main { overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  }
+  /* Gewone iPad liggend: 10,2" is 1080×810, 10,9" is 1180×820. Niet de mini, niet de Pro. */
+  @media (min-width: 1000px) and (max-width: 1280px) and (max-height: 920px) {
+    .scroll:has(.group-layout) { display: flex; flex-direction: column; overflow: hidden; }
+    .group-layout {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 400px);
+      gap: 14px;
+      align-items: stretch;
+    }
+    .group-ring { container-type: size; min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
+    .group-layout .ring.ring-groups { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); max-width: 100%; margin: 0; }
+    .group-names { overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .ring { width: min(100%, calc(var(--vvh, 100dvh) - 210px)); }
+    .scroll.ask-open { overflow: auto; display: block; }
+    .scroll.ask-open .group-layout { display: block; }
+    .scroll.ask-open .group-names { overflow: visible; }
+  }
+  @media (max-width: 999px) {
+    .ring.ring-groups { width: min(100%, 520px, calc(var(--vvh, 100dvh) - 320px)); }
+    .topbar .fs { min-width: 132px; font-size: 1.1rem; }
+  }
+  @media (max-height: 860px) {
+    h1 { font-size: 1.7rem; }
+    .clock { font-size: clamp(2.6rem, 10vh, 4.2rem); }
+    .score-num { font-size: 3rem; }
+    footer button { min-height: 46px; }
+    .bubble { width: 42px; height: 42px; min-height: 42px; font-size: 1.3rem; }
+  }
+</style>
+<script>
+(function () {
+  function fitViewport() {
+    var vv = window.visualViewport;
+    var h = vv ? vv.height : window.innerHeight;
+    var t = vv ? vv.offsetTop : 0;
+    document.documentElement.style.setProperty('--vvh', Math.round(h) + 'px');
+    document.documentElement.style.setProperty('--vvtop', Math.round(t) + 'px');
+  }
+  fitViewport();
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', fitViewport);
+    window.visualViewport.addEventListener('scroll', fitViewport);
+  }
+  window.addEventListener('resize', fitViewport);
+  window.addEventListener('orientationchange', fitViewport);
+})();
+</script>
+</head>
+<body>
+<div class="corners" aria-hidden="true"><span class="a">🎃</span><span class="b">🦇</span><span class="c">👻</span><span class="d">🕸️</span></div>
+<div id="app"></div>
+<div id="ghost" class="ghost" hidden></div>
+<script>
+(function () {
+  const KEY = 'hvr-halloween-v1';
+  const NAMES = ['Pompoenen','Heksen','Spoken','Vleermuizen','Skeletten','Spinnen','Zwarte katten','Vampiers','Geesten','Mummies','Kraaien','Schedels'];
+  const TRY_NAMES = ['Anna','Bram','Chris','Dana','Eva','Finn','Gina','Hugo','Iris','Joris','Karin','Lars','Mila','Noah','Olivia','Pim','Quinn','Roos','Sem','Tess','Uma','Vince','Wendy','Xander','Yara','Zoë','Abel','Bo','Cas','Daan','Elin','Floris','Gijs','Hanna','Ivo'];
+  const GEAR_ITEMS = [
+    { id: 'touwtjes', name: 'Touwtjes' }, { id: 'pion', name: 'Pion' }, { id: 'hoepel', name: 'Hoepel' },
+    { id: 'zaklamp', name: 'Zaklamp' }, { id: 'viltjes', name: 'Viltjes' }, { id: 'stift', name: 'Stift' },
+    { id: 'pionnen', name: 'Pionnen' }, { id: 'ballon', name: 'Ballon' }, { id: 'pomp', name: 'Ballonpomp' },
+    { id: 'knikker', name: 'Knikker' }, { id: 'hanger', name: 'Kledinghanger' }, { id: 'telefoon', name: 'Telefoon' },
+    { id: 'handballen', name: 'Handballen' }, { id: 'stokken', name: 'Stokken' }, { id: 'matten', name: 'Matten' },
+    { id: 'pen', name: 'Pen' }, { id: 'papier', name: 'Papier' }, { id: 'touw', name: 'Touw' },
+    { id: 'blokje', name: 'Blokje' }, { id: 'tennisbal', name: 'Tennisbal' }, { id: 'medicijnbal', name: 'Medicijnbal' },
+    { id: 'tape', name: 'Tape' }, { id: 'muziek', name: 'Muziek' }, { id: 'box', name: 'Box' },
+    { id: 'ballen', name: 'Ballen' }, { id: 'manden', name: 'Korfbalmanden' }
+  ];
+  const GEAR_FOR = {
+    been: [],
+    stok: ['handballen', 'stokken'],
+    touw: ['touwtjes'],
+    mat: ['matten'],
+    pion: ['pion', 'hoepel'],
+    zin: ['pen', 'papier'],
+    vilt: ['viltjes', 'stift', 'pionnen'],
+    curl: ['touw', 'blokje', 'tennisbal', 'medicijnbal', 'tape'],
+    ballon: ['ballon', 'pomp', 'hoepel', 'knikker', 'hanger'],
+    dans: ['hoepel', 'muziek', 'pionnen', 'box'],
+    tellen: ['telefoon'],
+    race: ['hoepel'],
+    pong: ['ballen', 'manden', 'pionnen'],
+    koekoek: ['zaklamp']
+  };
+  const PROGRAM = [
+    { id: 'been', name: 'Op 1 been', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'stok', name: 'Bal op stokken', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Bal naar de overkant, alleen met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Blijf springen. Stop je, dan ben je af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'mat', name: 'Oversteken op matten', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Twee matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Het eerste is 1e.' },
+    { id: 'pion', name: 'Pion op je hand', participantType: 'solo', mode: 'elim', aboutMin: 5, hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'zin', name: 'Zin doorgeven', participantType: 'group', mode: 'points', aboutMin: 10, hint: 'Twee rondes. Fluister de zin door. Het laatste teamlid schrijft hem op. Vul daarna de punten van het team in.' },
+    { id: 'vilt', name: 'Viltjes werpen', participantType: 'solo', mode: 'points', aboutMin: 10, hint: 'Naam op het viltje. Over de helft, op de kleur die wordt geroepen. Vul daarna de punten in.' },
+    { id: 'curl', name: 'Curling', participantType: 'group', mode: 'points', aboutMin: 10, hint: 'Touw 1, blok 2, medicijnbal 3, tennisbal 4. Twee rondes. Vul het totaal van het team in.' },
+    { id: 'ballon', name: 'Ballon in de hoepel', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'dans', name: 'Hoepeldans', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'tellen', name: '2:30 tellen', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. Vul die tijd in. Dichtst bij 2:30 wint.' },
+    { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'pong', name: 'Korfbalmand pong', participantType: 'group', mode: 'points', aboutMin: 15, hint: 'Elk team alleen. Zoveel mogelijk ballen in de manden. Vul het totaal in.' },
+    { id: 'koekoek', name: 'Anna Maria Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, hint: 'Donker. Iedereen kruipt. Bij “Anna Maria Koekoek” stilstaan. Wie beweegt is af. Tik wie af is. De laatste is 1e.' }
+  ];
+  const S = {
+    players: [], groups: [], games: [], results: [], watches: {}, orders: {},
+    activeGameId: null, groupTarget: 5, view: 'players', modal: null,
+    selectedPlayerId: null, renameGroupId: null, renameText: '', renamePlayerId: null, renamePlayerText: '',
+    gameForm: null, score: null, undos: [], arm: null, armUntil: 0,
+    unlocked: false, flash: '', flashBad: false, draftName: '', restoreText: '', saveError: '', holdSave: false, find: '',
+    gear: [], gearSeeded: false, gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
+    focusGroupId: null, askSplit: false, pendingCount: 0
+  };
+  let drag = null;
+  let suppressClick = false;
+  let timer = null;
+  let wake = null;
+  let flashTimer = 0;
+
+  function uid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+  function clamp(n, a, b) { n = Number(n) || 0; return Math.max(a, Math.min(b, n)); }
+  function flash(msg, bad) {
+    S.flash = msg;
+    S.flashBad = !!bad;
+    render();
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function () {
+      S.flash = '';
+      if (drag || S.modal) return;
+      render();
+    }, 2600);
+  }
+  function store() {
+    try { return window.localStorage; } catch (e) { return null; }
+  }
+  function blob() {
+    return {
+      version: 1,
+      players: S.players,
+      groups: S.groups,
+      games: S.games,
+      results: S.results,
+      watches: S.watches,
+      orders: S.orders,
+      gear: S.gear,
+      gearSeeded: !!S.gearSeeded,
+      activeGameId: S.activeGameId,
+      groupTarget: S.groupTarget
+    };
+  }
+  function readStored(raw) {
+    if (!raw) return null;
+    try {
+      const obj = JSON.parse(raw);
+      if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return null;
+      return obj;
+    } catch (e) { return null; }
+  }
+  function save() {
+    if (S.holdSave) return;
+    const st = store();
+    if (!st) { S.saveError = 'OPSLAG MISLUKT OP DIT TOESTEL.'; return; }
+    let raw = '';
+    try { raw = JSON.stringify(blob()); }
+    catch (e) { S.saveError = 'OPSLAG MISLUKT. MAAK EEN BACKUP.'; return; }
+    let prev = null;
+    try { prev = st.getItem(KEY); } catch (e) { prev = null; }
+    try { if (prev && prev !== raw) st.setItem(KEY + '-bak', prev); } catch (e) {}
+    try {
+      st.setItem(KEY, raw);
+      S.saveError = '';
+    } catch (e) {
+      S.saveError = 'OPSLAG MISLUKT. MAAK EEN BACKUP.';
+      try { if (prev) st.setItem(KEY, prev); } catch (e2) {}
+    }
+  }
+  function applyData(obj) {
+    S.players = (obj.players || []).map(function (p) { return { id: String(p.id), name: String(p.name || '').trim(), try: !!p.try, out: !!p.out }; }).filter(function (p) { return p.id && p.name; });
+    S.groups = (obj.groups || []).map(function (g) {
+      return { id: String(g.id), name: String(g.name || 'Groep').trim() || 'Groep', playerIds: Array.isArray(g.playerIds) ? g.playerIds.map(String) : [], out: !!g.out };
+    }).filter(function (g) { return g.id; });
+    S.games = (obj.games || []).map(function (g, i) {
+      return {
+        id: String(g.id),
+        name: String(g.name || 'Spel').trim() || 'Spel',
+        participantType: g.participantType === 'solo' ? 'solo' : 'group',
+        scoreType: g.scoreType === 'time' || g.mode === 'closest' ? 'time' : 'points',
+        sort: g.mode === 'closest' || g.sort === 'low' ? 'low' : 'high',
+        mode: g.mode === 'elim' || g.mode === 'finish' || g.mode === 'closest' ? g.mode : 'points',
+        aboutMin: Math.max(0, Number(g.aboutMin) || 0),
+        targetSec: Math.max(0, Number(g.targetSec) || 0),
+        hint: String(g.hint || ''),
+        dark: !!g.dark,
+        gearIds: Array.isArray(g.gearIds) ? g.gearIds.map(String) : [],
+        stopwatch: g.stopwatch !== false,
+        signalSec: Math.max(0, Number(g.signalSec) || 0),
+        order: Number.isFinite(Number(g.order)) ? Number(g.order) : i,
+        skipped: !!g.skipped,
+        parallel: Number(g.parallel) >= 1 ? Math.round(Number(g.parallel)) : null,
+        wave: Math.max(0, Math.round(Number(g.wave) || 0))
+      };
+    }).filter(function (g) { return g.id; });
+    S.results = (obj.results || []).map(function (r) {
+      return {
+        id: String(r.id || uid()),
+        gameId: String(r.gameId || ''),
+        participantId: String(r.participantId || ''),
+        status: r.status === 'absent' ? 'absent' : 'done',
+        points: (function () { if (r.points == null || r.points === '') return null; const n = Number(r.points); return Number.isFinite(n) ? n : null; })(),
+        timeSec: (function () { if (r.timeSec == null || r.timeSec === '') return null; const n = Number(r.timeSec); return Number.isFinite(n) ? n : null; })()
+      };
+    }).filter(function (r) { return r.gameId && r.participantId; });
+    S.watches = {};
+    const wsrc = obj.watches || {};
+    Object.keys(wsrc).forEach(function (id) {
+      const w = wsrc[id] || {};
+      const running = !!w.running && !!w.startedAt;
+      const marks = {};
+      if (w.marks && typeof w.marks === 'object') {
+        Object.keys(w.marks).forEach(function (pid) { marks[String(pid)] = Math.max(0, Number(w.marks[pid]) || 0); });
+      }
+      S.watches[id] = {
+        running: running,
+        startedAt: running ? Number(w.startedAt) : null,
+        elapsedMs: Math.max(0, Number(w.elapsedMs) || 0),
+        round: Math.max(1, Number(w.round) || 1),
+        marks: marks,
+        heatId: w.heatId == null ? null : String(w.heatId),
+        heatAll: !!w.heatAll,
+        heatAsked: !!w.heatAsked
+      };
+    });
+    S.orders = {};
+    const osrc = obj.orders || {};
+    Object.keys(osrc).forEach(function (id) {
+      S.orders[id] = Array.isArray(osrc[id]) ? osrc[id].map(String) : [];
+    });
+    S.gear = (obj.gear || []).map(function (g) {
+      return { id: String(g.id), name: String(g.name || '').trim() };
+    }).filter(function (g) { return g.id && g.name; });
+    S.gearSeeded = !!obj.gearSeeded;
+    S.activeGameId = obj.activeGameId || null;
+    S.groupTarget = clamp(obj.groupTarget || S.groups.length || 5, 1, 12);
+    normalize();
+  }
+  function normalize() {
+    const pids = {};
+    S.players.forEach(function (p) { pids[p.id] = 1; });
+    const seen = {};
+    S.groups.forEach(function (g) {
+      g.playerIds = (g.playerIds || []).filter(function (id) {
+        if (!pids[id] || seen[id]) return false;
+        seen[id] = 1;
+        return true;
+      });
+    });
+    const knownGear = {};
+    S.gear.forEach(function (g) { knownGear[g.id] = 1; });
+    S.games.sort(function (a, b) { return a.order - b.order; });
+    S.games.forEach(function (g, i) {
+      g.order = i;
+      if (!Array.isArray(g.gearIds)) g.gearIds = [];
+      if (S.gearSeeded) g.gearIds = g.gearIds.filter(function (id) { return knownGear[id]; });
+    });
+    if (S.activeGameId && !S.games.some(function (g) { return g.id === S.activeGameId; })) S.activeGameId = S.games[0] ? S.games[0].id : null;
+  }
+  function load() {
+    const st = store();
+    if (!st) { S.saveError = 'GEEN OPSLAG. SCORES BLIJVEN NIET BEWAARD.'; S.holdSave = true; return; }
+    let main = null;
+    let bak = null;
+    try { main = st.getItem(KEY); } catch (e) { main = null; }
+    try { bak = st.getItem(KEY + '-bak'); } catch (e) { bak = null; }
+    const mainObj = readStored(main);
+    const bakObj = readStored(bak);
+    const obj = mainObj || bakObj;
+    if (!obj) {
+      if (main || bak) {
+        try { if (main) st.setItem(KEY + '-kapot', main); } catch (e) {}
+        S.saveError = 'OUDE DATA KAPOT. ER IS OPNIEUW BEGONNEN.';
+      }
+      return;
+    }
+    applyData(obj);
+    if (!mainObj && bakObj) {
+      try { st.setItem(KEY, JSON.stringify(blob())); }
+      catch (e) { S.saveError = 'OPSLAG MISLUKT. MAAK EEN BACKUP.'; }
+    }
+  }
+  function seedProgram() {
+    if (S.games.length) return;
+    S.games = PROGRAM.map(function (g, i) {
+      return {
+        id: g.id, name: g.name, participantType: g.participantType, mode: g.mode,
+        scoreType: g.mode === 'closest' ? 'time' : 'points',
+        sort: g.mode === 'closest' ? 'low' : 'high',
+        stopwatch: true, signalSec: 0, aboutMin: g.aboutMin, targetSec: g.targetSec || 0,
+        hint: g.hint, dark: !!g.dark, gearIds: (GEAR_FOR[g.id] || []).slice(), order: i
+      };
+    });
+    S.gear = GEAR_ITEMS.map(function (g) { return { id: g.id, name: g.name }; });
+    S.gearSeeded = true;
+    S.activeGameId = S.games[0].id;
+  }
+  function ensureGear() {
+    if (S.gearSeeded) return;
+    GEAR_ITEMS.forEach(function (item) {
+      if (!S.gear.some(function (g) { return g.id === item.id; })) S.gear.push({ id: item.id, name: item.name });
+    });
+    S.games.forEach(function (g) {
+      if (!Array.isArray(g.gearIds)) g.gearIds = [];
+      if (!g.gearIds.length && GEAR_FOR[g.id] && GEAR_FOR[g.id].length) g.gearIds = GEAR_FOR[g.id].slice();
+    });
+    S.gearSeeded = true;
+    normalize();
+    save();
+  }
+  function bootView() {
+    if (!S.players.length) return 'players';
+    if (!S.groups.length || !hasAssignments()) return 'groups';
+    return 'action';
+  }
+  function playerById(id) { return S.players.find(function (p) { return p.id === id; }) || null; }
+  function groupById(id) { return S.groups.find(function (g) { return g.id === id; }) || null; }
+  function gameById(id) { return S.games.find(function (g) { return g.id === id; }) || null; }
+  function activeGame() {
+    return gameById(S.activeGameId) || S.games[0] || null;
+  }
+  function membersOf(g) {
+    return (g.playerIds || []).map(function (id) { const p = playerById(id); return p ? p.name : ''; }).filter(Boolean);
+  }
+  function groupNameOfPlayer(pid) {
+    const g = S.groups.find(function (gr) { return gr.playerIds.indexOf(pid) >= 0; });
+    return g ? g.name : '';
+  }
+  function groupIdOfPlayer(pid) {
+    const g = S.groups.find(function (gr) { return gr.playerIds.indexOf(pid) >= 0; });
+    return g ? g.id : 'none';
+  }
+  function whoName(id) {
+    const p = playerById(id);
+    if (p) return p.name;
+    const g = groupById(id);
+    return g ? g.name : 'Iemand';
+  }
+  function isOutId(id) {
+    const p = playerById(id);
+    if (p) return !!p.out;
+    const g = groupById(id);
+    return !!(g && g.out);
+  }
+  function roster(game) {
+    return participants(game).filter(function (p) { return !isOutId(p.id); });
+  }
+  function standSub(p, type) {
+    const bits = [];
+    if (p.out) bits.push('gestopt');
+    if (type === 'group') {
+      const n = (p.playerIds || []).length;
+      if (n) bits.push(n + (n === 1 ? ' kind' : ' kinderen'));
+    } else {
+      const g = groupNameOfPlayer(p.id);
+      if (g) bits.push(g);
+    }
+    return bits.join(' · ');
+  }
+  function countsOnStand(game) {
+    if (!game || game.skipped) return false;
+    if (game.mode === 'elim' || game.mode === 'finish') return true;
+    return gameComplete(game);
+  }
+  function undoBar() {
+    const u = S.undos[S.undos.length - 1];
+    if (!u) return '';
+    if (u.kind === 'order' && u.oops && u.who) {
+      const more = S.undos.length > 1 ? '<span class="sub">Daarna nog ' + (S.undos.length - 1) + (S.undos.length > 2 ? ' stappen' : ' stap') + '</span>' : '';
+      return '<button class="undo-bar oops" type="button" data-act="undo">↩ VERKEERD, ZET ' + esc(u.who) + ' TERUG' + more + '</button>';
+    }
+    const n = S.undos.length > 1 ? ' (' + S.undos.length + ')' : '';
+    return '<button class="purp undo-bar" type="button" data-act="undo">↩ TERUG' + n + '<span class="sub">' + esc(u.label) + '</span></button>';
+  }
+  function pushUndo(entry) {
+    if (!entry || !entry.label) return;
+    S.undos.push(entry);
+    if (S.undos.length > 20) S.undos.shift();
+  }
+  function participants(game) {
+    if (!game) return [];
+    if (game.participantType === 'group') {
+      return S.groups.map(function (g) { return { id: g.id, name: g.name, sub: membersOf(g).join(', ') }; });
+    }
+    return S.players.map(function (p) { return { id: p.id, name: p.name, sub: groupNameOfPlayer(p.id) }; });
+  }
+  function resultOf(gameId, pid) {
+    return S.results.find(function (r) { return r.gameId === gameId && r.participantId === pid; }) || null;
+  }
+  function formatSec(sec) {
+    sec = Math.max(0, Math.round(Number(sec) || 0));
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+  function callText(ms, maxSec) {
+    if (!maxSec) return '';
+    if (ms >= maxSec * 1000) return 'Tijd om';
+    const left = Math.ceil((maxSec * 1000 - ms) / 1000);
+    return 'Nog ' + formatSec(left);
+  }
+  function formatWatch(ms) {
+    ms = Math.max(0, ms);
+    const total = Math.floor(ms / 1000);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    const t = Math.floor((ms % 1000) / 100);
+    return m + ':' + String(s).padStart(2, '0') + '<span class="tenth">.' + t + '</span>';
+  }
+  function watchMs(w) {
+    if (!w) return 0;
+    let ms = w.elapsedMs || 0;
+    if (w.running && w.startedAt) ms += Date.now() - w.startedAt;
+    return Math.max(0, ms);
+  }
+  function ruleText(g) {
+    if (g.mode === 'elim') return 'Laatste blijft 1e';
+    if (g.mode === 'finish') return 'Eerste klaar is 1e';
+    if (g.mode === 'closest') return 'Dichtst bij 2:30 wint';
+    if (g.scoreType === 'points') return g.sort === 'high' ? 'Meeste punten wint' : 'Minste punten wint';
+    return g.sort === 'low' ? 'Snelste tijd wint' : 'Langste tijd wint';
+  }
+  function placeWord(n) { return n + 'e'; }
+  function resultLabel(game, r) {
+    if (!r) return '';
+    if (r.status === 'absent') return 'AFWEZIG';
+    if (game.mode === 'elim' || game.mode === 'finish') {
+      if (r.points === 3) return '1e';
+      if (r.points === 2) return '2e';
+      if (r.points === 1) return '3e';
+      return game.mode === 'finish' ? 'klaar' : 'af';
+    }
+    if (game.mode === 'closest') {
+      const diff = Math.abs(Number(r.timeSec || 0) - Number(game.targetSec || 150));
+      return formatSec(r.timeSec || 0) + ' · ' + formatSec(diff) + ' ernaast';
+    }
+    if (game.scoreType === 'points') return String(r.points || 0) + ' PT';
+    return formatSec(r.timeSec || 0);
+  }
+  function gameComplete(game) {
+    if (!game) return false;
+    if (game.skipped) return true;
+    const parts = roster(game);
+    if (!parts.length) return false;
+    return parts.every(function (p) {
+      const r = resultOf(game.id, p.id);
+      return r && (r.status === 'done' || r.status === 'absent');
+    });
+  }
+  function placeRows(rows, sort) {
+    const list = rows.slice().sort(function (a, b) {
+      if (a.score !== b.score) return sort === 'high' ? b.score - a.score : a.score - b.score;
+      return String(a.name).localeCompare(String(b.name), 'nl');
+    });
+    let rank = 0;
+    list.forEach(function (row, i) {
+      if (i === 0 || row.score !== list[i - 1].score) rank = i + 1;
+      row.rank = rank;
+      row.medal = rank === 1 ? 3 : rank === 2 ? 2 : rank === 3 ? 1 : 0;
+    });
+    return list;
+  }
+  function gameRanking(game) {
+    const rows = [];
+    if (!game || game.skipped) return [];
+    participants(game).forEach(function (p) {
+      const r = resultOf(game.id, p.id);
+      if (r && r.status === 'done') {
+        let score = game.scoreType === 'points' ? Number(r.points || 0) : Number(r.timeSec || 0);
+        if (game.mode === 'closest') score = Math.abs(score - Number(game.targetSec || 150));
+        rows.push({ id: p.id, name: p.name, sub: p.sub, score: score, label: resultLabel(game, r) });
+      }
+    });
+    return placeRows(rows, game.mode === 'closest' ? 'low' : game.sort);
+  }
+  function addStandPoints(game, map) {
+    if (!countsOnStand(game)) return;
+    if (game.mode === 'elim' || game.mode === 'finish') {
+      S.results.forEach(function (r) {
+        if (r.gameId !== game.id || r.status !== 'done') return;
+        if (map[r.participantId]) map[r.participantId].pts += Math.max(0, Number(r.points) || 0);
+      });
+      return;
+    }
+    gameRanking(game).forEach(function (row) {
+      if (map[row.id]) map[row.id].pts += row.medal;
+    });
+  }
+  function overallAll(type) {
+    const people = type === 'group' ? S.groups : S.players;
+    const games = S.games.filter(function (g) { return g.participantType === type; });
+    const map = {};
+    people.forEach(function (p) { map[p.id] = { id: p.id, name: p.name, pts: 0, sub: standSub(p, type), out: !!p.out }; });
+    games.forEach(function (g) { addStandPoints(g, map); });
+    const rows = Object.keys(map).map(function (k) { return map[k]; });
+    rows.sort(function (a, b) { return b.pts - a.pts || a.name.localeCompare(b.name, 'nl'); });
+    let rank = 0;
+    rows.forEach(function (row, i) {
+      if (i === 0 || row.pts !== rows[i - 1].pts) rank = i + 1;
+      row.rank = rank;
+    });
+    return rows;
+  }
+  function overallTop(type) {
+    const people = type === 'group' ? S.groups : S.players;
+    const games = S.games.filter(function (g) { return g.participantType === type; });
+    const map = {};
+    people.forEach(function (p) { map[p.id] = { id: p.id, name: p.name, pts: 0, sub: standSub(p, type), out: !!p.out }; });
+    games.forEach(function (g) { addStandPoints(g, map); });
+    const scored = Object.keys(map).map(function (k) { return map[k]; }).filter(function (x) { return x.pts > 0; });
+    scored.sort(function (a, b) { return b.pts - a.pts || a.name.localeCompare(b.name, 'nl'); });
+    let rank = 0;
+    scored.forEach(function (row, i) {
+      if (i === 0 || row.pts !== scored[i - 1].pts) rank = i + 1;
+      row.rank = rank;
+    });
+    return scored.filter(function (r) { return r.rank <= 3; });
+  }
+  function shuffle(list) {
+    const a = list.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function splitText(people, groups) {
+    if (!groups) return '';
+    if (!people) return 'Nog geen namen.';
+    const base = Math.floor(people / groups);
+    const extra = people % groups;
+    const empty = groups - extra;
+    if (!base) return extra + (extra === 1 ? ' groep van 1' : ' groepen van 1') + (empty ? ', ' + empty + ' leeg' : '') + '.';
+    if (!extra) return groups + (groups === 1 ? ' groep' : ' groepen') + ' van ' + base + '.';
+    return extra + (extra === 1 ? ' groep' : ' groepen') + ' van ' + (base + 1) + ' en ' + empty + (empty === 1 ? ' groep' : ' groepen') + ' van ' + base + '.';
+  }
+  function groupIcon(name) {
+    const n = String(name || '').toLowerCase();
+    const rows = [
+      ['pompoen', '🎃'], ['heks', '🧙'], ['vleermuiz', '🦇'], ['vleermuis', '🦇'], ['skelet', '💀'],
+      ['spin', '🕷️'], ['kat', '🐈'], ['vampier', '🧛'], ['mummie', '🧟'],
+      ['kraai', '🐦'], ['schedel', '☠️'], ['geest', '🔮'], ['spoken', '👻'], ['spook', '👻']
+    ];
+    for (let i = 0; i < rows.length; i++) {
+      if (n.indexOf(rows[i][0]) >= 0) return rows[i][1];
+    }
+    return '🎃';
+  }
+  function nameLimit(n) {
+    if (n <= 5) return 14;
+    if (n <= 6) return 12;
+    return 10;
+  }
+  function shortName(name, n) {
+    const s = String(name || '').replace(/\s+/g, ' ').trim();
+    const max = nameLimit(n);
+    if (s.length <= max) return s;
+    const budget = max - 1;
+    let cut = s.slice(0, budget);
+    const sp = cut.lastIndexOf(' ');
+    if (sp >= Math.ceil(budget * 0.6)) cut = cut.slice(0, sp);
+    return cut.replace(/[\s\-]+$/, '') + '…';
+  }
+  function ringPos(i, n) {
+    const ang = (-Math.PI / 2) + (i * 2 * Math.PI / n);
+    const rad = n <= 5 ? 43 : n <= 6 ? 41 : 42;
+    const x = 50 + Math.cos(ang) * rad;
+    const y = 50 + Math.sin(ang) * rad;
+    return 'left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%';
+  }
+  function seatSize(n) {
+    if (n <= 5) return 40;
+    if (n <= 6) return 32;
+    return 28;
+  }
+  function ringBox(n, seats, center, extra) {
+    return '<div class="ring' + (extra ? ' ' + extra : '') + '" style="--seat:' + seatSize(n) + '%">' + seats + '<div class="ring-center">' + center + '</div></div>';
+  }
+  function parallelChoices(n) {
+    const opts = [{ n: 1, text: '1 tegelijk', sub: n + (n === 1 ? ' ronde' : ' rondes') + ', om de beurt' }];
+    if (n >= 4) {
+      const rounds = Math.ceil(n / 2);
+      const rest = n % 2;
+      opts.push({ n: 2, text: '2 tegelijk', sub: rest ? (rounds + ' rondes, laatste ronde 1 groep') : (rounds + ' rondes') });
+    }
+    if (n >= 5) {
+      const rounds = Math.ceil(n / 3);
+      const rest = n % 3;
+      opts.push({ n: 3, text: '3 tegelijk', sub: rest ? (rounds + ' rondes, laatste ronde ' + rest + (rest === 1 ? ' groep' : ' groepen')) : (rounds + ' rondes') });
+    }
+    if (n > 1) opts.push({ n: n, text: 'Alle ' + n, sub: 'één ronde, allemaal tegelijk' });
+    return opts;
+  }
+  function suggestedParallel(game, n) {
+    const hint = ((game && game.hint) || '') + ' ' + ((game && game.name) || '');
+    if (/alleen/i.test(hint)) return 1;
+    if (/twee matten/i.test(hint) || (game && game.id === 'mat')) return Math.min(2, n);
+    return 0;
+  }
+  function armed(key, note) {
+    if (S.arm === key && Date.now() < S.armUntil) { S.arm = null; S.armNote = ''; return true; }
+    S.arm = key;
+    S.armNote = note || '';
+    S.armUntil = Date.now() + 8000;
+    render();
+    return false;
+  }
+  function armLabel(key, normal, hot) {
+    return (S.arm === key && Date.now() < S.armUntil) ? hot : normal;
+  }
+  function hasAssignments() {
+    return S.groups.some(function (g) { return g.playerIds.length; });
+  }
+  function groupHasScore(gid) {
+    return S.results.some(function (r) { return r.participantId === gid; });
+  }
+
+  function addPlayer() {
+    const name = (S.draftName || '').trim().replace(/\s+/g, ' ');
+    if (!name) { flash('TYP EERST EEN NAAM', true); return; }
+    const dup = S.players.some(function (p) { return p.name.toLowerCase() === name.toLowerCase(); });
+    if (dup && !armed('dup:' + name.toLowerCase())) return;
+    const id = uid();
+    S.players.push({ id: id, name: name });
+    S.draftName = '';
+    pushUndo({ kind: 'add-player', id: id, label: name + ' is net toegevoegd. Tik om die naam weer weg te halen.' });
+    save();
+    flash(dup ? 'TOEGEVOEGD. ER ZIJN ER NU TWEE MET DEZE NAAM.' : (S.results.length ? 'TOEGEVOEGD. OUDE SPELLEN TIK JE AFWEZIG ALS DIE ER NIET BIJ WAS.' : 'TOEGEVOEGD'));
+  }
+  function fillTryNames() {
+    if (S.players.length || TRY_NAMES.length !== 35) { flash('ER STAAT AL EEN NAAM. SIMULEREN BLIJFT WEG.', true); return; }
+    TRY_NAMES.forEach(function (name) { S.players.push({ id: uid(), name: name, try: true }); });
+    save();
+    flash('35 NAMEN OM TE OEFENEN');
+  }
+  function clearTryNames() {
+    if (!S.players.some(function (p) { return p.try; })) return;
+    if (!armed('clear-try')) return;
+    const ids = {};
+    S.players.forEach(function (p) { if (p.try) ids[p.id] = 1; });
+    S.players = S.players.filter(function (p) { return !p.try; });
+    S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return !ids[id]; }); });
+    S.results = S.results.filter(function (r) {
+      const g = gameById(r.gameId);
+      return !(ids[r.participantId] && g && g.participantType === 'solo');
+    });
+    Object.keys(S.orders).forEach(function (gid) {
+      S.orders[gid] = (S.orders[gid] || []).filter(function (id) { return !ids[id]; });
+    });
+    save();
+    flash('PROEFNAMEN WEG');
+  }
+  function gearById(id) { return S.gear.find(function (g) { return g.id === id; }) || null; }
+  function gearName(id) { const g = gearById(id); return g ? g.name : ''; }
+  function addGear(gameId, raw) {
+    const game = gameById(gameId);
+    if (!game) return;
+    const name = String(raw || '').trim().replace(/\s+/g, ' ');
+    if (!name) { flash('TYP EEN BENODIGDHEID', true); return; }
+    let item = S.gear.find(function (g) { return g.name.toLowerCase() === name.toLowerCase(); });
+    if (!item) {
+      item = { id: uid(), name: name };
+      S.gear.push(item);
+    }
+    if (!game.gearIds) game.gearIds = [];
+    if (game.gearIds.indexOf(item.id) < 0) game.gearIds.push(item.id);
+    S.gearDraft = '';
+    S.gearOpen = gameId;
+    S.focusGear = true;
+    save();
+    render();
+  }
+  function attachGear(gameId, gearId) {
+    const game = gameById(gameId);
+    if (!game || !gearById(gearId)) return;
+    if (!game.gearIds) game.gearIds = [];
+    if (game.gearIds.indexOf(gearId) < 0) game.gearIds.push(gearId);
+    S.gearOpen = gameId;
+    S.focusGear = true;
+    save();
+    render();
+  }
+  function detachGear(gameId, gearId) {
+    const game = gameById(gameId);
+    if (!game) return;
+    game.gearIds = (game.gearIds || []).filter(function (id) { return id !== gearId; });
+    save();
+    flash('WEG BIJ DIT SPEL');
+  }
+  function placePlayer(pid, gid) {
+    S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return id !== pid; }); });
+    if (gid && gid !== 'none') {
+      const g = groupById(gid);
+      if (g && g.playerIds.indexOf(pid) < 0) g.playerIds.push(pid);
+    }
+  }
+  function movePlayer(pid, gid) {
+    const from = groupIdOfPlayer(pid);
+    const dest = gid || 'none';
+    if (from === dest) { S.selectedPlayerId = null; render(); return; }
+    const fromName = from === 'none' ? 'Nog los' : ((groupById(from) || {}).name || 'een groep');
+    const toName = dest === 'none' ? 'Nog los' : ((groupById(dest) || {}).name || 'een groep');
+    pushUndo({ kind: 'move', pid: pid, from: from, label: whoName(pid) + ' zit bij ' + toName + '. Tik om terug te zetten naar ' + fromName + '.' });
+    placePlayer(pid, dest);
+    S.selectedPlayerId = null;
+    save();
+    render();
+  }
+  function runDeal() {
+    const n = clamp(S.groupTarget, 1, 12);
+    if (!S.players.length) { flash('EERST NAMEN AANMELDEN', true); return; }
+    while (S.groups.length < n) {
+      const i = S.groups.length;
+      S.groups.push({ id: uid(), name: NAMES[i] || ('Groep ' + (i + 1)), playerIds: [] });
+    }
+    if (S.groups.length > n) {
+      const drop = {};
+      S.groups.slice(n).forEach(function (g) { drop[g.id] = 1; });
+      S.results = S.results.filter(function (r) { return !drop[r.participantId]; });
+      S.groups = S.groups.slice(0, n);
+    }
+    S.groups.forEach(function (g) { g.playerIds = []; });
+    shuffle(S.players.map(function (p) { return p.id; })).forEach(function (id, i) {
+      S.groups[i % S.groups.length].playerIds.push(id);
+    });
+    S.selectedPlayerId = null;
+    S.askSplit = false;
+    S.pendingCount = 0;
+    S.focusGroupId = S.groups[0] ? S.groups[0].id : null;
+    S.modal = null;
+    save();
+    flash('VERDEELD. TIK EEN ICOON ALS JE EEN GROEP WILT ZIEN.');
+  }
+  function deal(confirmed) {
+    const n = clamp(confirmed && S.pendingCount ? S.pendingCount : S.groupTarget, 1, 12);
+    if (!S.players.length) { flash('EERST NAMEN AANMELDEN', true); return; }
+    if (confirmed && S.pendingCount) S.groupTarget = S.pendingCount;
+    const removed = S.groups.slice(n);
+    const doomed = removed.filter(function (g) { return groupHasScore(g.id); });
+    if (!confirmed) {
+      if (hasAssignments() || doomed.length) {
+        if (!armed('deal')) return;
+      }
+      if (doomed.length) {
+        S.pendingCount = n;
+        S.modal = { kind: 'drop-groups', names: doomed.map(function (g) { return g.name; }) };
+        render();
+        return;
+      }
+    }
+    S.groupTarget = n;
+    runDeal();
+  }
+  function commitGroups(n) {
+    n = clamp(n, 2, 12);
+    if (!S.players.length) { flash('EERST NAMEN AANMELDEN', true); return; }
+    const removed = S.groups.slice(n);
+    const doomed = removed.filter(function (g) { return groupHasScore(g.id); });
+    if ((hasAssignments() || doomed.length) && !armed('split-' + n, 'De groepen worden opnieuw ingedeeld.')) return;
+    if (doomed.length) {
+      S.pendingCount = n;
+      S.modal = { kind: 'drop-groups', names: doomed.map(function (g) { return g.name; }) };
+      render();
+      return;
+    }
+    S.groupTarget = n;
+    runDeal();
+  }
+  function addGroup() {
+    if (S.groups.length >= 12) { flash('MAXIMAAL 12 GROEPEN', true); return; }
+    const i = S.groups.length;
+    S.groups.push({ id: uid(), name: NAMES[i] || ('Groep ' + (i + 1)), playerIds: [] });
+    S.groupTarget = S.groups.length;
+    save();
+    render();
+  }
+  function snapshot(gameId, pid, label) {
+    const r = resultOf(gameId, pid);
+    pushUndo({ kind: 'result', gameId: gameId, participantId: pid, prev: r ? JSON.parse(JSON.stringify(r)) : null, label: label });
+  }
+  function putResult(gameId, pid, patch, label) {
+    snapshot(gameId, pid, label);
+    let r = resultOf(gameId, pid);
+    if (!r) {
+      r = { id: uid(), gameId: gameId, participantId: pid, status: 'done', points: null, timeSec: null };
+      S.results.push(r);
+    }
+    Object.assign(r, patch);
+    save();
+  }
+  function undo() {
+    const u = S.undos.pop();
+    if (!u) return;
+    if (u.kind === 'order') {
+      S.orders[u.gameId] = u.prev;
+      if (u.watch) applyWatchSnap(u.gameId, u.watch);
+      const g = gameById(u.gameId);
+      if (g && u.wave) applyWaveTimes(g);
+      else if (g && !u.heat) applyOrder(g);
+      else { save(); syncTimer(); }
+    } else if (u.kind === 'wave') {
+      const g = gameById(u.gameId);
+      if (g) g.wave = u.prevWave || 0;
+      applyWatchSnap(u.gameId, u.watch);
+      const ids = u.memberIds || [];
+      S.results = S.results.filter(function (r) { return !(r.gameId === u.gameId && ids.indexOf(r.participantId) >= 0); });
+      (u.prevResults || []).forEach(function (r) { S.results.push(r); });
+      save();
+      syncTimer();
+    } else if (u.kind === 'heat') {
+      S.orders[u.gameId] = u.prevOrder || [];
+      applyWatchSnap(u.gameId, u.watch);
+      const ids = u.memberIds || [];
+      S.results = S.results.filter(function (r) { return !(r.gameId === u.gameId && ids.indexOf(r.participantId) >= 0); });
+      (u.prevResults || []).forEach(function (r) { S.results.push(r); });
+      save();
+      syncTimer();
+    } else if (u.kind === 'result') {
+      S.results = S.results.filter(function (r) { return !(r.gameId === u.gameId && r.participantId === u.participantId); });
+      if (u.prev) S.results.push(u.prev);
+      save();
+    } else if (u.kind === 'move') {
+      placePlayer(u.pid, u.from);
+      save();
+    } else if (u.kind === 'out') {
+      const obj = u.what === 'group' ? groupById(u.id) : playerById(u.id);
+      if (obj) obj.out = !!u.prev;
+      (u.games || []).forEach(function (snap) {
+        S.results = S.results.filter(function (r) { return r.gameId !== snap.gameId; });
+        (snap.results || []).forEach(function (r) { S.results.push(r); });
+      });
+      save();
+    } else if (u.kind === 'skip') {
+      const g = gameById(u.gameId);
+      if (g) g.skipped = !!u.prev;
+      save();
+    } else if (u.kind === 'rename') {
+      const obj = u.what === 'group' ? groupById(u.id) : playerById(u.id);
+      if (obj) obj.name = u.prev;
+      save();
+    } else if (u.kind === 'add-player') {
+      S.players = S.players.filter(function (p) { return p.id !== u.id; });
+      S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return id !== u.id; }); });
+      S.results = S.results.filter(function (r) { return r.participantId !== u.id; });
+      save();
+    } else if (u.kind === 'del-player') {
+      if (!playerById(u.player.id)) S.players.push(u.player);
+      (u.groups || []).forEach(function (gid) {
+        S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return id !== u.player.id; }); });
+        const g = groupById(gid);
+        if (g) g.playerIds.push(u.player.id);
+      });
+      (u.results || []).forEach(function (r) { S.results.push(r); });
+      Object.keys(u.orders || {}).forEach(function (gid) { S.orders[gid] = u.orders[gid]; });
+      save();
+    } else if (u.kind === 'del-group') {
+      if (!groupById(u.group.id)) S.groups.push(u.group);
+      (u.group.playerIds || []).forEach(function (pid) {
+        S.groups.forEach(function (g) { if (g.id !== u.group.id) g.playerIds = g.playerIds.filter(function (id) { return id !== pid; }); });
+      });
+      (u.results || []).forEach(function (r) { S.results.push(r); });
+      save();
+    }
+    S.modal = null;
+    flash('TERUGGEDRAAID');
+  }
+  function openScore(pid) {
+    const game = activeGame();
+    if (!game) return;
+    const r = resultOf(game.id, pid);
+    let points = 0, min = 0, sec = 0;
+    if (r && r.status === 'done') {
+      if (game.scoreType === 'points') points = Number(r.points || 0);
+      else {
+        const t = Math.max(0, Math.round(Number(r.timeSec) || 0));
+        min = Math.floor(t / 60);
+        sec = t % 60;
+      }
+    }
+    S.score = { participantId: pid, gameId: game.id, points: points, min: min, sec: sec };
+    S.modal = { kind: 'score' };
+    S.focusScore = true;
+    render();
+  }
+  function readTypedScore() {
+    if (!S.score) return;
+    const p = document.getElementById('scorePoints');
+    if (p) {
+      const raw = p.value.trim();
+      if (raw === '' || raw === '-' || raw === '+') S.score.points = 0;
+      else if (Number.isFinite(Number(raw))) S.score.points = Number(raw);
+    }
+    const min = document.getElementById('scoreMin');
+    const sec = document.getElementById('scoreSec');
+    if (min) S.score.min = clamp(min.value, 0, 600);
+    if (sec) S.score.sec = clamp(sec.value, 0, 59);
+  }
+  function oddReason(game, sc) {
+    if (game.scoreType === 'points') {
+      const n = Number(sc.points) || 0;
+      if (n === 0) return 'Er staat 0.';
+      if (n > 99) return 'Dat is meer dan 99.';
+      return '';
+    }
+    const t = clamp(sc.min, 0, 600) * 60 + clamp(sc.sec, 0, 59);
+    if (t === 0) return 'Er staat 0:00.';
+    if (t > 15 * 60) return 'Dat is meer dan 15 minuten.';
+    return '';
+  }
+  function saveScore(status) {
+    readTypedScore();
+    const sc = S.score;
+    const game = sc && gameById(sc.gameId);
+    if (!game) return;
+    const name = whoName(sc.participantId);
+    if (status === 'absent') {
+      if (!armed('absent-check', 'Die is dan afwezig voor dit ene spel. Punten hier tellen niet.')) return;
+      putResult(game.id, sc.participantId, { status: 'absent', points: null, timeSec: null }, name + ' staat afwezig voor dit spel. Tik om dat terug te draaien.');
+    } else if (status === 'clear') {
+      snapshot(game.id, sc.participantId, name + ' is terug naar nog doen. Tik om de score terug te zetten.');
+      S.results = S.results.filter(function (r) { return !(r.gameId === game.id && r.participantId === sc.participantId); });
+      save();
+    } else if (game.scoreType === 'points') {
+      const why = oddReason(game, sc);
+      if (why && !armed('score-check', why + ' Tik nog een keer als het klopt.')) return;
+      putResult(game.id, sc.participantId, { status: 'done', points: Number(sc.points) || 0, timeSec: null }, name + ' staat op ' + (Number(sc.points) || 0) + ' punten. Tik om de vorige stand terug te zetten.');
+    } else {
+      const why = oddReason(game, sc);
+      if (why && !armed('score-check', why + ' Tik nog een keer als het klopt.')) return;
+      const timeSec = clamp(sc.min, 0, 600) * 60 + clamp(sc.sec, 0, 59);
+      putResult(game.id, sc.participantId, { status: 'done', points: null, timeSec: timeSec }, name + ' staat op ' + formatSec(timeSec) + '. Tik om de vorige tijd terug te zetten.');
+    }
+    S.modal = null;
+    S.score = null;
+    S.arm = null;
+    render();
+  }
+  function takeTime() {
+    const sc = S.score;
+    const game = sc && gameById(sc.gameId);
+    if (!game) return;
+    const w = S.watches[game.id] || { running: false, startedAt: null, elapsedMs: 0 };
+    if (w.running) {
+      w.elapsedMs = watchMs(w);
+      w.running = false;
+      w.startedAt = null;
+      S.watches[game.id] = w;
+    }
+    const total = Math.round(watchMs(S.watches[game.id]) / 1000);
+    sc.min = Math.floor(total / 60);
+    sc.sec = total % 60;
+    save();
+    syncTimer();
+    flash('TIJD OVERGENOMEN');
+  }
+  function toggleWatch(id) {
+    const w = ensureWatch(id);
+    const round = Math.max(1, Number(w.round) || 1);
+    if (w.running) {
+      w.elapsedMs = watchMs(w);
+      w.running = false;
+      w.startedAt = null;
+    } else {
+      w.running = true;
+      w.startedAt = Date.now();
+    }
+    w.round = round;
+    S.arm = null;
+    save();
+    syncTimer();
+    render();
+  }
+  function resetWatch(id) {
+    const w = ensureWatch(id);
+    if (watchMs(w) <= 0 && !w.running) return;
+    if (!armed('reset-' + id)) return;
+    zeroWatch(id);
+    save();
+    syncTimer();
+    render();
+  }
+  function orderOf(game) { return (game && S.orders[game.id]) ? S.orders[game.id].slice() : []; }
+  function stillIn(game) {
+    const order = orderOf(game);
+    return roster(game).filter(function (p) { return order.indexOf(p.id) < 0; });
+  }
+  function applyOrder(game) {
+    const order = orderOf(game);
+    const still = stillIn(game);
+    S.results = S.results.filter(function (r) { return r.gameId !== game.id; });
+    function put(pid, points) {
+      S.results.push({ id: uid(), gameId: game.id, participantId: pid, status: 'done', points: points, timeSec: null });
+    }
+    if (game.mode === 'finish') {
+      order.forEach(function (id, i) { put(id, i === 0 ? 3 : i === 1 ? 2 : i === 2 ? 1 : 0); });
+    } else if (still.length === 1) {
+      put(still[0].id, 3);
+      if (order.length >= 1) put(order[order.length - 1], 2);
+      if (order.length >= 2) put(order[order.length - 2], 1);
+      order.slice(0, Math.max(0, order.length - 2)).forEach(function (id) { put(id, 0); });
+    }
+    save();
+  }
+  function ensureWatch(id) {
+    if (!S.watches[id]) S.watches[id] = { running: false, startedAt: null, elapsedMs: 0, round: 1, marks: {}, heatId: null, heatAll: false };
+    const w = S.watches[id];
+    if (!w.marks || typeof w.marks !== 'object') w.marks = {};
+    if (w.heatAsked == null) w.heatAsked = false;
+    return w;
+  }
+  function watchSnap(id) {
+    const w = ensureWatch(id);
+    return {
+      running: !!w.running,
+      startedAt: w.startedAt,
+      elapsedMs: w.elapsedMs || 0,
+      round: w.round || 1,
+      heatId: w.heatId,
+      heatAll: !!w.heatAll,
+      marks: Object.assign({}, w.marks)
+    };
+  }
+  function applyWatchSnap(id, snap) {
+    if (!snap) return;
+    const w = ensureWatch(id);
+    w.running = !!snap.running;
+    w.startedAt = snap.running ? snap.startedAt : null;
+    w.elapsedMs = snap.elapsedMs || 0;
+    w.round = snap.round || 1;
+    w.heatId = snap.heatId == null ? null : snap.heatId;
+    w.heatAll = !!snap.heatAll;
+    w.marks = Object.assign({}, snap.marks || {});
+  }
+  function keepWatchRunning(id) {
+    const w = ensureWatch(id);
+    if (w.running) return;
+    w.running = true;
+    w.startedAt = Date.now();
+    if (!w.elapsedMs) w.elapsedMs = 0;
+  }
+  function freezeWatch(id) {
+    const w = ensureWatch(id);
+    if (!w.running) return;
+    w.elapsedMs = watchMs(w);
+    w.running = false;
+    w.startedAt = null;
+  }
+  function zeroWatch(id) {
+    const w = ensureWatch(id);
+    const round = Math.max(1, Number(w.round) || 1);
+    w.running = false;
+    w.startedAt = null;
+    w.elapsedMs = 0;
+    w.round = round + 1;
+    w.marks = {};
+  }
+  function heatPlan(game) {
+    if (!game || game.participantType !== 'solo' || game.mode !== 'elim') return [];
+    const seen = {};
+    const plan = [];
+    S.groups.forEach(function (g) {
+      const ids = [];
+      (g.playerIds || []).forEach(function (id) {
+        const p = playerById(id);
+        if (!p || p.out || seen[id]) return;
+        seen[id] = 1;
+        ids.push(id);
+      });
+      if (ids.length) plan.push({ id: g.id, name: g.name, playerIds: ids });
+    });
+    const loose = [];
+    S.players.forEach(function (p) {
+      if (p.out || seen[p.id]) return;
+      loose.push(p.id);
+    });
+    if (loose.length) plan.push({ id: '', name: 'Zonder groep', playerIds: loose });
+    return plan;
+  }
+  function heatsOn(game) {
+    if (!game || game.participantType !== 'solo' || game.mode !== 'elim') return false;
+    if (ensureWatch(game.id).heatAll) return false;
+    return heatPlan(game).some(function (h) { return h.id; });
+  }
+  function heatDecided(game) {
+    const w = S.watches[game.id];
+    if (w && w.heatAsked) return true;
+    if (orderOf(game).length) return true;
+    if (S.results.some(function (r) { return r.gameId === game.id; })) return true;
+    return false;
+  }
+  function heatDone(game, heat) {
+    return !!(heat && heat.playerIds.length && heat.playerIds.every(function (id) {
+      return !!resultOf(game.id, id);
+    }));
+  }
+  function currentHeat(game) {
+    const plan = heatPlan(game);
+    if (!heatsOn(game)) return null;
+    const w = ensureWatch(game.id);
+    let heat = plan.find(function (h) { return h.id === w.heatId; });
+    if (!heat) {
+      heat = plan.find(function (h) { return !heatDone(game, h); }) || plan[0];
+      if (heat) w.heatId = heat.id;
+    }
+    return heat || null;
+  }
+  function heatMembers(game, heat) {
+    const src = heat || currentHeat(game);
+    if (!src) return [];
+    return src.playerIds.filter(function (id) { return !isOutId(id); });
+  }
+  function heatStill(game, heat) {
+    const order = orderOf(game);
+    return heatMembers(game, heat).filter(function (id) { return order.indexOf(id) < 0; });
+  }
+  function markText(game, pid) {
+    const w = S.watches[game.id];
+    if (!w || !w.marks || w.marks[pid] == null) return '';
+    return formatSec(Math.round(Number(w.marks[pid]) / 1000));
+  }
+  function commitHeat(game, heat) {
+    const members = heatMembers(game, heat);
+    const order = orderOf(game).filter(function (id) { return members.indexOf(id) >= 0; });
+    const still = members.filter(function (id) { return order.indexOf(id) < 0; });
+    if (still.length > 1) return false;
+    S.results = S.results.filter(function (r) { return !(r.gameId === game.id && members.indexOf(r.participantId) >= 0); });
+    function put(pid, points) {
+      S.results.push({ id: uid(), gameId: game.id, participantId: pid, status: 'done', points: points, timeSec: null });
+    }
+    if (still.length === 1) {
+      put(still[0], 3);
+      if (order.length >= 1) put(order[order.length - 1], 2);
+      if (order.length >= 2) put(order[order.length - 2], 1);
+      order.slice(0, Math.max(0, order.length - 2)).forEach(function (id) { put(id, 0); });
+    }
+    S.orders[game.id] = orderOf(game).filter(function (id) { return members.indexOf(id) < 0; });
+    return true;
+  }
+  function skipHeat(game, heat) {
+    const members = heatMembers(game, heat);
+    members.forEach(function (id) {
+      if (resultOf(game.id, id)) return;
+      S.results.push({ id: uid(), gameId: game.id, participantId: id, status: 'absent', points: null, timeSec: null });
+    });
+    S.orders[game.id] = orderOf(game).filter(function (id) { return members.indexOf(id) < 0; });
+  }
+  function advanceHeat(game) {
+    const plan = heatPlan(game);
+    const w = ensureWatch(game.id);
+    const idx = plan.findIndex(function (h) { return h.id === w.heatId; });
+    let next = null;
+    for (let i = idx + 1; i < plan.length; i++) {
+      if (!heatDone(game, plan[i])) { next = plan[i]; break; }
+    }
+    if (!next) {
+      next = plan.find(function (h) { return h.id !== w.heatId && !heatDone(game, h); }) || null;
+    }
+    zeroWatch(game.id);
+    if (next) w.heatId = next.id;
+    return next;
+  }
+  function heatNext() {
+    const game = activeGame();
+    if (!game || !heatsOn(game)) return;
+    const heat = currentHeat(game);
+    if (!heat) return;
+    const members = heatMembers(game, heat);
+    const still = heatStill(game, heat);
+    const prevOrder = orderOf(game);
+    const prevResults = S.results.filter(function (r) { return r.gameId === game.id && members.indexOf(r.participantId) >= 0; }).map(function (r) { return JSON.parse(JSON.stringify(r)); });
+    const snap = watchSnap(game.id);
+    if (!heatDone(game, heat)) {
+      if (still.length > 1) {
+        if (!armed('heat-skip-' + game.id, 'Deze groep telt dan niet mee.')) return;
+        skipHeat(game, heat);
+      } else if (!commitHeat(game, heat) && still.length > 1) {
+        return;
+      }
+    }
+    const next = advanceHeat(game);
+    pushUndo({
+      kind: 'heat',
+      gameId: game.id,
+      prevOrder: prevOrder,
+      prevResults: prevResults,
+      memberIds: members.slice(),
+      watch: snap,
+      label: 'Terug naar ' + heat.name + '.'
+    });
+    save();
+    syncTimer();
+    flash(next ? ('VOLGENDE: ' + next.name) : 'ALLE GROEPEN GEWEEST');
+  }
+  function heatPick(id) {
+    const game = activeGame();
+    if (!game || !heatsOn(game)) return;
+    const plan = heatPlan(game);
+    const heat = plan.find(function (h) { return h.id === id; });
+    if (!heat) return;
+    if (heatDone(game, heat)) {
+      const bits = heat.playerIds.map(function (pid) {
+        const r = resultOf(game.id, pid);
+        const p = playerById(pid);
+        const pts = r && r.status === 'done' ? (Number(r.points) || 0) : 0;
+        const place = r && r.status === 'absent' ? 'afwezig' : (pts === 3 ? '1e' : pts === 2 ? '2e' : pts === 1 ? '3e' : '–');
+        return (p ? p.name : 'Iemand') + ' ' + place;
+      }).join(', ');
+      flash(heat.name + ': ' + bits);
+      return;
+    }
+    const cur = currentHeat(game);
+    if (cur && cur.id === heat.id) return;
+    if (cur && heatStill(game, cur).length < heatMembers(game, cur).length) {
+      flash('MAAK ' + cur.name + ' EERST AF', true);
+      return;
+    }
+    const w = ensureWatch(game.id);
+    w.heatId = heat.id;
+    zeroWatch(game.id);
+    w.round = Math.max(1, (w.round || 1) - 1);
+    save();
+    syncTimer();
+    render();
+  }
+  function heatToggleAll() {
+    const game = activeGame();
+    if (!game || game.participantType !== 'solo' || game.mode !== 'elim') return;
+    if (orderOf(game).length || S.results.some(function (r) { return r.gameId === game.id; })) {
+      flash('DIT SPEL IS AL BEGONNEN', true);
+      return;
+    }
+    const w = ensureWatch(game.id);
+    w.heatAll = !w.heatAll;
+    w.heatId = null;
+    save();
+    flash(w.heatAll ? 'IEDEREEN TEGELIJK' : 'PER GROEP');
+  }
+  function isWaveGame(game) {
+    if (!game || game.participantType !== 'group' || game.mode !== 'finish') return false;
+    const n = roster(game).length;
+    return !!(game.parallel && game.parallel < n);
+  }
+  function applyWaveTimes(game) {
+    const ids = orderOf(game);
+    const w = ensureWatch(game.id);
+    const rows = ids.map(function (id) {
+      return { id: id, name: whoName(id), score: (w.marks && w.marks[id] != null) ? Number(w.marks[id]) : 99999999 };
+    });
+    const ranked = placeRows(rows, 'low');
+    S.results = S.results.filter(function (r) { return r.gameId !== game.id; });
+    ranked.forEach(function (row) {
+      S.results.push({
+        id: uid(), gameId: game.id, participantId: row.id, status: 'done',
+        points: row.medal, timeSec: Math.round((Number(row.score) || 0) / 1000)
+      });
+    });
+    save();
+  }
+  function waveSlice(game) {
+    const all = roster(game);
+    const size = Math.max(1, Number(game.parallel) || all.length);
+    const wave = Math.max(0, Number(game.wave) || 0);
+    const start = wave * size;
+    if (start >= all.length) return [];
+    return all.slice(start, start + size);
+  }
+  function peopleNow(game) {
+    if (!game) return [];
+    if (heatsOn(game)) {
+      const ids = {};
+      heatMembers(game).forEach(function (id) { ids[id] = 1; });
+      return roster(game).filter(function (p) { return ids[p.id]; });
+    }
+    if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) return waveSlice(game);
+    return roster(game);
+  }
+  function wavePending(game) {
+    return waveSlice(game).filter(function (p) {
+      if (game.mode === 'finish' || game.mode === 'elim') return orderOf(game).indexOf(p.id) < 0;
+      return !resultOf(game.id, p.id);
+    });
+  }
+  function waveNext() {
+    const game = activeGame();
+    if (!game || game.participantType !== 'group' || !game.parallel) return;
+    const all = roster(game);
+    const size = Math.max(1, Number(game.parallel) || all.length);
+    const wave = Math.max(0, Number(game.wave) || 0);
+    const slice = waveSlice(game);
+    if (!slice.length) { flash('ALLE GROEPEN GEWEEST'); return; }
+    const pending = wavePending(game);
+    const last = (wave + 1) * size >= all.length;
+    const memberIds = slice.map(function (p) { return p.id; });
+    const prevResults = S.results.filter(function (r) { return r.gameId === game.id && memberIds.indexOf(r.participantId) >= 0; }).map(function (r) { return JSON.parse(JSON.stringify(r)); });
+    if (pending.length) {
+      if (!armed('wave-skip-' + game.id, 'Wie nog niet geweest is, telt deze ronde niet mee.')) return;
+      pending.forEach(function (p) {
+        if (!resultOf(game.id, p.id)) {
+          S.results.push({ id: uid(), gameId: game.id, participantId: p.id, status: 'absent', points: null, timeSec: null });
+        }
+      });
+    } else if (last) {
+      flash('ALLE GROEPEN GEWEEST');
+      return;
+    }
+    const snap = game.stopwatch ? watchSnap(game.id) : null;
+    game.wave = wave + 1;
+    if (game.stopwatch) zeroWatch(game.id);
+    pushUndo({
+      kind: 'wave',
+      gameId: game.id,
+      prevWave: wave,
+      prevResults: prevResults,
+      memberIds: memberIds,
+      watch: snap,
+      label: 'Terug naar de vorige groepen.'
+    });
+    save();
+    syncTimer();
+    flash(game.wave * size >= all.length ? 'ALLE GROEPEN GEWEEST' : 'VOLGENDE GROEPEN');
+  }
+  function tapOrder(pid) {
+    const game = activeGame();
+    if (!game || (game.mode !== 'elim' && game.mode !== 'finish')) return;
+    const heating = heatsOn(game);
+    const wave = isWaveGame(game);
+    const heat = heating ? currentHeat(game) : null;
+    if (heating && (!heat || heat.playerIds.indexOf(pid) < 0 || heatDone(game, heat))) return;
+    const prev = orderOf(game);
+    const poolStill = heating ? heatStill(game, heat).length : (game.mode === 'elim' ? stillIn(game).length : 99);
+    let order = prev.slice();
+    const idx = order.indexOf(pid);
+    const back = idx >= 0;
+    if (back) order.splice(idx, 1);
+    else {
+      if (game.mode === 'elim' && poolStill <= 1) return;
+      order.push(pid);
+    }
+    const snap = game.stopwatch ? watchSnap(game.id) : null;
+    if (!back && game.stopwatch && (game.mode === 'elim' || game.mode === 'finish')) keepWatchRunning(game.id);
+    if (!back && game.stopwatch) {
+      const w = ensureWatch(game.id);
+      if (w.running) w.marks[pid] = watchMs(w);
+    }
+    if (back && game.stopwatch && S.watches[game.id] && S.watches[game.id].marks) delete S.watches[game.id].marks[pid];
+    const who = whoName(pid);
+    pushUndo({
+      kind: 'order',
+      gameId: game.id,
+      prev: prev,
+      who: who,
+      oops: !back,
+      heat: heating,
+      wave: wave,
+      watch: snap,
+      label: back
+        ? (who + ' staat weer in dit spel. Tik om dat terug te draaien.')
+        : (who + ' is net ' + (game.mode === 'finish' ? 'klaar' : 'af') + '. Tik om dat terug te draaien.')
+    });
+    S.orders[game.id] = order;
+    const afterStill = heating ? heatStill(game, heat).length : (game.mode === 'elim' ? stillIn(game).length : 99);
+    if (game.mode === 'elim' && game.stopwatch && afterStill <= 1) freezeWatch(game.id);
+    else if (wave && !back && game.stopwatch) {
+      const live = waveSlice(game);
+      if (live.length && live.every(function (p) { return order.indexOf(p.id) >= 0; })) freezeWatch(game.id);
+    }
+    else if (back && game.mode === 'elim' && game.stopwatch && poolStill <= 1 && afterStill > 1) keepWatchRunning(game.id);
+    if (heating) save();
+    else if (wave) applyWaveTimes(game);
+    else applyOrder(game);
+    syncTimer();
+    if (heating && !back && afterStill === 1) {
+      const left = heatStill(game, heat)[0];
+      flash((left ? whoName(left) : 'IEMAND') + ' IS 1e VAN DEZE GROEP');
+      return;
+    }
+    render();
+  }
+  function openOutSheet(what, id) {
+    const obj = what === 'group' ? groupById(id) : playerById(id);
+    if (!obj) return;
+    S.modal = { kind: 'out', what: what, id: id, makeOut: !obj.out };
+    render();
+  }
+  function setOut(what, id, out) {
+    const obj = what === 'group' ? groupById(id) : playerById(id);
+    if (!obj || !!obj.out === !!out) { S.modal = null; render(); return; }
+    const openElim = S.games.filter(function (g) {
+      if (g.skipped || g.mode !== 'elim' || gameComplete(g)) return false;
+      if (what === 'player') return g.participantType === 'solo';
+      return g.participantType === 'group';
+    });
+    pushUndo({
+      kind: 'out',
+      what: what,
+      id: id,
+      prev: !!obj.out,
+      games: openElim.map(function (g) {
+        return {
+          gameId: g.id,
+          results: S.results.filter(function (r) { return r.gameId === g.id; }).map(function (r) { return JSON.parse(JSON.stringify(r)); })
+        };
+      }),
+      label: obj.name + (out ? ' stopt ermee. Tik om weer mee te laten doen.' : ' doet weer mee. Tik om dat terug te draaien.')
+    });
+    obj.out = !!out;
+    if (out) openElim.forEach(function (g) { if (!heatsOn(g)) applyOrder(g); });
+    S.modal = null;
+    save();
+    flash(out ? (obj.name + ' STOPT') : (obj.name + ' DOET WEER MEE'));
+  }
+  function skipGame(skip) {
+    const game = activeGame();
+    if (!game || !!game.skipped === !!skip) return;
+    const key = (skip ? 'skip-' : 'unskip-') + game.id;
+    if (!armed(key)) return;
+    if (skip && S.watches[game.id] && S.watches[game.id].running) {
+      const w = S.watches[game.id];
+      w.elapsedMs = watchMs(w);
+      w.running = false;
+      w.startedAt = null;
+    }
+    pushUndo({ kind: 'skip', gameId: game.id, prev: !!game.skipped, label: game.name + (skip ? ' gaat niet door. Tik om het toch te spelen.' : ' telt weer mee. Tik om dat terug te draaien.') });
+    game.skipped = !!skip;
+    save();
+    flash(skip ? 'SPEL GAAT NIET DOOR' : 'SPEL TELT WEER');
+  }
+  function savePlayerRename(id) {
+    const p = playerById(id);
+    const name = (S.renamePlayerText || '').trim().replace(/\s+/g, ' ');
+    if (!p) return;
+    if (!name) { flash('TYP EEN NAAM', true); return; }
+    if (name !== p.name) {
+      pushUndo({ kind: 'rename', what: 'player', id: p.id, prev: p.name, label: 'De naam is nu ' + name + '. Tik om ' + p.name + ' terug te zetten.' });
+      p.name = name;
+      save();
+    }
+    S.renamePlayerId = null;
+    render();
+  }
+  function saveGameForm() {
+    const f = S.gameForm;
+    if (!f) return;
+    const name = String(f.name || '').trim().replace(/\s+/g, ' ');
+    if (!name) { flash('TYP EEN SPELNAAM', true); return; }
+    const signalSec = f.stopwatch ? (clamp(f.signalM, 0, 180) * 60 + clamp(f.signalS, 0, 59)) : 0;
+    const fields = {
+      name: name,
+      participantType: f.participantType === 'solo' ? 'solo' : 'group',
+      scoreType: f.scoreType === 'time' ? 'time' : 'points',
+      sort: f.sort === 'low' ? 'low' : 'high',
+      stopwatch: !!f.stopwatch,
+      signalSec: signalSec
+    };
+    if (f.id) {
+      const g = gameById(f.id);
+      if (g) Object.assign(g, fields);
+    } else {
+      const id = uid();
+      S.games.push(Object.assign({ id: id, order: S.games.length }, fields));
+      S.activeGameId = id;
+    }
+    S.gameForm = null;
+    save();
+    flash('SPEL OPGESLAGEN');
+  }
+  function blankForm() {
+    return { id: null, name: '', participantType: 'group', scoreType: 'points', sort: 'high', stopwatch: false, signalM: 1, signalS: 30 };
+  }
+  function editForm(g) {
+    return {
+      id: g.id, name: g.name, participantType: g.participantType, scoreType: g.scoreType, sort: g.sort,
+      stopwatch: !!g.stopwatch, signalM: Math.floor((g.signalSec || 0) / 60), signalS: (g.signalSec || 0) % 60
+    };
+  }
+
+  const VIEWS = { players: 1, groups: 1, games: 1, backup: 1, settings: 1, stand: 1, action: 1 };
+  function gotoView(view, free) {
+    if (!VIEWS[view]) return;
+    const guarded = view === 'settings' || view === 'backup';
+    if (!free && guarded && S.games.length && !S.unlocked && S.view === 'action') {
+      S.modal = { kind: 'unlock', next: view };
+      render();
+      return;
+    }
+    if (view === 'action' && !S.games.length) view = 'players';
+    S.view = view;
+    S.modal = null;
+    S.gameForm = null;
+    if (view !== 'action') S.find = '';
+    render();
+  }
+
+  function flashHtml() {
+    if (S.saveError) return '<div class="err">' + esc(S.saveError) + '</div>';
+    if (!S.flash) return '';
+    return '<div class="flash' + (S.flashBad ? ' bad' : '') + '">' + esc(S.flash) + '</div>';
+  }
+  function playBtn() {
+    if (!S.games.length) return '';
+    return '<button class="go" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button>';
+  }
+
+  function viewPlayers() {
+    const rows = S.players.map(function (p) {
+      if (S.renamePlayerId === p.id) {
+        return '<div class="row"><input class="field grow" id="playerRename" placeholder="Naam" autocapitalize="words" autocomplete="off" enterkeyhint="done" value="' + esc(S.renamePlayerText) + '"><button class="side go" type="button" data-act="save-player-rename" data-id="' + esc(p.id) + '">KLAAR</button></div>';
+      }
+      const mark = p.try ? '<span class="sub">proef</span>' : '';
+      const stopped = p.out ? '<span class="sub">doet niet mee</span>' : mark;
+      const stopBtn = p.out
+        ? '<button class="side pump" type="button" data-act="ask-out" data-what="player" data-id="' + esc(p.id) + '">WEER MEE</button>'
+        : '<button class="side calm" type="button" data-act="ask-out" data-what="player" data-id="' + esc(p.id) + '">STOPT</button>';
+      return '<div class="row"><button class="grow person" style="background:#333;color:#fff" type="button" data-hold="player" data-act="start-player-rename" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + esc(p.name) + '</span>' + stopped + '</span></button>' + stopBtn + '<button class="side danger" type="button" data-act="ask-del" data-what="player" data-id="' + esc(p.id) + '">WEG</button></div>';
+    }).join('');
+    const hasReal = S.players.some(function (p) { return !p.try; });
+    const tryBlock = S.players.length
+      ? (hasReal ? '<p class="hint">Simuleren met 35 namen staat uit zolang er namen in de lijst staan.</p>' : '')
+      : '<button class="purp" type="button" data-act="try-names">SIMULEER 35 NAMEN</button><p class="hint">Om te oefenen. Dit blijft weg zodra er een naam in de lijst staat.</p>';
+    const clearBlock = S.players.some(function (p) { return p.try; }) ? '<button class="danger" type="button" data-act="clear-try">' + armLabel('clear-try', 'PROEFNAMEN WEG', 'ZEKER PROEFNAMEN WEG?') + '</button>' : '';
+    const typedName = (S.draftName || '').trim().replace(/\s+/g, ' ');
+    const dupNow = !!typedName && S.players.some(function (p) { return p.name.toLowerCase() === typedName.toLowerCase(); });
+    const addLabel = dupNow ? armLabel('dup:' + typedName.toLowerCase(), 'DEZE NAAM BESTAAT AL', 'TOCH TOEVOEGEN') : 'TOEVOEGEN';
+    const nOut = S.players.filter(function (p) { return p.out; }).length;
+    return undoBar() + '<div class="scroll">' + flashHtml() + tipHtml() +
+      '<h1>🙋 Aanmelden</h1><p class="hint">Tik een naam om de spelling te verbeteren. Tik Stopt als iemand naar huis gaat. Houd een naam ook ingedrukt.</p>' +
+      '<p class="numbig">' + S.players.length + ' aangemeld' + (nOut ? ' · ' + nOut + ' gestopt' : '') + '</p>' +
+      '<div class="pin"><div class="row"><input class="field grow" id="playerName" placeholder="Naam" autocapitalize="words" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" value="' + esc(S.draftName) + '"><button class="side pump" type="button" data-act="add-player">＋</button></div>' +
+      '<button class="go" type="button" data-act="add-player">' + addLabel + '</button></div>' +
+      '<div class="stack" style="margin-top:10px">' + tryBlock + clearBlock + rows +
+      '</div></div><footer><button class="purp" type="button" data-act="goto" data-view="groups">GROEPEN →</button><button class="calm" type="button" data-act="goto" data-view="backup">💾 BACKUP</button>' + playBtn() + '</footer>';
+  }
+  function viewGroups() {
+    const loose = S.players.filter(function (p) { return !S.groups.some(function (g) { return g.playerIds.indexOf(p.id) >= 0; }); });
+    function chips(ids, gid) {
+      return ids.map(function (id) {
+        const p = playerById(id);
+        if (!p) return '';
+        const sel = S.selectedPlayerId === p.id ? ' sel' : '';
+        const outCls = p.out ? ' isout' : '';
+        return '<button type="button" class="chip' + sel + outCls + '" data-hold="player" data-id="' + esc(p.id) + '">' + esc(p.name) + (p.out ? ' · stopt' : '') + '</button>';
+      }).join('');
+    }
+    let cols = '';
+    if (loose.length || S.selectedPlayerId) {
+      const here = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
+        ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER</button>' : '';
+      cols += '<section class="gcol loose" data-drop="none"><h2>👻 Nog los (' + loose.length + ')</h2>' + here + chips(loose.map(function (p) { return p.id; })) + '</section>';
+    }
+    S.groups.forEach(function (g) {
+      const here = (S.selectedPlayerId && g.playerIds.indexOf(S.selectedPlayerId) < 0)
+        ? '<button class="pump" type="button" data-act="move-here" data-gid="' + esc(g.id) + '">HIER</button>' : '';
+      const title = S.renameGroupId === g.id
+        ? '<input class="field" id="renameInput" value="' + esc(S.renameText) + '"><button class="go" type="button" data-act="save-rename" data-id="' + esc(g.id) + '">KLAAR</button>'
+        : '<button class="calm" type="button" data-hold="group" data-act="start-rename" data-id="' + esc(g.id) + '">' + groupIcon(g.name) + ' ' + esc(g.name) + (g.out ? ' · stopt' : '') + '</button>';
+      cols += '<section class="gcol" data-drop="' + esc(g.id) + '"><h2>👥 ' + g.playerIds.length + '</h2>' + title + here +
+        chips(g.playerIds) +
+        '<button class="calm" type="button" data-act="ask-out" data-what="group" data-id="' + esc(g.id) + '">' + (g.out ? 'GROEP WEER MEE' : 'GROEP STOPT') + '</button>' +
+        '<button class="danger" type="button" data-act="ask-del" data-what="group" data-id="' + esc(g.id) + '">GROEP WEG</button></section>';
+    });
+    const dealText = armLabel('deal', (hasAssignments() ? 'OPNIEUW VERDELEN' : 'VERDEEL WILLEKEURIG'), 'ZEKER OPNIEUW?');
+    const nPlay = S.players.filter(function (p) { return !p.out; }).length || S.players.length;
+    const ask = !hasAssignments() || S.askSplit;
+    function countBtn(num) {
+      const even = nPlay && nPlay % num === 0 ? ' · loopt gelijk' : '';
+      return '<button class="pump choice" type="button" data-act="pick-count" data-n="' + num + '">' + armLabel('split-' + num, num + ' GROEPEN', 'ZEKER ' + num + ' GROEPEN?') + '<span class="sub">' + esc(splitText(nPlay, num)) + even + '</span></button>';
+    }
+    const question = ask
+      ? '<h1>' + (nPlay ? ('Jullie zijn met ' + nPlay) : 'Eerst namen') + '</h1><p class="hint">5 of 6 groepen. Het rijtje hieronder is precies dit aantal.</p><div class="stack">' + (nPlay ? countBtn(5) + countBtn(6) : '') + '</div>'
+      : '';
+    const switchBtn = hasAssignments() ? '<button class="calm" type="button" data-act="ask-split">' + (S.askSplit ? 'LAAT DE GROEPEN ZIEN' : '5 OF 6 ANDERS') + '</button>' : '';
+    const tools = hasAssignments() ? '<div class="stack" style="margin:10px 0">' + switchBtn + '<button class="go" type="button" data-act="deal">' + dealText + '</button><button class="purp" type="button" data-act="add-group">GROEP ERAAN</button></div>' : '';
+    let circle = '';
+    if (hasAssignments() && S.groups.length >= 2 && S.groups.length <= 8) {
+      if (!groupById(S.focusGroupId)) S.focusGroupId = S.groups[0].id;
+      const seats = S.groups.map(function (g, i) {
+        const on = g.id === S.focusGroupId ? ' on' : '';
+        const stopped = g.out ? ' sat' : '';
+        return '<button type="button" class="ring-seat emblem' + on + stopped + '" style="' + ringPos(i, S.groups.length) + '" data-act="focus-group" data-id="' + esc(g.id) + '" aria-label="' + esc(g.name) + '"><span class="ico">' + groupIcon(g.name) + '</span><span class="seat-name">' + esc(shortName(g.name, S.groups.length)) + '</span><span class="sub">' + g.playerIds.length + (g.out ? ' · stopt' : '') + '</span></button>';
+      }).join('');
+      const focus = groupById(S.focusGroupId);
+      const center = focus
+        ? '<div class="ring-ico">' + groupIcon(focus.name) + '</div><p class="ring-label">' + esc(focus.name) + '</p>'
+        : '<p class="ring-label">Tik een groep</p>';
+      circle = '<div class="group-layout"><div class="group-ring">' + ringBox(S.groups.length, seats, center, 'ring-groups') + '</div><div class="group-names">';
+      if (focus) {
+        if (S.renameGroupId === focus.id) {
+          circle += '<div class="stack" style="margin-top:8px"><input class="field" id="renameInput" value="' + esc(S.renameText) + '"><button class="go" type="button" data-act="save-rename" data-id="' + esc(focus.id) + '">KLAAR</button></div>';
+        } else {
+          const here = (S.selectedPlayerId && focus.playerIds.indexOf(S.selectedPlayerId) < 0)
+            ? '<button class="pump" type="button" data-act="move-here" data-gid="' + esc(focus.id) + '">HIER</button>' : '';
+          circle += '<div class="stack" style="margin-top:8px"><p class="hint">Tik een naam en dan Hier bij een andere groep.</p>' + here + chips(focus.playerIds) +
+            '<button class="calm" type="button" data-act="start-rename" data-id="' + esc(focus.id) + '">NAAM WIJZIGEN</button>' +
+            '<button class="calm" type="button" data-act="ask-out" data-what="group" data-id="' + esc(focus.id) + '">' + (focus.out ? 'GROEP WEER MEE' : 'GROEP STOPT') + '</button>' +
+            '<button class="danger" type="button" data-act="ask-del" data-what="group" data-id="' + esc(focus.id) + '">GROEP WEG</button></div>';
+        }
+      }
+      if (loose.length) {
+        const looseHere = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
+          ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER BIJ LOS</button>' : '';
+        circle += '<p class="hint">Nog los</p>' + looseHere + chips(loose.map(function (p) { return p.id; }));
+      }
+      circle += tools + '</div></div>';
+    }
+    return undoBar() + '<div class="scroll' + (ask && circle ? ' ask-open' : '') + '">' + flashHtml() +
+      question +
+      (ask ? '' : '<h1>Groepen</h1>') +
+      '<p class="hint">' + S.players.length + ' spelers. ' + esc(splitText(S.players.length, S.groups.length || clamp(S.groupTarget, 1, 12))) + (circle
+        ? (S.selectedPlayerId
+          ? (' Gekozen: ' + esc((playerById(S.selectedPlayerId) || {}).name || '') + '.')
+          : ' Tik een icoon.')
+        : ' Kies 5 of 6.') + '</p>' +
+      circle +
+      (circle ? '' : tools) +
+      (S.groups.length > 8 ? '<div class="board">' + cols + '</div>' : '') +
+      '</div><footer><button class="calm" type="button" data-act="goto" data-view="players">← SPELERS</button><button class="go" type="button" data-act="goto" data-view="action">▶ NAAR HET SPEL</button></footer>';
+  }
+  function joinNl(list) {
+    if (list.length <= 1) return list.join('');
+    if (list.length === 2) return list[0] + ' en ' + list[1];
+    return list.slice(0, -1).join(', ') + ' en ' + list[list.length - 1];
+  }
+  function gearNotes(order) {
+    const ids = [];
+    order.forEach(function (g) {
+      (g.gearIds || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); });
+    });
+    const notes = [];
+    ids.forEach(function (id) {
+      let run = [];
+      function flush() {
+        if (run.length >= 2) {
+          const name = gearName(id);
+          const verb = /(?:s|en)$/i.test(name) ? 'blijven' : 'blijft';
+          notes.push(name + ' ' + verb + ' liggen bij ' + joinNl(run) + '.');
+        }
+        run = [];
+      }
+      order.forEach(function (g) {
+        if ((g.gearIds || []).indexOf(id) >= 0) run.push(g.name);
+        else flush();
+      });
+      flush();
+    });
+    return notes;
+  }
+  let adviceCache = { sig: '', value: null };
+  function orderAdvice() {
+    const sig = S.games.map(function (g) { return g.id + '=' + g.participantType + ':' + (g.gearIds || []).join(','); }).join('|');
+    if (adviceCache.sig === sig) return adviceCache.value;
+    adviceCache = { sig: sig, value: computeAdvice() };
+    return adviceCache.value;
+  }
+  function computeAdvice() {
+    if (S.games.length < 2) return null;
+    const finale = S.games.find(function (g) { return g.id === 'koekoek'; }) || S.games.find(function (g) { return g.dark; }) || null;
+    const pool = S.games.filter(function (g) { return !finale || g.id !== finale.id; });
+    const solos = pool.filter(function (g) { return g.participantType === 'solo'; });
+    const groups = pool.filter(function (g) { return g.participantType !== 'solo'; });
+    if (!solos.length || !groups.length || solos.length > 12 || groups.length > 12) return null;
+    const useCount = {};
+    S.games.forEach(function (g) {
+      (g.gearIds || []).forEach(function (id) { useCount[id] = (useCount[id] || 0) + 1; });
+    });
+    if (!Object.keys(useCount).some(function (id) { return useCount[id] >= 2; })) return null;
+    const steps = solos.length + groups.length;
+    function sideAt(step) {
+      const pairs = Math.min(solos.length, groups.length);
+      if (step < pairs * 2) return step % 2 === 0 ? 's' : 'g';
+      return solos.length >= groups.length ? 's' : 'g';
+    }
+    function takeOut(prev, game) {
+      let c = 0;
+      (game.gearIds || []).forEach(function (id) {
+        if (!prev || (prev.gearIds || []).indexOf(id) < 0) c += 1;
+      });
+      return c;
+    }
+    let layer = new Map();
+    layer.set('0:0:', { cost: 0, game: null });
+    const parents = [];
+    for (let step = 0; step < steps; step++) {
+      const side = sideAt(step);
+      const list = side === 's' ? solos : groups;
+      const next = new Map();
+      const parent = new Map();
+      layer.forEach(function (st, key) {
+        const bits = key.split(':');
+        const maskS = Number(bits[0]);
+        const maskG = Number(bits[1]);
+        for (let i = 0; i < list.length; i++) {
+          const mask = side === 's' ? maskS : maskG;
+          if (mask & (1 << i)) continue;
+          const game = list[i];
+          let c = st.cost + takeOut(st.game, game);
+          if (finale && step === steps - 1) c += takeOut(game, finale);
+          const nS = side === 's' ? (maskS | (1 << i)) : maskS;
+          const nG = side === 'g' ? (maskG | (1 << i)) : maskG;
+          const nk = nS + ':' + nG + ':' + game.id;
+          const old = next.get(nk);
+          if (!old || c < old.cost) {
+            next.set(nk, { cost: c, game: game });
+            parent.set(nk, { prev: key, id: game.id });
+          }
+        }
+      });
+      if (!next.size) return null;
+      parents.push(parent);
+      layer = next;
+    }
+    let bestKey = null;
+    let bestCost = Infinity;
+    layer.forEach(function (st, key) {
+      if (st.cost < bestCost) { bestCost = st.cost; bestKey = key; }
+    });
+    const ids = [];
+    let key = bestKey;
+    for (let step = steps - 1; step >= 0; step--) {
+      const p = parents[step].get(key);
+      if (!p) return null;
+      ids.push(p.id);
+      key = p.prev;
+    }
+    ids.reverse();
+    if (finale) ids.push(finale.id);
+    const byId = {};
+    S.games.forEach(function (g) { byId[g.id] = g; });
+    const ordered = ids.map(function (id) { return byId[id]; }).filter(Boolean);
+    const notes = gearNotes(ordered);
+    if (!notes.length) return null;
+    for (let i = 1; i < ordered.length; i++) {
+      if (ordered[i].participantType === ordered[i - 1].participantType) {
+        notes.push(ordered[i - 1].name + ' en ' + ordered[i].name + ' staan achter elkaar. Het aantal solo\'s en groepen laat dat niet anders. Koekoek blijft laatste, in het donker.');
+        break;
+      }
+    }
+    const same = ordered.length === S.games.length && ordered.every(function (g, i) { return g.id === S.games[i].id; });
+    return { ids: ids, games: ordered, notes: notes, same: same };
+  }
+  function applyAdvice() {
+    if (!armed('advice')) return;
+    const adv = orderAdvice();
+    if (!adv) return;
+    const byId = {};
+    S.games.forEach(function (g) { byId[g.id] = g; });
+    const next = adv.ids.map(function (id) { return byId[id]; }).filter(Boolean);
+    S.games.forEach(function (g) { if (next.indexOf(g) < 0) next.push(g); });
+    S.games = next;
+    S.games.forEach(function (g, i) { g.order = i; });
+    adviceCache = { sig: '', value: null };
+    save();
+    flash('VOLGORDE OPGESLAGEN');
+  }
+  function adviceBlock() {
+    let body = '';
+    if (S.adviceOpen) {
+      const adv = orderAdvice();
+      if (!adv) {
+        body = '<p class="hint">Uit de benodigdheden is geen slimme volgorde te halen. Zet de spellen zelf omhoog of omlaag.</p>';
+      } else {
+        const rows = adv.games.map(function (g, i) {
+          const gear = (g.gearIds || []).map(gearName).filter(Boolean);
+          const extra = '<span class="sub">' + esc(gear.length ? gear.join(', ') : 'niets uit de kast') + '</span>';
+          return '<div class="line"><span>' + (i + 1) + '. ' + esc(g.name) + extra + '</span><span>' + (g.participantType === 'solo' ? 'solo' : 'groep') + '</span></div>';
+        }).join('');
+        const notes = adv.notes.map(function (n) { return '<p class="hint">' + esc(n) + '</p>'; }).join('');
+        const btn = adv.same
+          ? '<p class="hint">Dit is de volgorde die er nu staat.</p>'
+          : '<button class="pump" type="button" data-act="advice-apply">' + armLabel('advice', 'NEEM DIT ADVIES OVER', 'ZEKER DEZE VOLGORDE?') + '</button>';
+        body = '<p class="hint">Solo en groep om en om. Wat vaker nodig is, blijft zo lang mogelijk liggen.</p>' + rows + notes + btn;
+      }
+    }
+    return '<section class="advice"><button class="calm slim" type="button" data-act="advice-toggle">' + (S.adviceOpen ? 'ADVIES DICHT' : 'ADVIES: SOLO EN GROEP') + '</button>' + body + '</section>';
+  }
+  function viewGames() {
+    const cards = S.games.map(function (g, i) {
+      const up = i > 0
+        ? '<button class="nudge calm" type="button" data-act="game-move" data-dir="-1" data-id="' + esc(g.id) + '">OMHOOG</button>'
+        : '<button class="nudge calm off" type="button">OMHOOG</button>';
+      const down = i < S.games.length - 1
+        ? '<button class="nudge calm" type="button" data-act="game-move" data-dir="1" data-id="' + esc(g.id) + '">OMLAAG</button>'
+        : '<button class="nudge calm off" type="button">OMLAAG</button>';
+      const tags = (g.gearIds || []).map(function (id) {
+        const name = gearName(id);
+        if (!name) return '';
+        return '<span class="tag">' + esc(name) + '<button type="button" data-act="gear-off" data-id="' + esc(g.id) + '" data-gear="' + esc(id) + '">WEG</button></span>';
+      }).join('');
+      const gearBlock = tags
+        ? '<div class="tags">' + tags + '</div>'
+        : '<p class="hint">Geen benodigdheden.</p>';
+      let editor = '<button class="calm slim" type="button" data-act="gear-open" data-id="' + esc(g.id) + '">BENODIGDHEID TOEVOEGEN</button>';
+      if (S.gearOpen === g.id) {
+        const known = S.gear.filter(function (item) { return (g.gearIds || []).indexOf(item.id) < 0; })
+          .sort(function (a, b) { return a.name.localeCompare(b.name, 'nl'); });
+        const reuse = known.map(function (item) {
+          return '<span class="tag"><button class="pump" type="button" data-act="gear-on" data-id="' + esc(g.id) + '" data-gear="' + esc(item.id) + '">+ ' + esc(item.name) + '</button><button type="button" data-act="ask-del" data-what="gear" data-id="' + esc(item.id) + '">UIT LIJST</button></span>';
+        }).join('');
+        editor = '<div class="row"><input class="field grow" id="gearName" placeholder="Nieuwe benodigdheid" autocomplete="off" value="' + esc(S.gearDraft) + '"><button class="side pump" type="button" data-act="gear-add" data-id="' + esc(g.id) + '">＋</button></div>' +
+          (reuse ? '<p class="sub">Al bekend. Tik plus om het ook hier te gebruiken.</p><div class="reuse">' + reuse + '</div>' : '') +
+          '<button class="go" type="button" data-act="save-gear" data-id="' + esc(g.id) + '">SPEL OPSLAAN</button>';
+      }
+      return '<article class="gcard"><div class="row">' + up +
+        '<div class="grow label"><span class="nm">' + (i + 1) + '. ' + esc(g.name) + '</span><span class="sub">' + (g.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(g)) + '</span></div>' +
+        down + '</div>' + gearBlock + editor + '</article>';
+    }).join('');
+    return '<div class="scroll">' + flashHtml() + '<h1>Programma</h1><p class="hint">Zet een spel omhoog of omlaag. Benodigdheden komen uit de notities. Een nieuwe benodigdheid kun je daarna ook bij een ander spel kiezen.</p>' +
+      cards + adviceBlock() + '<div style="height:10px"></div><button class="go" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></div>';
+  }
+  function viewBackup() {
+    return '<div class="scroll">' + flashHtml() + '<h1>💾 Backup</h1><p class="hint">Bewaar een bestand, of kopieer de tekst. Op een andere iPad kies je dat bestand of plak je de tekst. Alles blijft ook op dit toestel.</p>' +
+      '<div class="stack"><button class="go" type="button" data-act="save-file">BEWAAR BESTAND</button><button class="pump" type="button" data-act="copy-backup">KOPIEER TEKST</button><button class="calm" type="button" data-act="pick-file">KIES BACKUPBESTAND</button><input id="backupFile" class="filepick" type="file" accept=".json,.txt,application/json,text/plain"><button class="pump" type="button" data-act="ask-restore">PLAK TEKST TERUG</button>' +
+      '<button class="calm" type="button" data-act="goto" data-view="settings">TERUG</button>' + playBtn() + '</div></div>';
+  }
+  function viewSettings() {
+    return '<div class="scroll">' + flashHtml() + '<h1>⚙️ Instellingen</h1><div class="stack">' +
+      '<button class="pump" type="button" data-act="goto-free" data-view="players">🙋 SPELERS</button>' +
+      '<button class="pump" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button>' +
+      '<button class="purp" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button>' +
+      '<button class="calm" type="button" data-act="goto-free" data-view="backup">💾 BACKUP</button>' +
+      playBtn() + '</div><p class="saved">Staat op dit toestel. Weggaan wist niets.</p></div>';
+  }
+  function watchCard(game) {
+    const w = ensureWatch(game.id);
+    const running = !!w.running;
+    const ms = watchMs(w);
+    const over = !!(game.stopwatch && game.signalSec && ms >= game.signalSec * 1000);
+    const call = game.stopwatch && game.signalSec ? '<p class="timecall" data-call="' + esc(game.id) + '">' + callText(ms, game.signalSec) + '</p>' : '';
+    const heat = heatsOn(game) ? currentHeat(game) : null;
+    const head = heat ? (groupIcon(heat.name) + ' ' + esc(heat.name)) : (game.stopwatch ? 'STOPWATCH' : esc(game.name));
+    const clock = game.stopwatch ? ('<div class="clock" data-clock="' + esc(game.id) + '">' + formatWatch(ms) + '</div>' + call) : '';
+    const liveNote = (game.mode === 'elim' || game.mode === 'finish') ? '<p class="hint">Blijft lopen als je tikt.</p>' : '';
+    let next = '';
+    if (heatsOn(game)) {
+      const still = heat ? heatStill(game, heat).length : 0;
+      const label = still > 1 ? armLabel('heat-skip-' + game.id, 'DEZE GROEP NOG BEZIG', 'TOCH VOLGENDE GROEP') : 'VOLGENDE GROEP';
+      next = '<button class="go" type="button" data-act="heat-next">' + label + '</button>';
+    } else if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) {
+      const all = roster(game);
+      const doneWave = ((game.wave || 0) + 1) * game.parallel >= all.length && !wavePending(game).length;
+      if (!doneWave) {
+        const label = wavePending(game).length
+          ? armLabel('wave-skip-' + game.id, 'DEZE GROEPEN NOG BEZIG', 'TOCH VOLGENDE')
+          : 'VOLGENDE GROEPEN';
+        next = '<button class="go" type="button" data-act="wave-next">' + label + '</button>';
+      }
+    } else if (game.stopwatch) {
+      next = '<button class="calm" type="button" data-act="watch-reset" data-id="' + esc(game.id) + '">' + armLabel('reset-' + game.id, 'VOLGENDE RONDE', 'ZEKER NIEUWE RONDE?') + '</button>';
+    }
+    const run = game.stopwatch
+      ? '<button class="' + (running ? 'pump' : 'go') + '" type="button" data-act="watch-toggle" data-id="' + esc(game.id) + '">' + (running ? 'STOP' : 'START KLOK') + '</button>'
+      : '';
+    return '<section class="watch' + (over ? ' timeup' : '') + '"><p class="watch-title">' + head + '</p>' +
+      (game.signalSec ? '<p class="maxtime">Max ' + formatSec(game.signalSec) + '</p>' : '') +
+      clock + liveNote + '<div class="stack">' + run + next + '</div></section>';
+  }
+  function viewAction() {
+    const game = activeGame();
+    const bubbles = S.games.map(function (g, i) {
+      const on = game && g.id === game.id;
+      const done = gameComplete(g);
+      const mark = g.skipped ? '–' : (done ? '✓' : String(i + 1));
+      return '<button type="button" class="bubble' + (on ? ' active' : '') + (done ? ' done' : '') + '" data-act="pick-game" data-id="' + esc(g.id) + '">' + mark + '</button>';
+    }).join('');
+    if (!game) {
+      return '<div class="scroll">' + flashHtml() + '<h1>Eerst een spel maken</h1><button class="go" type="button" data-act="goto" data-view="players">BEGIN MET AANMELDEN</button></div>';
+    }
+    if (game.skipped) {
+      return '<header><div class="bubbles">' + bubbles + '</div></header>' + undoBar() + '<div class="scroll">' + flashHtml() +
+        '<h1>' + esc(game.name) + '</h1><p class="hint">Dit spel gaat niet door. Niemand krijgt hier punten voor. Wat al ingevuld was, blijft bewaard tot je het toch speelt.</p>' +
+        standPeek() +
+        '<button class="go" type="button" data-act="unskip-game">' + armLabel('unskip-' + game.id, 'TOCH SPELEN', 'ZEKER WEER SPELEN?') + '</button></div>' +
+        '<footer><button class="purp" type="button" data-act="goto-free" data-view="stand">🏆 STAND</button><button class="calm" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button><button class="calm" type="button" data-act="goto-free" data-view="players">🙋 SPELERS</button><button class="calm" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button></footer>';
+    }
+    const foot = '<footer><button class="purp" type="button" data-act="goto-free" data-view="stand">🏆 STAND</button><button class="calm" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button><button class="calm" type="button" data-act="goto-free" data-view="players">🙋 SPELERS</button><button class="calm" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button></footer>';
+    const head = '<header><div class="bubbles">' + bubbles + '</div></header>' + undoBar();
+    if (game.participantType === 'group' && !game.parallel) {
+      const nGroups = roster(game).length;
+      if (nGroups >= 2) {
+        const sug = suggestedParallel(game, nGroups);
+        const buttons = parallelChoices(nGroups).map(function (opt) {
+          const hot = sug === opt.n;
+          return '<button class="' + (hot ? 'go' : 'pump') + ' choice" type="button" data-act="set-parallel" data-n="' + opt.n + '">' +
+            (hot ? 'DIT PAST · ' : '') + esc(opt.text) + '<span class="sub">' + esc(opt.sub) + '</span></button>';
+        }).join('');
+        return head + '<div class="scroll">' + flashHtml() + '<h1>' + esc(game.name) + '</h1><p class="hint">Er zijn ' + nGroups + ' groepen. Hoeveel gaan er tegelijk?</p>' +
+          (game.hint ? '<p class="hint">' + esc(game.hint) + '</p>' : '') + '<div class="stack">' + buttons + '</div></div>' + foot;
+      }
+    }
+    if (game.participantType === 'solo' && game.mode === 'elim' && !heatDecided(game) && heatPlan(game).some(function (h) { return h.id; })) {
+      const plan = heatPlan(game).filter(function (h) { return h.id; });
+      let big = 0;
+      let small = 99;
+      plan.forEach(function (h) {
+        big = Math.max(big, h.playerIds.length);
+        small = Math.min(small, h.playerIds.length);
+      });
+      const sizeTxt = big === small ? ('elke groep ' + big) : (small + ' tot ' + big + ' per groep');
+      return head + '<div class="scroll">' + flashHtml() + '<h1>' + esc(game.name) + '</h1><p class="hint">' + plan.length + ' groepen, ' + sizeTxt + '. In een rondje om de klok past een groep. Allemaal tegelijk wordt een lange lijst.</p><div class="stack">' +
+        '<button class="go choice" type="button" data-act="set-heat" data-mode="group">PER GROEP<span class="sub">Rondje van ongeveer ' + big + ' namen om de klok</span></button>' +
+        '<button class="pump choice" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK<span class="sub">Iedereen in één lijst</span></button></div></div>' + foot;
+    }
+    const parts = peopleNow(game).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'nl'); });
+    const ordering = game.mode === 'elim' || game.mode === 'finish';
+    const order = orderOf(game);
+    const todo = [];
+    const done = [];
+    if (ordering) {
+      parts.forEach(function (p) {
+        if (order.indexOf(p.id) >= 0) done.push(p); else todo.push(p);
+      });
+      if (game.mode === 'finish') done.sort(function (a, b) { return order.indexOf(a.id) - order.indexOf(b.id); });
+      else done.sort(function (a, b) { return order.indexOf(b.id) - order.indexOf(a.id); });
+    } else {
+      parts.forEach(function (p) {
+        const r = resultOf(game.id, p.id);
+        if (r) done.push(p); else todo.push(p);
+      });
+    }
+    participants(game).forEach(function (p) {
+      if (!isOutId(p.id)) return;
+      if (done.some(function (d) { return d.id === p.id; })) return;
+      if (ordering) {
+        if (order.indexOf(p.id) >= 0) done.push(p);
+      } else {
+        const r = resultOf(game.id, p.id);
+        if (r && (r.status === 'done' || r.status === 'absent')) done.push(p);
+      }
+    });
+    function orderLabel(p, kind) {
+      if (!ordering || kind !== 'done') {
+        if (ordering && game.mode === 'elim' && todo.length === 1 && p.id === todo[0].id && order.length) return '1e';
+        return '';
+      }
+      if (game.mode === 'finish') return placeWord(order.indexOf(p.id) + 1);
+      if (todo.length === 1) {
+        const i = order.indexOf(p.id);
+        if (i === order.length - 1) return '2e';
+        if (i === order.length - 2) return '3e';
+      }
+      return 'af';
+    }
+    function btn(p, kind) {
+      const r = resultOf(game.id, p.id);
+      const members = p.sub ? '<span class="sub">' + esc(p.sub) + '</span>' : '';
+      const lab = ordering ? orderLabel(p, kind) : (kind === 'done' ? resultLabel(game, r) : '');
+      const res = lab ? '<span class="res">' + esc(lab) + '</span>' : '';
+      const act = ordering ? 'order-tap' : 'open-score';
+      const hold = game.participantType === 'group' ? 'group' : 'player';
+      return '<button type="button" class="person" data-act="' + act + '" data-hold="' + hold + '" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + esc(p.name) + '</span>' + members + '</span>' + res + '</button>';
+    }
+    const findBox = parts.length ? '<div class="find"><div class="row"><input class="field grow" id="findName" placeholder="Zoek een naam" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" inputmode="search" value="' + esc(S.find || '') + '"><button class="side pump" type="button" data-act="open-found">KIES</button></div><p class="keys">Enter kiest de naam · Esc wist</p></div>' : '';
+    const other = S.games.filter(function (g) { return g.id !== game.id && S.watches[g.id] && S.watches[g.id].running; }).map(function (g) {
+      return '<button type="button" class="banner" data-act="pick-game" data-id="' + esc(g.id) + '">⏱️ STOPWATCH LOOPT BIJ ' + esc(g.name) + '</button>';
+    }).join('');
+    const allStopped = participants(game).length > 0 && !parts.length;
+    const emptyHint = allStopped
+      ? '<p class="hint">Iedereen is gestopt. Tik weer mee, of zet dit spel op niet door.</p>'
+      : (!parts.length
+      ? '<button class="pump" type="button" data-act="goto" data-view="' + (game.participantType === 'group' ? 'groups' : 'players') + '">' + (game.participantType === 'group' ? 'GEEN GROEPEN. MAAK ZE HIER.' : 'GEEN SPELERS. MELD ZE AAN.') + '</button>'
+      : '');
+    const leftTitle = ordering ? (game.mode === 'finish' ? '🎃 NOG BEZIG (' + todo.length + ')' : '🎃 NOG IN HET SPEL (' + todo.length + ')') : '🎃 NOG DOEN (' + todo.length + ')';
+    const rightTitle = ordering ? (game.mode === 'finish' ? '✅ KLAAR (' + done.length + ')' : '✅ AF (' + done.length + ')') : '✅ AL GEWEEST (' + done.length + ')';
+    const progress = ordering
+      ? (game.mode === 'finish' ? '<b>' + done.length + '</b> van ' + parts.length + ' klaar' : '<b>' + todo.length + '</b> nog in het spel')
+      : '<b>' + done.length + '</b> van ' + parts.length + ' geweest';
+    const about = game.aboutMin ? '<p class="hint">Ongeveer ' + game.aboutMin + ' minuten. Groepen kunnen om de beurt, gebruik dan volgende ronde.</p>' : '';
+    const gearNames = (game.gearIds || []).map(gearName).filter(Boolean);
+    const gearLine = gearNames.length ? '<p class="gearline"><b>Benodigdheden</b> ' + esc(gearNames.join(' · ')) + '</p>' : '';
+    const side = (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
+      '<h1>' + esc(game.name) + '</h1><p class="rule">' + (game.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(game)) + '</p>' +
+      '<p class="hint">' + esc(game.hint || '') + '</p>' + about + gearLine +
+      '<p class="progress">' + progress + '</p>' +
+      standPeek() +
+      watchCard(game) +
+      '<button class="calm" type="button" data-act="skip-game" style="margin-top:8px">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button>';
+    const leavers = participants(game).filter(function (p) { return isOutId(p.id); });
+    const leaverBox = leavers.length ? '<div class="leavers"><p class="hint">Gestopt, doen niet meer mee. Tik om terug te halen.</p>' + leavers.map(function (p) {
+      return '<button class="calm slim" type="button" data-act="ask-out" data-what="' + (game.participantType === 'group' ? 'group' : 'player') + '" data-id="' + esc(p.id) + '">' + esc(p.name) + ' · WEER MEE</button>';
+    }).join('') + '</div>' : '';
+    const main = emptyHint + findBox + leaverBox +
+      '<p class="hint">Foutje? Tik die naam nog een keer, of de rode knop bovenaan. Houd een naam ingedrukt als iemand stopt.</p>' +
+      '<div class="cols"><section class="col todo"><h2>' + leftTitle + '</h2>' + (todo.length ? todo.map(function (p) { return btn(p, 'todo'); }).join('') + '<p class="hint find-empty" hidden>Geen naam met die letters.</p>' : '<p class="hint">' + (ordering && game.mode === 'elim' ? 'Iedereen is af.' : 'Iedereen is geweest.') + '</p>') +
+      '</section><section class="col donecol"><h2>' + rightTitle + '</h2>' + (done.length ? done.map(function (p) { return btn(p, 'done'); }).join('') + '<p class="hint find-empty" hidden>Geen naam met die letters.</p>' : '<p class="hint">Nog niemand.</p>') +
+      '</section></div><p class="saved">Staat op dit toestel.</p>';
+    const ringSource = (game.participantType === 'group' && game.parallel) ? roster(game).slice() : parts.slice();
+    const showRing = ringSource.length >= 2 && ringSource.length <= 8 && (heatsOn(game) || (game.participantType === 'group' && !!game.parallel));
+    if (showRing) {
+      const seats = ringSource.map(function (p, i) {
+        let state = 'live';
+        let act = ordering ? 'order-tap' : 'open-score';
+        if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) {
+          const all = roster(game);
+          const idx = all.findIndex(function (x) { return x.id === p.id; });
+          const theirWave = Math.floor(Math.max(0, idx) / game.parallel);
+          const cur = game.wave || 0;
+          const done = ordering ? order.indexOf(p.id) >= 0 : !!resultOf(game.id, p.id);
+          if (done || theirWave < cur) state = 'sat';
+          else if (theirWave > cur) { state = 'wait'; act = 'wave-wait'; }
+          else state = 'live';
+        } else if (ordering && order.indexOf(p.id) >= 0) state = 'sat';
+        else if (!ordering && resultOf(game.id, p.id)) state = 'sat';
+        let sub = state === 'wait' ? 'wacht' : '';
+        if (state === 'sat') {
+          sub = ordering ? orderLabel(p, 'done') : resultLabel(game, resultOf(game.id, p.id));
+          const t = markText(game, p.id);
+          if (t) sub = (sub ? sub + ' · ' : '') + t;
+        } else if (state === 'live' && ordering && game.mode === 'elim') {
+          const still = ringSource.filter(function (x) { return order.indexOf(x.id) < 0; });
+          if (still.length === 1 && still[0].id === p.id && order.length) sub = '1e';
+        }
+        const heat = heatsOn(game) ? currentHeat(game) : null;
+        const ico = game.participantType === 'group' ? groupIcon(p.name) : groupIcon(heat ? heat.name : (p.sub || ''));
+        const hold = game.participantType === 'group' ? 'group' : 'player';
+        return '<button type="button" class="ring-seat ' + state + (sub === '1e' ? ' last' : '') + '" style="' + ringPos(i, ringSource.length) + '" data-act="' + act + '" data-hold="' + hold + '" data-id="' + esc(p.id) + '" aria-label="' + esc(p.name) + '"><span class="ico">' + ico + '</span><span class="seat-name">' + esc(shortName(p.name, ringSource.length)) + '</span>' + (sub ? '<span class="sub">' + esc(sub) + '</span>' : '') + '</button>';
+      }).join('');
+      const icons = heatsOn(game) ? ('<div class="heats">' + heatPlan(game).map(function (h) {
+        const cur = currentHeat(game);
+        const on = cur && cur.id === h.id ? ' on' : '';
+        return '<button type="button" class="calm' + on + '" data-act="heat-pick" data-id="' + esc(h.id) + '">' + groupIcon(h.name) + ' ' + esc(h.name) + (heatDone(game, h) ? ' ✓' : '') + '</button>';
+      }).join('') + '</div>') : '';
+      const fresh = !order.length && !S.results.some(function (r) { return r.gameId === game.id; });
+      const anders = fresh && game.participantType === 'group' && game.parallel
+        ? '<button class="calm" type="button" data-act="clear-parallel">ANDERS</button>'
+        : (fresh && heatsOn(game) ? '<button class="calm" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK</button>' : '');
+      return head + '<div class="scroll">' + flashHtml() + tipHtml() + other +
+        (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
+        '<h1>' + esc(game.name) + '</h1>' + gearLine + icons + ringBox(ringSource.length, seats, watchCard(game)) +
+        '<p class="hint">Tik in het rondje. De klok blijft lopen. Verkeerde tik? De rode knop bovenaan.</p>' +
+        '<div class="stack">' + anders +
+        '<button class="calm" type="button" data-act="skip-game">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button></div></div>' + foot;
+    }
+    return head + '<div class="scroll">' + flashHtml() + tipHtml() + other +
+      '<div class="play"><div class="play-side">' + side + '</div><div class="play-main' + (parts.length ? ' with-find' : '') + '">' + main + '</div></div></div>' + foot;
+  }
+  function standLines(type, id) {
+    return S.games.filter(function (g) { return g.participantType === type; }).map(function (g) {
+      if (g.skipped) return { name: g.name, text: 'gaat niet door · telt niet mee' };
+      const r = resultOf(g.id, id);
+      if (!r) return { name: g.name, text: 'nog niet gespeeld' };
+      if (r.status === 'absent') return { name: g.name, text: 'afwezig · telt niet mee' };
+      const row = gameRanking(g).find(function (x) { return x.id === id; });
+      const medal = row ? row.medal : 0;
+      const place = medal === 3 ? '1e' : medal === 2 ? '2e' : medal === 1 ? '3e' : 'geen podium';
+      const counted = countsOnStand(g);
+      const detail = (g.mode === 'elim' || g.mode === 'finish') ? place : (resultLabel(g, r) + ' · ' + place);
+      const tail = counted
+        ? (medal ? (medal + (medal === 1 ? ' punt' : ' punten')) : '0 punten')
+        : 'telt nog niet, dit spel is nog niet af';
+      return { name: g.name, text: detail + ' · ' + tail };
+    });
+  }
+  function boardRow(r, type) {
+    const cls = r.pts > 0 ? (r.rank === 1 ? '' : r.rank === 2 ? 'p2' : r.rank === 3 ? 'p3' : '') : '';
+    const place = r.pts > 0 ? '<div class="place ' + cls + '">' + r.rank + '</div>' : '<div class="place" style="background:#333;color:#fff">–</div>';
+    const mark = (r.out ? ' isout' : '') + (r.pts > 0 ? '' : ' zero');
+    return '<button type="button" class="podium' + mark + '" data-act="stand-open" data-what="' + type + '" data-id="' + esc(r.id) + '">' + place + '<div><div class="stand-name">' + (type === 'group' ? '<span class="ico-inline">' + groupIcon(r.name) + '</span> ' : '') + esc(r.name) + '</div><div class="sub">' + r.pts + (r.pts === 1 ? ' punt' : ' punten') + (r.sub ? ' · ' + esc(r.sub) : '') + '</div></div></button>';
+  }
+  function board(type, title) {
+    const rows = overallAll(type);
+    const hot = rows.filter(function (r) { return r.pts > 0; });
+    const cold = rows.filter(function (r) { return r.pts === 0; });
+    const games = S.games.filter(function (g) { return g.participantType === type; });
+    const live = games.filter(function (g) { return countsOnStand(g) && gameRanking(g).length; }).length;
+    const skipped = games.filter(function (g) { return g.skipped; }).length;
+    const word = type === 'group' ? 'groepsspel' : 'solospel';
+    const stats = games.length + ' ' + word + (games.length === 1 ? '' : 'len') + ' · ' + live + ' tellen mee' + (skipped ? ' · ' + skipped + ' gaat niet door' : '');
+    const leaders = hot.filter(function (r) { return r.rank === 1; }).map(function (r) { return r.name; });
+    const lead = leaders.length ? '<p class="hint">Nu voor: ' + esc(leaders.join(' en ')) + '</p>' : '<p class="hint">Nog niemand met punten.</p>';
+    const hotHtml = hot.length ? hot.map(function (r) { return boardRow(r, type); }).join('') : '';
+    const coldHtml = cold.length ? '<p class="hint">Nog 0 punten (' + cold.length + ')</p>' + cold.map(function (r) { return boardRow(r, type); }).join('') : '';
+    const empty = !rows.length ? '<p class="hint">' + (type === 'group' ? 'Nog geen groepen.' : 'Nog geen spelers.') + '</p>' : '';
+    return '<section><h2>' + title + '</h2><p class="hint">' + stats + '</p>' + lead + empty + hotHtml + coldHtml + '</section>';
+  }
+  function standPeek() {
+    function bit(type, word) {
+      const top = overallAll(type).filter(function (r) { return r.pts > 0 && r.rank === 1; });
+      if (!top.length) return word + ' nog leeg';
+      return word + ' ' + top.map(function (r) { return r.name; }).join(' & ') + ' ' + top[0].pts;
+    }
+    return '<button class="purp slim" type="button" data-act="goto-free" data-view="stand">🏆 ' + esc(bit('group', 'Groepen')) + ' · ' + esc(bit('solo', 'Spelers')) + '</button>';
+  }
+  function viewStand() {
+    return undoBar() + '<div class="scroll">' + flashHtml() +
+      '<h1>Stand</h1><p class="hint">Twee borden: groepen en solo, apart. 1e = 3, 2e = 2, 3e = 1. Gelijkspel deelt de plek. Wie stopt houdt de punten. Een spel dat niet doorgaat telt niet. Tik een naam voor de spellen.</p>' +
+      '<div class="stand-grid">' + board('group', '👥 Groepen') + board('solo', '🙋 Spelers') + '</div></div>' +
+      '<footer><button class="go wide" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></footer>';
+  }
+
+  function modalHtml() {
+    const m = S.modal;
+    if (!m) return '';
+    if (m.kind === 'score') {
+      const game = gameById(S.score.gameId);
+      const person = participants(game).find(function (p) { return p.id === S.score.participantId; });
+      const name = person ? person.name : '';
+      const sub = person && person.sub ? '<p class="sub" style="text-align:center">' + esc(person.sub) + '</p>' : '';
+      const existing = resultOf(game.id, S.score.participantId);
+      const checking = S.arm === 'score-check' && Date.now() < S.armUntil;
+      const absentHot = S.arm === 'absent-check' && Date.now() < S.armUntil;
+      const saveLabel = checking ? 'JA, TOCH OPSLAAN' : (existing && existing.status === 'done' ? '✔ VERBETEREN' : '✔ OPSLAAN');
+      const absentLabel = absentHot ? 'JA, ECHT AFWEZIG' : '👻 AFWEZIG DIT SPEL';
+      const nameNote = '<p class="hint" style="text-align:center">' + (checking || absentHot ? (esc(S.armNote || '') || 'Kijk nog eens. Tik nog een keer als het klopt.') : (existing && existing.status === 'done' ? 'Zo staat het er nu. Je kunt het verbeteren.' : 'Kijk of dit de goede naam is.')) + '</p>';
+      let body = '';
+      if (game.scoreType === 'points') {
+        body = '<div class="score-num">' + S.score.points + '</div><input class="field score-type" id="scorePoints" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + esc(S.score.points) + '"><p class="keys">Typ de score. Enter slaat op. Esc sluit.</p><div class="grid2">' +
+          '<button class="pump" type="button" data-act="score-delta" data-delta="1">+ 1</button>' +
+          '<button class="pump" type="button" data-act="score-delta" data-delta="5">+ 5</button>' +
+          '<button class="pump" type="button" data-act="score-delta" data-delta="10">+ 10</button>' +
+          '<button class="calm" type="button" data-act="score-delta" data-delta="-1">− 1</button></div>';
+      } else {
+        const running = S.watches[game.id] && S.watches[game.id].running;
+        body = '<div class="grid2"><div><p style="text-align:center">MIN</p><div class="stepper"><button type="button" data-act="time-step" data-field="min" data-delta="-1">−</button><div class="numbig">' + S.score.min + '</div><button type="button" data-act="time-step" data-field="min" data-delta="1">＋</button></div></div>' +
+          '<div><p style="text-align:center">SEC</p><div class="stepper"><button type="button" data-act="time-step" data-field="sec" data-delta="-1">−</button><div class="numbig">' + String(S.score.sec).padStart(2, '0') + '</div><button type="button" data-act="time-step" data-field="sec" data-delta="1">＋</button></div></div></div>' +
+          '<div class="grid2" style="margin-top:8px"><button type="button" data-act="time-step" data-field="sec" data-delta="-10">SEC −10</button><button type="button" data-act="time-step" data-field="sec" data-delta="10">SEC +10</button></div>' +
+          '<div class="grid2" style="margin-top:8px"><div><p style="text-align:center">MIN TYPEN</p><input class="field score-type" id="scoreMin" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + S.score.min + '"></div><div><p style="text-align:center">SEC TYPEN</p><input class="field score-type" id="scoreSec" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + S.score.sec + '"></div></div><p class="keys">Enter slaat op. Esc sluit.</p>' +
+          (game.stopwatch ? '<button class="purp" type="button" data-act="take-time" style="margin-top:8px">' + (running ? '⏹ STOP EN NEEM TIJD OVER' : '⏱️ NEEM TIJD OVER') + '</button>' : '');
+      }
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1 style="text-align:center">' + esc(name) + '</h1>' + sub + nameNote + body +
+        '<div class="stack sheet-actions"><button class="go" type="button" data-act="save-score">' + saveLabel + '</button>' +
+        '<button class="calm" type="button" data-act="save-absent">' + absentLabel + '</button>' +
+        (existing ? '<button class="pump" type="button" data-act="save-clear">ZET TERUG NAAR NOG DOEN</button>' : '') +
+        '<button class="calm" type="button" data-act="close-modal">ANNULEER</button></div></div></div>';
+    }
+    if (m.kind === 'out') {
+      const obj = m.what === 'group' ? groupById(m.id) : playerById(m.id);
+      const name = obj ? obj.name : 'Iemand';
+      const leaving = !!m.makeOut;
+      const text = leaving
+        ? (m.what === 'group'
+          ? 'Deze groep doet niet meer mee aan de groepsspellen. De kinderen doen de solospellen nog wel, tenzij je die ook laat stoppen. Wat al gespeeld is, blijft staan.'
+          : 'Geen nieuwe spellen meer voor de rest van de middag. Wat al gespeeld is, blijft staan. Een groepsspel blijft bij de groep.')
+        : 'Dan doet die weer mee met de spellen die nog openstaan.';
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1>' + esc(name) + '</h1><p>' + text + '</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="confirm-out">' + (leaving ? 'JA, STOPT ERMEE' : 'JA, DOET WEER MEE') + '</button></div></div></div>';
+    }
+    if (m.kind === 'breakdown') {
+      const obj = m.what === 'group' ? groupById(m.id) : playerById(m.id);
+      const name = obj ? obj.name : 'Iemand';
+      const kids = obj && m.what === 'group' ? membersOf(obj).join(', ') : (obj ? groupNameOfPlayer(obj.id) : '');
+      const note = obj && obj.out ? '<p class="hint">Gestopt. De punten die al gehaald zijn blijven staan.</p>' : '';
+      const lines = standLines(m.what === 'group' ? 'group' : 'solo', m.id).map(function (line) {
+        return '<div class="line"><span>' + esc(line.name) + '</span><span class="res">' + esc(line.text) + '</span></div>';
+      }).join('');
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1>' + esc(name) + '</h1>' +
+        (kids ? '<p class="hint">' + esc(kids) + '</p>' : '') + note +
+        '<div class="gameblock">' + (lines || '<p class="hint">Geen spellen.</p>') + '</div>' +
+        '<div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">DICHT</button></div></div></div>';
+    }
+    if (m.kind === 'unlock') {
+      return '<div class="modal-back"><div class="sheet" data-stop="1"><h1>⚠️ Let op</h1><p>Hier verander je spelers, groepen en spellen. Scores blijven bij dezelfde persoon of groep, ook als je hernoemt.</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="pump" type="button" data-act="unlock" data-view="' + esc(m.next || 'settings') + '">TOCH OPENEN</button></div></div></div>';
+    }
+    if (m.kind === 'confirm-del') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>⚠️ Weet je het zeker?</h1><p>' + esc(m.text) + '</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="do-del">JA, WISSEN</button></div></div></div>';
+    }
+    if (m.kind === 'drop-groups') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>⚠️ Groepen verdwijnen</h1><p>Deze groepen gaan weg, mét hun scores: ' + esc(m.names.join(', ')) + '</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="deal-confirm">JA, VERDEEL TOCH</button></div></div></div>';
+    }
+    if (m.kind === 'backup-text') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1>Kopieer deze tekst</h1><p class="hint">Houd de tekst vast en kies Kopieer.</p><textarea class="field" style="min-height:180px" readonly>' + esc(m.text) + '</textarea><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">KLAAR</button></div></div></div>';
+    }
+    if (m.kind === 'restore') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>Backup terugzetten</h1><p>Dit vervangt alles op dit toestel.</p><textarea class="field" id="restoreBox" style="min-height:160px" placeholder="Plak hier de backup">' + esc(S.restoreText) + '</textarea><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="do-restore">JA, VERVANG ALLES</button></div></div></div>';
+    }
+    return '';
+  }
+
+  function touchPrimary() {
+    return (navigator.maxTouchPoints || 0) > 0 || window.matchMedia('(pointer: coarse)').matches;
+  }
+  function standaloneMode() {
+    return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  }
+  function fullscreenOn() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+  function toggleFullscreen() {
+    const el = document.documentElement;
+    if (fullscreenOn()) {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen;
+      if (exit) Promise.resolve(exit.call(document)).catch(function () {});
+      return;
+    }
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+    if (!req) {
+      flash('Op de iPad: tik Delen, dan Zet op beginscherm.');
+      return;
+    }
+    Promise.resolve(req.call(el)).catch(function () {
+      flash('Op de iPad: tik Delen, dan Zet op beginscherm.');
+    });
+  }
+  function topBar() {
+    const err = S.saveError ? '<p class="err">' + esc(S.saveError) + '</p>' : '';
+    if (standaloneMode()) return '<div class="topbar"><span class="brand">HVR HALLOWEEN</span></div>' + err;
+    const on = fullscreenOn();
+    return '<div class="topbar"><span class="brand">HVR HALLOWEEN</span><button type="button" class="fs' + (on ? ' on' : '') + '" data-act="fullscreen">' + (on ? 'KLEINER' : 'VOLLEDIG') + '</button></div>' + err;
+  }
+  function servedFromThisPc() {
+    const h = String(location.hostname || '');
+    return h === 'localhost' || h === '127.0.0.1' || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(h);
+  }
+  function showInstallTip() {
+    if (standaloneMode()) return false;
+    if (!touchPrimary()) return false;
+    try { if (localStorage.getItem(KEY + '-tip') === '1') return false; } catch (e) {}
+    return true;
+  }
+  function tipHtml() {
+    if (!showInstallTip()) return '';
+    const text = servedFromThisPc()
+      ? 'Dit draait nu via de pc. Voor vrijdag zonder pc en zonder internet: open de link die je krijgt, tik Delen, dan Zet op beginscherm, en open dat icoon één keer met internet.'
+      : 'Tik Delen, dan Zet op beginscherm. Open dat icoon één keer met internet. Daarna werkt hij zonder internet en zonder pc. Vul de namen in het icoon. Zet Automatisch slot op Nooit.';
+    return '<div class="tip"><p>' + text + '</p><button class="pump" type="button" data-act="hide-tip">BEGREPEN</button></div>';
+  }
+  function applyFindFilter() {
+    const q = (S.find || '').trim().toLowerCase();
+    document.querySelectorAll('.col').forEach(function (col) {
+      const people = col.querySelectorAll('.person');
+      if (!people.length) return;
+      let n = 0;
+      people.forEach(function (btn) {
+        const name = ((btn.querySelector('.nm') || {}).textContent || '') + ' ' + ((btn.querySelector('.sub') || {}).textContent || '');
+        const ok = !q || name.toLowerCase().indexOf(q) >= 0;
+        btn.hidden = !ok;
+        if (ok) n += 1;
+      });
+      const empty = col.querySelector('.find-empty');
+      if (empty) empty.hidden = n !== 0;
+    });
+  }
+  function scrollNodes() {
+    return document.querySelectorAll('.scroll, .play-side, .play-main, .sheet');
+  }
+  function render() {
+    const saved = [];
+    scrollNodes().forEach(function (n) { saved.push([n.className, n.scrollTop, n.scrollLeft]); });
+    const map = { players: viewPlayers, groups: viewGroups, games: viewGames, backup: viewBackup, settings: viewSettings, stand: viewStand, action: viewAction };
+    const fn = map[S.view] || viewAction;
+    document.getElementById('app').innerHTML = topBar() + fn() + modalHtml();
+    const next = scrollNodes();
+    saved.forEach(function (row, i) {
+      const n = next[i];
+      if (!n || n.className !== row[0]) return;
+      n.scrollTop = row[1];
+      n.scrollLeft = row[2];
+    });
+    const name = document.getElementById('playerName');
+    if (name && S.view === 'players' && !S.modal && !touchPrimary()) {
+      name.focus();
+      const v = name.value;
+      name.setSelectionRange(v.length, v.length);
+    }
+    const typed = document.getElementById('scorePoints') || document.getElementById('scoreMin');
+    if (typed && S.focusScore && !touchPrimary()) {
+      S.focusScore = false;
+      typed.focus();
+      if (typed.select) typed.select();
+    } else S.focusScore = false;
+    const gearInp = document.getElementById('gearName');
+    if (gearInp && S.focusGear && !touchPrimary()) {
+      S.focusGear = false;
+      gearInp.focus();
+      const v = gearInp.value;
+      gearInp.setSelectionRange(v.length, v.length);
+    } else if (gearInp) S.focusGear = false;
+    applyFindFilter();
+  }
+
+  function askDel(what, id) {
+    let text = '';
+    if (what === 'player') {
+      const p = playerById(id);
+      text = (p ? p.name : 'Deze speler') + ' gaat weg, mét solopscores. De groep blijft.';
+    } else if (what === 'group') {
+      const g = groupById(id);
+      text = (g ? g.name : 'Deze groep') + ' gaat weg, mét groepsscores. De mensen komen bij Nog los.';
+    } else if (what === 'gear') {
+      const item = gearById(id);
+      text = (item ? item.name : 'Dit') + ' gaat uit de lijst, en weg bij elk spel.';
+    } else {
+      const g = gameById(id);
+      text = (g ? g.name : 'Dit spel') + ' gaat weg, mét alle scores van dit spel.';
+    }
+    S.modal = { kind: 'confirm-del', what: what, id: id, text: text };
+    render();
+  }
+  function doDel() {
+    const m = S.modal;
+    if (!m || m.kind !== 'confirm-del') return;
+    if (m.what === 'player') {
+      const p = playerById(m.id);
+      if (p) {
+        const orders = {};
+        Object.keys(S.orders).forEach(function (gid) {
+          if ((S.orders[gid] || []).indexOf(p.id) >= 0) orders[gid] = S.orders[gid].slice();
+        });
+        pushUndo({
+          kind: 'del-player',
+          player: JSON.parse(JSON.stringify(p)),
+          groups: S.groups.filter(function (g) { return g.playerIds.indexOf(p.id) >= 0; }).map(function (g) { return g.id; }),
+          results: S.results.filter(function (r) {
+            const g = gameById(r.gameId);
+            return r.participantId === p.id && g && g.participantType === 'solo';
+          }).map(function (r) { return JSON.parse(JSON.stringify(r)); }),
+          orders: orders,
+          label: p.name + ' is weggehaald. Tik om die persoon terug te zetten.'
+        });
+      }
+      S.players = S.players.filter(function (p) { return p.id !== m.id; });
+      S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return id !== m.id; }); });
+      S.results = S.results.filter(function (r) {
+        const g = gameById(r.gameId);
+        return !(r.participantId === m.id && g && g.participantType === 'solo');
+      });
+      Object.keys(S.orders).forEach(function (gid) {
+        S.orders[gid] = (S.orders[gid] || []).filter(function (id) { return id !== m.id; });
+      });
+    } else if (m.what === 'group') {
+      const g = groupById(m.id);
+      if (g) {
+        pushUndo({
+          kind: 'del-group',
+          group: JSON.parse(JSON.stringify(g)),
+          results: S.results.filter(function (r) { return r.participantId === g.id; }).map(function (r) { return JSON.parse(JSON.stringify(r)); }),
+          label: g.name + ' is weg. Tik om de groep terug te zetten.'
+        });
+      }
+      S.groups = S.groups.filter(function (x) { return x.id !== m.id; });
+      S.results = S.results.filter(function (r) { return r.participantId !== m.id; });
+      S.groupTarget = Math.max(1, S.groups.length || S.groupTarget);
+    } else if (m.what === 'gear') {
+      S.gear = S.gear.filter(function (g) { return g.id !== m.id; });
+      S.games.forEach(function (g) { g.gearIds = (g.gearIds || []).filter(function (id) { return id !== m.id; }); });
+    } else if (m.what === 'game') {
+      S.games = S.games.filter(function (g) { return g.id !== m.id; });
+      S.results = S.results.filter(function (r) { return r.gameId !== m.id; });
+      delete S.watches[m.id];
+      S.games.forEach(function (g, i) { g.order = i; });
+      if (S.activeGameId === m.id) S.activeGameId = S.games[0] ? S.games[0].id : null;
+    }
+    S.modal = null;
+    save();
+    flash('GEWIST');
+  }
+
+  function onClick(e) {
+    const t = e.target.closest('[data-act]');
+    if (!t) return;
+    if (t.dataset.stop) return;
+    const act = t.dataset.act;
+    if (act === 'close-modal') {
+      if (e.target.closest('[data-stop]') && e.target !== t && !t.classList.contains('modal-back') && act === 'close-modal' && t.dataset.act === 'close-modal') {
+        /* button inside sheet */
+      }
+      if (e.currentTarget && t.classList.contains('modal-back') && e.target !== t) return;
+      S.modal = null;
+      S.score = null;
+      if (S.arm === 'score-check' || S.arm === 'absent-check') { S.arm = null; S.armNote = ''; }
+      render();
+      return;
+    }
+    if (t.closest('.sheet') && e.target.classList.contains('modal-back')) return;
+    if (act === 'hide-tip') {
+      try { localStorage.setItem(KEY + '-tip', '1'); } catch (err) {}
+      render();
+      return;
+    }
+    if (act === 'add-player') { addPlayer(); return; }
+    if (act === 'goto' || act === 'goto-free') { gotoView(t.dataset.view, act === 'goto-free'); return; }
+    if (act === 'target') { S.groupTarget = clamp((Number(S.groupTarget) || 1) + Number(t.dataset.delta), 1, 12); S.arm = null; save(); render(); return; }
+    if (act === 'deal') { deal(false); return; }
+    if (act === 'deal-confirm') { deal(true); return; }
+    if (act === 'add-group') { addGroup(); return; }
+    if (act === 'move-here') { if (S.selectedPlayerId) movePlayer(S.selectedPlayerId, t.dataset.gid); return; }
+    if (act === 'start-rename') {
+      const g = groupById(t.dataset.id);
+      S.renameGroupId = t.dataset.id;
+      S.renameText = g ? g.name : '';
+      render();
+      const inp = document.getElementById('renameInput');
+      if (inp) inp.focus();
+      return;
+    }
+    if (act === 'save-rename') {
+      const g = groupById(t.dataset.id);
+      const name = (S.renameText || '').trim();
+      if (g && name && name !== g.name) {
+        pushUndo({ kind: 'rename', what: 'group', id: g.id, prev: g.name, label: 'De groep heet nu ' + name + '. Tik om ' + g.name + ' terug te zetten.' });
+        g.name = name;
+      }
+      S.renameGroupId = null;
+      save();
+      render();
+      return;
+    }
+    if (act === 'ask-del') { askDel(t.dataset.what, t.dataset.id); return; }
+    if (act === 'do-del') { doDel(); return; }
+    if (act === 'new-game') { S.gameForm = blankForm(); render(); return; }
+    if (act === 'cancel-game') { S.gameForm = null; render(); return; }
+    if (act === 'edit-game') { const g = gameById(t.dataset.id); if (g) { S.gameForm = editForm(g); render(); } return; }
+    if (act === 'form-set') {
+      const f = S.gameForm;
+      if (!f) return;
+      const key = t.dataset.key;
+      let val = t.dataset.val;
+      if (key === 'stopwatch') val = val === '1';
+      f[key] = val;
+      if (key === 'scoreType' && val === 'time') f.sort = 'low';
+      if (key === 'scoreType' && val === 'points') f.sort = 'high';
+      if (key === 'stopwatch' && val && !Number(f.signalM) && !Number(f.signalS)) { f.signalM = 1; f.signalS = 30; }
+      render();
+      return;
+    }
+    if (act === 'form-step') {
+      const f = S.gameForm;
+      if (!f) return;
+      const field = t.dataset.field;
+      const max = field === 'signalS' ? 59 : 180;
+      f[field] = clamp((Number(f[field]) || 0) + Number(t.dataset.delta), 0, max);
+      render();
+      return;
+    }
+    if (act === 'form-nosein') { S.gameForm.signalM = 0; S.gameForm.signalS = 0; render(); return; }
+    if (act === 'save-game') { saveGameForm(); return; }
+    if (act === 'try-names') { fillTryNames(); return; }
+    if (act === 'clear-try') { clearTryNames(); return; }
+    if (act === 'gear-open') {
+      S.gearOpen = S.gearOpen === t.dataset.id ? null : t.dataset.id;
+      S.gearDraft = '';
+      S.focusGear = !!S.gearOpen;
+      render();
+      return;
+    }
+    if (act === 'gear-add') {
+      const inp = document.getElementById('gearName');
+      addGear(t.dataset.id, inp ? inp.value : S.gearDraft);
+      return;
+    }
+    if (act === 'gear-on') { attachGear(t.dataset.id, t.dataset.gear); return; }
+    if (act === 'gear-off') { detachGear(t.dataset.id, t.dataset.gear); return; }
+    if (act === 'save-gear') { S.gearOpen = null; save(); flash('SPEL OPGESLAGEN'); return; }
+    if (act === 'advice-toggle') { S.adviceOpen = !S.adviceOpen; render(); return; }
+    if (act === 'advice-apply') { applyAdvice(); return; }
+    if (act === 'game-move') {
+      const dir = Number(t.dataset.dir);
+      const i = S.games.findIndex(function (g) { return g.id === t.dataset.id; });
+      const j = i + dir;
+      if (i >= 0 && j >= 0 && j < S.games.length) {
+        const tmp = S.games[i];
+        S.games[i] = S.games[j];
+        S.games[j] = tmp;
+        S.games.forEach(function (g, n) { g.order = n; });
+        save();
+        render();
+      }
+      return;
+    }
+    if (act === 'pick-game') { S.activeGameId = t.dataset.id; S.view = 'action'; S.find = ''; save(); render(); return; }
+    if (act === 'open-found') { openFound(); return; }
+    if (act === 'open-score') { openScore(t.dataset.id); return; }
+    if (act === 'order-tap') { tapOrder(t.dataset.id); return; }
+    if (act === 'score-delta') {
+      if (S.arm === 'score-check') S.arm = null;
+      S.score.points = (Number(S.score.points) || 0) + Number(t.dataset.delta);
+      render();
+      return;
+    }
+    if (act === 'time-step') {
+      if (S.arm === 'score-check') S.arm = null;
+      const field = t.dataset.field;
+      if (field === 'min') S.score.min = clamp((Number(S.score.min) || 0) + Number(t.dataset.delta), 0, 600);
+      else S.score.sec = clamp((Number(S.score.sec) || 0) + Number(t.dataset.delta), 0, 59);
+      render();
+      return;
+    }
+    if (act === 'save-score') { saveScore('done'); return; }
+    if (act === 'save-absent') { saveScore('absent'); return; }
+    if (act === 'save-clear') { saveScore('clear'); return; }
+    if (act === 'take-time') { takeTime(); return; }
+    if (act === 'watch-toggle') { toggleWatch(t.dataset.id); return; }
+    if (act === 'watch-reset') { resetWatch(t.dataset.id); return; }
+    if (act === 'pick-count') { commitGroups(Number(t.dataset.n)); return; }
+    if (act === 'ask-split') { S.askSplit = !S.askSplit; render(); return; }
+    if (act === 'fullscreen') { toggleFullscreen(); return; }
+    if (act === 'focus-group') { S.focusGroupId = t.dataset.id; render(); return; }
+    if (act === 'set-parallel') {
+      const game = activeGame();
+      if (!game) return;
+      game.parallel = clamp(Number(t.dataset.n), 1, 12);
+      game.wave = 0;
+      save();
+      render();
+      return;
+    }
+    if (act === 'clear-parallel') {
+      const game = activeGame();
+      if (!game) return;
+      if (orderOf(game).length || S.results.some(function (r) { return r.gameId === game.id; })) {
+        flash('DIT SPEL IS AL BEGONNEN', true);
+        return;
+      }
+      game.parallel = null;
+      game.wave = 0;
+      save();
+      render();
+      return;
+    }
+    if (act === 'set-heat') {
+      const game = activeGame();
+      if (!game) return;
+      const w = ensureWatch(game.id);
+      const started = orderOf(game).length || S.results.some(function (r) { return r.gameId === game.id; });
+      if (started && w.heatAsked) { flash('DIT SPEL IS AL BEGONNEN', true); return; }
+      w.heatAll = t.dataset.mode === 'all';
+      w.heatAsked = true;
+      w.heatId = null;
+      save();
+      render();
+      return;
+    }
+    if (act === 'heat-next') { heatNext(); return; }
+    if (act === 'heat-pick') { heatPick(t.dataset.id || ''); return; }
+    if (act === 'wave-next') { waveNext(); return; }
+    if (act === 'wave-wait') { flash('NOG NIET AAN DE BEURT', true); return; }
+    if (act === 'undo') { undo(); return; }
+    if (act === 'ask-out') { openOutSheet(t.dataset.what || 'player', t.dataset.id); return; }
+    if (act === 'stand-open') {
+      S.modal = { kind: 'breakdown', what: t.dataset.what === 'group' ? 'group' : 'solo', id: t.dataset.id };
+      render();
+      return;
+    }
+    if (act === 'confirm-out') {
+      const sheet = S.modal;
+      if (sheet && sheet.kind === 'out') setOut(sheet.what, sheet.id, sheet.makeOut);
+      return;
+    }
+    if (act === 'skip-game') { skipGame(true); return; }
+    if (act === 'unskip-game') { skipGame(false); return; }
+    if (act === 'start-player-rename') {
+      const p = playerById(t.dataset.id);
+      S.renamePlayerId = t.dataset.id;
+      S.renamePlayerText = p ? p.name : '';
+      render();
+      const inp = document.getElementById('playerRename');
+      if (inp) inp.focus();
+      return;
+    }
+    if (act === 'save-player-rename') { savePlayerRename(t.dataset.id); return; }
+    if (act === 'unlock') { S.unlocked = true; S.modal = null; S.view = t.dataset.view || 'settings'; render(); return; }
+    if (act === 'copy-backup') { copyBackup(); return; }
+    if (act === 'save-file') { downloadBackup(); return; }
+    if (act === 'pick-file') {
+      const inp = document.getElementById('backupFile');
+      if (inp) inp.click();
+      return;
+    }
+    if (act === 'ask-restore') { S.restoreText = ''; S.modal = { kind: 'restore' }; render(); return; }
+    if (act === 'do-restore') { doRestore(); return; }
+  }
+  function onBackdrop(e) {
+    const back = e.target.closest('.modal-back');
+    if (!back || e.target !== back) return;
+    if (S.modal && S.modal.kind === 'backup-text') { S.modal = null; render(); return; }
+    if (S.modal && (S.modal.kind === 'score' || S.modal.kind === 'confirm-del' || S.modal.kind === 'drop-groups' || S.modal.kind === 'restore' || S.modal.kind === 'unlock' || S.modal.kind === 'out' || S.modal.kind === 'breakdown')) {
+      S.modal = null;
+      S.score = null;
+      render();
+    }
+  }
+  async function copyBackup() {
+    const text = JSON.stringify(blob(), null, 2);
+    try {
+      if (!navigator.clipboard || !window.isSecureContext) throw new Error('geen klembord');
+      await navigator.clipboard.writeText(text);
+      flash('BACKUP GEKOPIEERD');
+    } catch (e) {
+      S.modal = { kind: 'backup-text', text: text };
+      render();
+      const area = document.querySelector('.sheet textarea');
+      if (area) { area.focus(); area.select(); }
+    }
+  }
+  function downloadBackup() {
+    const text = JSON.stringify(blob(), null, 2);
+    const file = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'hvr-halloween-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    flash('BESTAND KLAAR. KIJK BIJ DOWNLOADS.');
+  }
+  function doRestore() {
+    const raw = S.restoreText || '';
+    try {
+      const obj = JSON.parse(raw);
+      if (!obj || obj.version !== 1 || !Array.isArray(obj.players) || !Array.isArray(obj.groups) || !Array.isArray(obj.games)) throw new Error('vorm');
+      applyData(obj);
+      ensureGear();
+      S.modal = null;
+      S.view = bootView();
+      save();
+      flash('BACKUP TERUGGEZET');
+    } catch (e) {
+      flash('DIT IS GEEN GOEDE BACKUP', true);
+    }
+  }
+
+  function paintClocks() {
+    document.querySelectorAll('[data-clock]').forEach(function (el) {
+      const id = el.getAttribute('data-clock');
+      const ms = watchMs(S.watches[id]);
+      el.innerHTML = formatWatch(ms);
+      const game = gameById(id);
+      const card = el.closest('.watch');
+      if (!card || !game || !game.signalSec) return;
+      const call = card.querySelector('[data-call]');
+      if (ms >= game.signalSec * 1000) {
+        if (!card.classList.contains('timeup')) card.classList.add('timeup', 'pulse');
+        if (call) call.textContent = 'Tijd om';
+      } else {
+        card.classList.remove('timeup', 'pulse');
+        if (call) call.textContent = callText(ms, game.signalSec);
+      }
+    });
+  }
+  function tick() {
+    paintClocks();
+    if (drag) return;
+    if (S.arm && Date.now() > S.armUntil) { S.arm = null; if (!S.modal && !drag) render(); }
+  }
+  function syncTimer() {
+    const running = Object.keys(S.watches).some(function (id) { return S.watches[id] && S.watches[id].running; });
+    if (running && document.visibilityState === 'visible') {
+      if (!timer) timer = setInterval(tick, 100);
+    } else if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+  let wantWake = false;
+  let wakeTimer = 0;
+  function keepAwake() {
+    wantWake = true;
+    if (!navigator.wakeLock || document.visibilityState !== 'visible' || wake) return;
+    navigator.wakeLock.request('screen').then(function (s) {
+      wake = s;
+      s.addEventListener('release', function () {
+        if (wake === s) wake = null;
+        if (!wantWake || document.visibilityState !== 'visible') return;
+        clearTimeout(wakeTimer);
+        wakeTimer = setTimeout(keepAwake, 1500);
+      });
+    }).catch(function () {});
+  }
+  function showGhost(name, x, y) {
+    const g = document.getElementById('ghost');
+    const vv = window.visualViewport;
+    g.hidden = false;
+    g.textContent = name;
+    g.style.left = (x + (vv ? vv.offsetLeft : 0)) + 'px';
+    g.style.top = (y + (vv ? vv.offsetTop : 0)) + 'px';
+  }
+  function hideGhost() {
+    const g = document.getElementById('ghost');
+    g.hidden = true;
+  }
+  function markOver(x, y) {
+    const el = document.elementFromPoint(x, y);
+    const col = el && el.closest('[data-drop]');
+    document.querySelectorAll('[data-drop]').forEach(function (c) { c.classList.toggle('over', c === col); });
+    return col;
+  }
+
+  document.addEventListener('fullscreenchange', render);
+  document.addEventListener('webkitfullscreenchange', render);
+  document.addEventListener('click', function (e) {
+    if (suppressClick) { suppressClick = false; e.preventDefault(); return; }
+    onBackdrop(e);
+    onClick(e);
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'playerName') S.draftName = e.target.value;
+    if (e.target.id === 'playerRename') S.renamePlayerText = e.target.value;
+    if (e.target.id === 'gameName' && S.gameForm) S.gameForm.name = e.target.value;
+    if (e.target.id === 'renameInput') S.renameText = e.target.value;
+    if (e.target.id === 'restoreBox') S.restoreText = e.target.value;
+    if (e.target.id === 'findName') {
+      S.find = e.target.value;
+      applyFindFilter();
+    }
+    if (e.target.id === 'scorePoints' && S.score) {
+      if (S.arm === 'score-check') S.arm = null;
+      const raw = e.target.value.trim();
+      const num = document.querySelector('.score-num');
+      if (raw === '' || raw === '-' || raw === '+') { if (num) num.textContent = raw || '0'; return; }
+      if (!Number.isFinite(Number(raw))) return;
+      S.score.points = Number(raw);
+      if (num) num.textContent = String(S.score.points);
+    }
+    if (e.target.id === 'scoreMin' && S.score) { if (S.arm === 'score-check') S.arm = null; S.score.min = clamp(e.target.value, 0, 600); }
+    if (e.target.id === 'scoreSec' && S.score) { if (S.arm === 'score-check') S.arm = null; S.score.sec = clamp(e.target.value, 0, 59); }
+    if (e.target.id === 'gearName') S.gearDraft = e.target.value;
+  });
+  function openFound() {
+    const game = activeGame();
+    if (!game) return;
+    const q = (S.find || '').trim().toLowerCase();
+    const parts = peopleNow(game).filter(function (p) {
+      return !q || (p.name + ' ' + (p.sub || '')).toLowerCase().indexOf(q) >= 0;
+    }).sort(function (a, b) { return a.name.localeCompare(b.name, 'nl'); });
+    const order = orderOf(game);
+    const next = parts.find(function (p) { return order.indexOf(p.id) < 0 && !resultOf(game.id, p.id); })
+      || parts.find(function (p) { return order.indexOf(p.id) < 0; })
+      || parts.find(function (p) { return !resultOf(game.id, p.id); })
+      || parts[0];
+    if (!next) return;
+    if (game.mode === 'elim' || game.mode === 'finish') tapOrder(next.id);
+    else openScore(next.id);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'playerName') { e.preventDefault(); addPlayer(); return; }
+    if (e.key === 'Enter' && e.target.id === 'playerRename') { e.preventDefault(); savePlayerRename(S.renamePlayerId); return; }
+    if (e.key === 'Enter' && e.target.id === 'gearName') { e.preventDefault(); addGear(S.gearOpen, e.target.value); return; }
+    if (e.key === 'Enter' && e.target.id === 'gameName') { e.preventDefault(); saveGameForm(); }
+    if (e.key === 'Enter' && e.target.id === 'findName') { e.preventDefault(); openFound(); return; }
+    if (e.key === 'Enter' && S.modal && S.modal.kind === 'score' && (e.target.id === 'scorePoints' || e.target.id === 'scoreMin' || e.target.id === 'scoreSec')) { e.preventDefault(); saveScore('done'); return; }
+    if (e.key === 'Escape') {
+      if (S.modal) { S.modal = null; S.score = null; render(); return; }
+      if (S.find) { S.find = ''; render(); }
+      return;
+    }
+    if (e.key === 'Enter' && e.target.id === 'renameInput') {
+      e.preventDefault();
+      const btn = document.querySelector('[data-act="save-rename"]');
+      if (btn) btn.click();
+    }
+  });
+  document.addEventListener('contextmenu', function (e) {
+    if (!e.target.closest('input, textarea')) e.preventDefault();
+  });
+  let hold = null;
+  let holdTimer = 0;
+  let holdFired = false;
+  function clearHold() {
+    clearTimeout(holdTimer);
+    holdTimer = 0;
+    hold = null;
+  }
+  document.addEventListener('pointerdown', function (e) {
+    suppressClick = false;
+    keepAwake();
+    clearHold();
+    const held = e.target.closest('[data-hold]');
+    if (held && !S.modal && !(e.button && e.button !== 0)) {
+      hold = { id: held.dataset.id, what: held.dataset.hold || 'player', x: e.clientX, y: e.clientY, pointerId: e.pointerId };
+      holdTimer = setTimeout(function () {
+        if (!hold) return;
+        const h = hold;
+        hold = null;
+        holdFired = true;
+        suppressClick = true;
+        drag = null;
+        document.body.classList.remove('dragging');
+        hideGhost();
+        openOutSheet(h.what, h.id);
+      }, 650);
+    }
+    const chip = e.target.closest('.chip');
+    if (!chip || S.view !== 'groups' || S.modal) return;
+    if (e.button && e.button !== 0) return;
+    const p = playerById(chip.dataset.id);
+    drag = { id: chip.dataset.id, name: p ? p.name : '', x: e.clientX, y: e.clientY, moved: false, pointerId: e.pointerId, pointerType: e.pointerType || 'mouse' };
+    if (drag.pointerType === 'mouse') {
+      try { chip.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (hold && e.pointerId === hold.pointerId && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 14) clearHold();
+    if (!drag || e.pointerId !== drag.pointerId || drag.pointerType !== 'mouse') return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 8) return;
+    drag.moved = true;
+    document.body.classList.add('dragging');
+    showGhost(drag.name, e.clientX, e.clientY);
+    markOver(e.clientX, e.clientY);
+  });
+  document.addEventListener('pointerup', function (e) {
+    const fired = holdFired;
+    clearHold();
+    if (fired) {
+      holdFired = false;
+      setTimeout(function () { suppressClick = false; }, 0);
+    }
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    const d = drag;
+    drag = null;
+    document.body.classList.remove('dragging');
+    hideGhost();
+    if (fired) return;
+    if (d.moved && d.pointerType === 'mouse') {
+      suppressClick = true;
+      const col = markOver(e.clientX, e.clientY);
+      if (col) movePlayer(d.id, col.getAttribute('data-drop'));
+      else render();
+    } else if (!d.moved) {
+      suppressClick = true;
+      S.selectedPlayerId = S.selectedPlayerId === d.id ? null : d.id;
+      render();
+    }
+  });
+  document.addEventListener('pointercancel', function () {
+    clearHold();
+    drag = null;
+    document.body.classList.remove('dragging');
+    hideGhost();
+  });
+  document.addEventListener('visibilitychange', function () {
+    syncTimer();
+    if (document.visibilityState === 'visible') {
+      if (wantWake) keepAwake();
+      paintClocks();
+    }
+  });
+  function revealField(el) {
+    const sc = el.closest('.sheet, .play-main, .play-side, .scroll');
+    if (!sc) return;
+    const er = el.getBoundingClientRect();
+    const sr = sc.getBoundingClientRect();
+    if (er.top >= sr.top + 8 && er.bottom <= sr.bottom - 8) return;
+    sc.scrollTop += er.top - sr.top - Math.max(12, (sr.height - er.height) / 3);
+  }
+  document.addEventListener('focusin', function (e) {
+    const el = e.target;
+    if (!el || !el.closest || !el.closest('input, textarea')) return;
+    setTimeout(function () { if (document.contains(el)) revealField(el); }, 60);
+    setTimeout(function () { if (document.contains(el)) revealField(el); }, 360);
+  });
+  document.addEventListener('change', function (e) {
+    if (e.target.id !== 'backupFile') return;
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      S.restoreText = String(reader.result || '');
+      S.modal = { kind: 'restore' };
+      render();
+    };
+    reader.onerror = function () { flash('BESTAND NIET GELEZEN', true); };
+    reader.readAsText(file);
+  });
+  document.addEventListener('touchstart', function () {}, { passive: true });
+  window.addEventListener('pagehide', function () { save(); });
+  window.addEventListener('pageshow', function () {
+    syncTimer();
+    paintClocks();
+    if (wantWake) keepAwake();
+  });
+  window.addEventListener('storage', function (e) {
+    if (!e || e.key !== KEY || !e.newValue || S.holdSave || drag) return;
+    const obj = readStored(e.newValue);
+    if (!obj) return;
+    applyData(obj);
+    render();
+    syncTimer();
+  });
+  function trapBack() {
+    try {
+      history.replaceState({ hvr: 1 }, '', location.href);
+      history.pushState({ hvr: 2 }, '', location.href);
+      window.addEventListener('popstate', function () {
+        history.pushState({ hvr: 2 }, '', location.href);
+      });
+    } catch (e) {}
+  }
+
+  function selfTest() {
+    function eq(a, b, msg) { if (a !== b) throw new Error(msg + ': ' + a + ' != ' + b); }
+    const hi = placeRows([{ name: 'B', score: 10 }, { name: 'A', score: 10 }, { name: 'C', score: 8 }], 'high');
+    eq(hi.map(function (r) { return r.rank; }).join(','), '1,1,3', 'rank high');
+    eq(hi.map(function (r) { return r.medal; }).join(','), '3,3,1', 'medal high');
+    eq(hi.map(function (r) { return r.name; }).join(','), 'A,B,C', 'tie alpha');
+    const lo = placeRows([{ name: 'A', score: 90 }, { name: 'C', score: 70 }, { name: 'B', score: 70 }], 'low');
+    eq(lo.map(function (r) { return r.name; }).join(','), 'B,C,A', 'time order');
+    eq(lo.map(function (r) { return r.medal; }).join(','), '3,3,1', 'medal low');
+    const groups = [{ playerIds: [] }, { playerIds: [] }, { playerIds: [] }, { playerIds: [] }, { playerIds: [] }];
+    const ids = [];
+    for (let i = 0; i < 35; i++) ids.push('p' + i);
+    ids.forEach(function (id, i) { groups[i % groups.length].playerIds.push(id); });
+    eq(groups.map(function (g) { return g.playerIds.length; }).join(','), '7,7,7,7,7', '35/5');
+    const g2 = [{ playerIds: [] }, { playerIds: [] }, { playerIds: [] }, { playerIds: [] }, { playerIds: [] }];
+    const ids2 = [];
+    for (let i = 0; i < 32; i++) ids2.push('q' + i);
+    ids2.forEach(function (id, i) { g2[i % g2.length].playerIds.push(id); });
+    eq(g2.map(function (g) { return g.playerIds.length; }).join(','), '7,7,6,6,6', '32/5');
+    const adv = orderAdvice();
+    eq(!!adv, true, 'advice');
+    eq(adv.games[0].participantType, 'solo', 'advice start');
+    eq(adv.games[adv.games.length - 1].id, 'koekoek', 'advice end');
+    eq(adv.notes.length > 0, true, 'advice notes');
+    eq(groupIcon('Heksen'), '🧙', 'icon heks');
+    eq(groupIcon('Spoken'), '👻', 'icon spook');
+    eq(groupIcon('Vleermuizen'), '🦇', 'icon vleermuis');
+    eq(shortName('Vleermuizen', 5), 'Vleermuizen', 'naam 5');
+    eq(shortName('Zwarte katten', 5), 'Zwarte katten', 'naam katten');
+    eq(shortName('Pompoenen', 6), 'Pompoenen', 'naam 6');
+    eq(shortName('Annemarietje', 7), 'Annemarie…', 'naam lang');
+    eq(readStored('{'), null, 'kapotte tekst');
+    eq(readStored('[]'), null, 'geen lijst');
+    eq(!!readStored('{"players":[]}'), true, 'goede tekst');
+    eq(parallelChoices(6).map(function (o) { return o.n; }).join(','), '1,2,3,6', 'parallel 6');
+    eq(parallelChoices(5).map(function (o) { return o.n; }).join(','), '1,2,3,5', 'parallel 5');
+    eq(suggestedParallel({ id: 'mat', hint: 'Twee matten.', name: 'Mat' }, 6), 2, 'twee matten');
+    eq(suggestedParallel({ id: 'pong', hint: 'Elk team alleen.', name: 'Pong' }, 5), 1, 'alleen');
+    const probe = S.players[0];
+    if (probe) {
+      const wasOut = !!probe.out;
+      probe.out = true;
+      const solo = S.games.filter(function (g) { return g.participantType === 'solo'; })[0];
+      if (solo) eq(roster(solo).some(function (p) { return p.id === probe.id; }), false, 'out leaves roster');
+      probe.out = wasOut;
+    }
+    eq(gameRanking({ id: 'x', skipped: true, participantType: 'solo', mode: 'points' }).length, 0, 'skipped game gives no medals');
+    const keepResults = S.results.slice();
+    const keepSkip = S.games.map(function (g) { return !!g.skipped; });
+    try {
+      const solo = S.games.filter(function (g) { return g.participantType === 'solo' && g.mode === 'points'; })[0];
+      const people = solo ? roster(solo) : [];
+      if (solo && people.length >= 2) {
+        people.forEach(function (p, i) {
+          S.results.push({ id: 'stand-test-' + i, gameId: solo.id, participantId: p.id, status: 'done', points: i === 0 ? 12 : 1, timeSec: null });
+        });
+        const winner = overallAll('solo').find(function (r) { return r.id === people[0].id; });
+        eq(winner.pts, 3, 'solo board gives 3 for first');
+        const second = overallAll('solo').find(function (r) { return r.id === people[1].id; });
+        eq(second.pts, 2, 'solo board gives 2 for second');
+        solo.skipped = true;
+        eq(overallAll('solo').find(function (r) { return r.id === people[0].id; }).pts, 0, 'skipped solo game leaves the board');
+        solo.skipped = false;
+      }
+      const grp = S.games.filter(function (g) { return g.participantType === 'group' && g.mode === 'points'; })[0];
+      const teams = grp ? roster(grp) : [];
+      if (grp && teams.length >= 2) {
+        teams.forEach(function (p, i) {
+          S.results.push({ id: 'stand-gtest-' + i, gameId: grp.id, participantId: p.id, status: 'done', points: i === 0 ? 8 : 2, timeSec: null });
+        });
+        eq(overallAll('group').find(function (r) { return r.id === teams[0].id; }).pts, 3, 'group board gives 3 for first');
+        eq(overallAll('solo').some(function (r) { return r.id === teams[0].id; }), false, 'group points stay off the solo board');
+      }
+    } finally {
+      S.results = keepResults;
+      S.games.forEach(function (g, i) { g.skipped = keepSkip[i]; });
+    }
+    const before = S.undos.length;
+    pushUndo({ kind: 'rename', what: 'player', id: 'nobody', prev: 'x', label: 'test' });
+    eq(S.undos.length, before + 1, 'undo stack');
+    S.undos.pop();
+    return 'ok';
+  }
+  window.capyTest = selfTest;
+
+  load();
+  seedProgram();
+  ensureGear();
+  S.view = bootView();
+  if (!S.activeGameId && S.games[0]) S.activeGameId = S.games[0].id;
+  render();
+  syncTimer();
+  trapBack();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
