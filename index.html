@@ -513,7 +513,7 @@
 (function () {
   const KEY = 'hvr-halloween-v1';
   const NAMES = ['Pompoenen','Heksen','Spoken','Vleermuizen','Skeletten','Spinnen','Zwarte katten','Vampiers','Geesten','Mummies','Kraaien','Schedels'];
-  const TRY_NAMES = ['Anna','Bram','Chris','Dana','Eva','Finn','Gina','Hugo','Iris','Joris','Karin','Lars','Mila','Noah','Olivia','Pim','Quinn','Roos','Sem','Tess','Uma','Vince','Wendy','Xander','Yara','Zoë','Abel','Bo','Cas','Daan','Elin','Floris','Gijs','Hanna','Ivo'];
+  const ROSTER = ['Leonie','Renate','Tessa','Mariska','Annemarchien','Janny','Petra','Ankie','Irene','Antoinette','Karin','Marjolein','Inge','Brandon','Joris','Sieger','Marco','Martijn M','Martijn F','Noam','Thom','Nyk','Gijs','Jeroen','Dennis','Erdem','Lola','Sanne','Elin','Ida','Kaylan','Mats','Aranka','Hannah'];
   const GEAR_ITEMS = [
     { id: 'touwtjes', name: 'Touwtjes' }, { id: 'pion', name: 'Pion' }, { id: 'hoepel', name: 'Hoepel' },
     { id: 'zaklamp', name: 'Zaklamp' }, { id: 'viltjes', name: 'Viltjes' }, { id: 'stift', name: 'Stift' },
@@ -562,7 +562,7 @@
     activeGameId: null, groupTarget: 5, view: 'players', modal: null,
     selectedPlayerId: null, renameGroupId: null, renameText: '', renamePlayerId: null, renamePlayerText: '',
     gameForm: null, score: null, undos: [], arm: null, armUntil: 0,
-    unlocked: false, flash: '', flashBad: false, draftName: '', restoreText: '', saveError: '', holdSave: false, find: '',
+    unlocked: false, flash: '', flashBad: false, draftName: '', listText: null, restoreText: '', saveError: '', holdSave: false, find: '',
     gear: [], gearSeeded: false, gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
     focusGroupId: null, askSplit: false, pendingCount: 0
   };
@@ -1085,6 +1085,51 @@
     return S.results.some(function (r) { return r.participantId === gid; });
   }
 
+  function cleanNameLine(line) {
+    let s = String(line || '').replace(/\u00a0/g, ' ').replace(/^[\s\-*•]+/, '').trim();
+    s = s.replace(/\s*\([^)]*\)\s*$/g, '').trim();
+    s = s.replace(/\s+\d+(?:[.,]\d+)?\s*euro\s*$/i, '').trim();
+    return s.replace(/\s+/g, ' ');
+  }
+  function namesFromList(text) {
+    const out = [];
+    const seen = {};
+    String(text || '').split(/\r?\n/).forEach(function (line) {
+      const name = cleanNameLine(line);
+      if (!name) return;
+      const key = name.toLowerCase();
+      if (seen[key]) return;
+      seen[key] = 1;
+      out.push(name);
+    });
+    return out;
+  }
+  function listBoxText() {
+    if (S.listText != null) return S.listText;
+    return S.players.length ? '' : ROSTER.join('\n');
+  }
+  function addNameList() {
+    const names = namesFromList(listBoxText());
+    if (!names.length) { flash('PLAK EERST NAMEN, ÉÉN PER REGEL', true); return; }
+    const ids = [];
+    let skipped = 0;
+    names.forEach(function (name) {
+      if (S.players.some(function (p) { return p.name.toLowerCase() === name.toLowerCase(); })) { skipped += 1; return; }
+      const id = uid();
+      S.players.push({ id: id, name: name });
+      ids.push(id);
+    });
+    S.listText = '';
+    if (!ids.length) { flash('DIE NAMEN STONDEN ER AL', true); save(); return; }
+    pushUndo({
+      kind: 'add-player',
+      id: ids[0],
+      ids: ids,
+      label: ids.length === 1 ? '1 naam is net toegevoegd. Tik om die weer weg te halen.' : ids.length + ' namen zijn net toegevoegd. Tik om die lijst weer weg te halen.'
+    });
+    save();
+    flash(ids.length + (ids.length === 1 ? ' TOEGEVOEGD' : ' TOEGEVOEGD') + (skipped ? '. ' + skipped + ' STOND ER AL.' : ''));
+  }
   function addPlayer() {
     const name = (S.draftName || '').trim().replace(/\s+/g, ' ');
     if (!name) { flash('TYP EERST EEN NAAM', true); return; }
@@ -1096,12 +1141,6 @@
     pushUndo({ kind: 'add-player', id: id, label: name + ' is net toegevoegd. Tik om die naam weer weg te halen.' });
     save();
     flash(dup ? 'TOEGEVOEGD. ER ZIJN ER NU TWEE MET DEZE NAAM.' : (S.results.length ? 'TOEGEVOEGD. OUDE SPELLEN TIK JE AFWEZIG ALS DIE ER NIET BIJ WAS.' : 'TOEGEVOEGD'));
-  }
-  function fillTryNames() {
-    if (S.players.length || TRY_NAMES.length !== 35) { flash('ER STAAT AL EEN NAAM. SIMULEREN BLIJFT WEG.', true); return; }
-    TRY_NAMES.forEach(function (name) { S.players.push({ id: uid(), name: name, try: true }); });
-    save();
-    flash('35 NAMEN OM TE OEFENEN');
   }
   function clearTryNames() {
     if (!S.players.some(function (p) { return p.try; })) return;
@@ -1118,7 +1157,7 @@
       S.orders[gid] = (S.orders[gid] || []).filter(function (id) { return !ids[id]; });
     });
     save();
-    flash('PROEFNAMEN WEG');
+    flash('OEFENNAMEN WEG');
   }
   function gearById(id) { return S.gear.find(function (g) { return g.id === id; }) || null; }
   function gearName(id) { const g = gearById(id); return g ? g.name : ''; }
@@ -1309,9 +1348,11 @@
       if (obj) obj.name = u.prev;
       save();
     } else if (u.kind === 'add-player') {
-      S.players = S.players.filter(function (p) { return p.id !== u.id; });
-      S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return id !== u.id; }); });
-      S.results = S.results.filter(function (r) { return r.participantId !== u.id; });
+      const ids = {};
+      (u.ids || [u.id]).forEach(function (id) { ids[id] = 1; });
+      S.players = S.players.filter(function (p) { return !ids[p.id]; });
+      S.groups.forEach(function (g) { g.playerIds = g.playerIds.filter(function (id) { return !ids[id]; }); });
+      S.results = S.results.filter(function (r) { return !ids[r.participantId]; });
       save();
     } else if (u.kind === 'del-player') {
       if (!playerById(u.player.id)) S.players.push(u.player);
@@ -1983,11 +2024,7 @@
         : '<button class="side calm" type="button" data-act="ask-out" data-what="player" data-id="' + esc(p.id) + '">STOPT</button>';
       return '<div class="row"><button class="grow person" style="background:#333;color:#fff" type="button" data-hold="player" data-act="start-player-rename" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + esc(p.name) + '</span>' + stopped + '</span></button>' + stopBtn + '<button class="side danger" type="button" data-act="ask-del" data-what="player" data-id="' + esc(p.id) + '">WEG</button></div>';
     }).join('');
-    const hasReal = S.players.some(function (p) { return !p.try; });
-    const tryBlock = S.players.length
-      ? (hasReal ? '<p class="hint">Simuleren met 35 namen staat uit zolang er namen in de lijst staan.</p>' : '')
-      : '<button class="purp" type="button" data-act="try-names">SIMULEER 35 NAMEN</button><p class="hint">Om te oefenen. Dit blijft weg zodra er een naam in de lijst staat.</p>';
-    const clearBlock = S.players.some(function (p) { return p.try; }) ? '<button class="danger" type="button" data-act="clear-try">' + armLabel('clear-try', 'PROEFNAMEN WEG', 'ZEKER PROEFNAMEN WEG?') + '</button>' : '';
+    const clearBlock = S.players.some(function (p) { return p.try; }) ? '<button class="danger" type="button" data-act="clear-try">' + armLabel('clear-try', 'OEFENNAMEN WEG', 'ZEKER OEFENNAMEN WEG?') + '</button>' : '';
     const typedName = (S.draftName || '').trim().replace(/\s+/g, ' ');
     const dupNow = !!typedName && S.players.some(function (p) { return p.name.toLowerCase() === typedName.toLowerCase(); });
     const addLabel = dupNow ? armLabel('dup:' + typedName.toLowerCase(), 'DEZE NAAM BESTAAT AL', 'TOCH TOEVOEGEN') : 'TOEVOEGEN';
@@ -1997,7 +2034,10 @@
       '<p class="numbig">' + S.players.length + ' aangemeld' + (nOut ? ' · ' + nOut + ' gestopt' : '') + '</p>' +
       '<div class="pin"><div class="row"><input class="field grow" id="playerName" placeholder="Naam" autocapitalize="words" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" value="' + esc(S.draftName) + '"><button class="side pump" type="button" data-act="add-player">＋</button></div>' +
       '<button class="go" type="button" data-act="add-player">' + addLabel + '</button></div>' +
-      '<div class="stack" style="margin-top:10px">' + tryBlock + clearBlock + rows +
+      '<textarea class="field" id="playerList" style="min-height:220px;margin-top:10px" placeholder="Plak een lijst, één naam per regel" autocapitalize="words" autocomplete="off" autocorrect="off" spellcheck="false">' + esc(listBoxText()) + '</textarea>' +
+      '<button class="pump" type="button" data-act="add-list">LIJST TOEVOEGEN</button>' +
+      '<p class="hint">Eén naam per regel. (5,00) of 5 euro aan het eind laat hij weg. Een naam die er al staat slaat hij over.</p>' +
+      '<div class="stack" style="margin-top:10px">' + clearBlock + rows +
       '</div></div><footer><button class="purp" type="button" data-act="goto" data-view="groups">GROEPEN →</button><button class="calm" type="button" data-act="goto" data-view="backup">💾 BACKUP</button>' + playBtn() + '</footer>';
   }
   function viewGroups() {
@@ -2835,6 +2875,7 @@
       return;
     }
     if (act === 'add-player') { addPlayer(); return; }
+    if (act === 'add-list') { addNameList(); return; }
     if (act === 'goto' || act === 'goto-free') { gotoView(t.dataset.view, act === 'goto-free'); return; }
     if (act === 'target') { S.groupTarget = clamp((Number(S.groupTarget) || 1) + Number(t.dataset.delta), 1, 12); S.arm = null; save(); render(); return; }
     if (act === 'deal') { deal(false); return; }
@@ -2891,7 +2932,6 @@
     }
     if (act === 'form-nosein') { S.gameForm.signalM = 0; S.gameForm.signalS = 0; render(); return; }
     if (act === 'save-game') { saveGameForm(); return; }
-    if (act === 'try-names') { fillTryNames(); return; }
     if (act === 'clear-try') { clearTryNames(); return; }
     if (act === 'gear-open') {
       S.gearOpen = S.gearOpen === t.dataset.id ? null : t.dataset.id;
@@ -3153,6 +3193,7 @@
   });
   document.addEventListener('input', function (e) {
     if (e.target.id === 'playerName') S.draftName = e.target.value;
+    if (e.target.id === 'playerList') S.listText = e.target.value;
     if (e.target.id === 'playerRename') S.renamePlayerText = e.target.value;
     if (e.target.id === 'gameName' && S.gameForm) S.gameForm.name = e.target.value;
     if (e.target.id === 'renameInput') S.renameText = e.target.value;
@@ -3377,6 +3418,10 @@
     eq(shortName('Zwarte katten', 5), 'Zwarte katten', 'naam katten');
     eq(shortName('Pompoenen', 6), 'Pompoenen', 'naam 6');
     eq(shortName('Annemarietje', 7), 'Annemarie…', 'naam lang');
+    eq(cleanNameLine('Leonie (5,00)'), 'Leonie', 'bedrag weg');
+    eq(cleanNameLine('Hannah (5 euro)'), 'Hannah', 'euro weg');
+    eq(namesFromList('Martijn M\nMartijn F\nMartijn M').join('|'), 'Martijn M|Martijn F', 'dubbel in lijst');
+    eq(ROSTER.length, 34, 'lijst 34');
     eq(readStored('{'), null, 'kapotte tekst');
     eq(readStored('[]'), null, 'geen lijst');
     eq(!!readStored('{"players":[]}'), true, 'goede tekst');
