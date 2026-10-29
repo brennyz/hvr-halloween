@@ -1,4 +1,4 @@
-const CACHE = 'hvr-halloween-2';
+const CACHE = 'hvr-halloween-3';
 const FILES = [
   './',
   './index.html',
@@ -27,15 +27,18 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
   if (event.request.method !== 'GET') return;
-  event.respondWith(fetch(event.request).then(function (res) {
-    const copy = res.clone();
-    caches.open(CACHE).then(function (cache) { cache.put(event.request, copy); });
-    return res;
-  }).catch(function () {
-    return caches.match(event.request).then(function (hit) {
-      if (hit) return hit;
-      if (event.request.mode === 'navigate') return caches.match('./index.html');
-      return new Response('', { status: 504, statusText: 'offline' });
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+  event.respondWith(caches.open(CACHE).then(function (cache) {
+    return fetch(event.request.url, { cache: 'no-store', credentials: 'same-origin', redirect: 'follow' }).then(function (res) {
+      if (res && res.ok) cache.put(event.request, res.clone()).catch(function () {});
+      return res;
+    }).catch(function () {
+      return cache.match(event.request).then(function (hit) {
+        if (hit) return hit;
+        if (event.request.mode === 'navigate') return cache.match('./index.html');
+        return new Response('', { status: 504, statusText: 'offline' });
+      });
     });
   }));
 });
