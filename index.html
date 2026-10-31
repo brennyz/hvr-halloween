@@ -57,6 +57,7 @@
     color: #fff;
     width: 100%;
     text-align: left;
+    touch-action: manipulation;
   }
   button:active { transform: scale(0.98); }
   button.on { outline: 4px solid #fff; }
@@ -74,7 +75,7 @@
     button:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
   }
   h1 { font-size: 2.15rem; line-height: 1.2; margin: 4px 0 8px; letter-spacing: -0.02em; }
-  h2 { font-size: 1.15rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: 0.04em; }
+  h2 { font-size: 1.35rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: 0.04em; }
   p { margin: 0 0 10px; font-size: 1.12rem; font-weight: 650; line-height: 1.4; }
   #app {
     position: fixed;
@@ -297,6 +298,8 @@
   .stand-name { font-size: 2rem; font-weight: 800; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   button.podium { width: 100%; color: inherit; text-align: left; }
   button.podium.zero { opacity: 0.55; }
+  button.podium.team.zero { opacity: 1; }
+  button.podium.team .stand-name { white-space: normal; }
   button.podium.isout { box-shadow: inset 0 0 0 3px #666; }
   .stand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
   .stand-grid .place { width: 56px; height: 56px; font-size: 1.45rem; }
@@ -338,7 +341,17 @@
     font-weight: 900; font-size: 1.05rem;
   }
   .tag button, .reuse button { width: auto; min-height: 52px; border-radius: 999px; padding: 8px 12px; }
-  .gearline { background: #3a2208; border-radius: 14px; padding: 10px 12px; }
+  button.backtop { position: sticky; top: 0; z-index: 6; width: 100%; min-height: 64px; margin: 0 0 10px; text-align: center; font-size: 1.55rem; background: #2a2a2a; border: 3px solid var(--orange); color: #fff; }
+  .now { margin: 4px 0 0; font-size: 1.45rem; font-weight: 900; color: var(--orange); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lead { margin: 0 0 8px; font-size: 1.5rem; font-weight: 900; color: var(--orange); }
+  .scoreline { margin: 0 0 8px; font-size: 1.25rem; font-weight: 900; color: #fff; line-height: 1.25; }
+  button.quiet { background: transparent; color: #c8c8c8; border: 0; min-height: 48px; font-size: 1.05rem; text-align: center; }
+  .namecloud { display: flex; flex-wrap: wrap; gap: 8px; }
+  .namecloud button.cloud { width: auto; min-height: 52px; padding: 8px 16px; border-radius: 999px; background: #2a2a2a; color: #fff; font-size: 1.45rem; }
+  .namecloud button.cloud.isout { opacity: 0.45; }
+  .loosebox { background: #3a2208; border: 3px solid var(--orange); border-radius: 16px; padding: 10px; margin: 0 0 12px; }
+  .loosebox .loose-title { margin: 0 0 8px; font-size: 1.35rem; font-weight: 900; color: var(--orange); }
+  .gearline { background: #3a2208; border-radius: 14px; padding: 12px 14px; font-size: 1.4rem; font-weight: 800; line-height: 1.3; }
   .gearline b { color: var(--orange); }
   .advice { margin-top: 18px; padding-top: 12px; border-top: 3px solid #333; }
   .corners { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
@@ -388,7 +401,9 @@
     z-index: 2;
     text-align: center;
     overflow: hidden;
+    pointer-events: none;
   }
+  .ring-center button, .ring-center input { pointer-events: auto; }
   .ring-center .ring-ico { font-size: clamp(2rem, 6vh, 3.2rem); line-height: 1; }
   .ring-center .ring-label {
     margin: 2px 0 0;
@@ -404,10 +419,16 @@
     width: var(--seat, 28%);
     transform: translate(-50%, -50%);
     z-index: 1;
-    padding: 4px 8px;
+    min-height: 64px;
+    padding: 8px 10px;
     line-height: 1;
     text-align: center;
-    overflow: hidden;
+    overflow: visible;
+  }
+  .ring-seat::before {
+    content: "";
+    position: absolute;
+    inset: -16px;
   }
   .ring-seat .ico { display: block; font-size: clamp(1.15rem, 2.4vh, 1.6rem); line-height: 1; }
   .ring-seat .seat-name {
@@ -432,10 +453,15 @@
   .emblem.on, .ring-seat.live { outline: 4px solid var(--orange); }
   .ring-seat.last { outline: 4px solid var(--green); background: var(--green); color: #141414; }
   .choice .sub, .stack .sub { display: block; font-size: 1rem; font-weight: 700; opacity: 0.95; }
+  .choice .sub { font-size: 1.2rem; }
+  .stand-grid .sub { font-size: 1.25rem; opacity: 1; }
   .ico-inline { font-size: 1.4rem; }
   .heats { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 8px; -webkit-overflow-scrolling: touch; }
   .heats button { width: auto; flex: 0 0 auto; min-height: 64px; max-width: 240px; padding: 8px 14px; font-size: 1.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .heats button.on { background: var(--orange); color: #141414; border-color: var(--orange); }
+  .heats button.loose { border-style: dashed; color: var(--orange); }
+  .heats button.loose.on { color: #141414; border-style: solid; }
+  .ring-copy h1 { font-size: clamp(1.8rem, 4.2vw, 2.6rem); line-height: 1.05; }
   .chip.isout { opacity: 0.55; }
   .leavers { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
   .leavers button { width: auto; min-height: 52px; }
@@ -469,6 +495,8 @@
     .group-ring { container-type: size; min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
     .group-layout .ring.ring-groups { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); max-width: 100%; margin: 0; }
     .group-names { overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .heats { flex-wrap: wrap; overflow: visible; }
+    .heats button { flex: 1 1 46%; max-width: none; white-space: normal; text-align: center; line-height: 1.15; }
     .ring { width: min(100%, calc(var(--vvh, 100dvh) - 210px)); }
     .scroll.ask-open { overflow: auto; display: block; }
     .scroll.ask-open .group-layout { display: block; }
@@ -477,6 +505,8 @@
   @media (max-width: 999px) {
     .ring.ring-groups { width: min(100%, 520px, calc(var(--vvh, 100dvh) - 320px)); }
     .topbar .fs { min-width: 132px; font-size: 1.1rem; }
+    .heats { flex-wrap: wrap; overflow: visible; }
+    .heats button { flex: 1 1 46%; max-width: none; white-space: normal; text-align: center; line-height: 1.15; }
   }
   @media (max-height: 860px) {
     h1 { font-size: 1.7rem; }
@@ -484,6 +514,33 @@
     .score-num { font-size: 3rem; }
     footer button { min-height: 46px; }
     .bubble { width: 42px; height: 42px; min-height: 42px; font-size: 1.3rem; }
+    .now { font-size: 1.2rem; margin-top: 0; }
+  }
+  .ring-screen { display: flex; flex-direction: column; overflow: auto; }
+  .ring-copy { flex: 0 0 auto; }
+  .ring-slot {
+    container-type: size;
+    flex: 1 1 auto;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ring-slot .ring {
+    width: min(100cqw, 100cqh);
+    height: min(100cqw, 100cqh);
+    max-width: 100%;
+    margin: 0;
+  }
+  @media (min-width: 1000px) and (max-height: 920px) {
+    .ring-screen {
+      display: grid;
+      grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+      align-items: stretch;
+      overflow: hidden;
+    }
+    .ring-copy { overflow: auto; min-height: 0; }
+    .ring-slot { min-height: 0; height: 100%; }
   }
 </style>
 <script>
@@ -513,7 +570,14 @@
 (function () {
   const KEY = 'hvr-halloween-v1';
   const NAMES = ['Pompoenen','Heksen','Spoken','Vleermuizen','Skeletten','Spinnen','Zwarte katten','Vampiers','Geesten','Mummies','Kraaien','Schedels'];
-  const ROSTER = ['Leonie','Renate','Tessa','Mariska','Annemarchien','Janny','Petra','Ankie','Irene','Antoinette','Karin','Marjolein','Inge','Brandon','Joris','Sieger','Marco','Martijn M','Martijn F','Noam','Thom','Nyk','Gijs','Jeroen','Dennis','Erdem','Lola','Sanne','Elin','Ida','Kaylan','Mats','Aranka','Hannah'];
+  const ROSTER = ['Leonie','Renate','Tessa','Mariska','Annemarchien','Janny','Petra','Ankie','Irene','Antoinette','Karin','Marjolein','Inge','Brendon','Joris','Sieger','Marco','Martijn M','Martijn F','Noam','Thom','Nyk','Gijs','Jeroen','Dennis','Erdem','Lola','Sanne','Elin','Ida','Kaylan','Mats','Aranka','Hannah'];
+  const TEAMS = [
+    { name: 'Heksen klein', names: ['Lola', 'Renate', 'Janny', 'Marjolein', 'Martijn M', 'Gijs'] },
+    { name: 'Pompoenen', names: ['Ida', 'Leonie', 'Petra', 'Sieger', 'Martijn F', 'Jeroen'] },
+    { name: 'Skeletten', names: ['Elin', 'Tessa', 'Ankie', 'Joris', 'Aranka', 'Dennis'] },
+    { name: 'Spoken', names: ['Sanne', 'Irene', 'Brendon', 'Thom', 'Antoinette'] },
+    { name: 'Vleermuizen groot', names: ['Kaylan', 'Annemarchien', 'Hannah', 'Marco', 'Nyk', 'Mats'] }
+  ];
   const GEAR_ITEMS = [
     { id: 'touwtjes', name: 'Touwtjes' }, { id: 'pion', name: 'Pion' }, { id: 'hoepel', name: 'Hoepel' },
     { id: 'zaklamp', name: 'Zaklamp' }, { id: 'viltjes', name: 'Viltjes' }, { id: 'stift', name: 'Stift' },
@@ -523,9 +587,26 @@
     { id: 'pen', name: 'Pen' }, { id: 'papier', name: 'Papier' }, { id: 'touw', name: 'Touw' },
     { id: 'blokje', name: 'Blokje' }, { id: 'tennisbal', name: 'Tennisbal' }, { id: 'medicijnbal', name: 'Medicijnbal' },
     { id: 'tape', name: 'Tape' }, { id: 'muziek', name: 'Muziek' }, { id: 'box', name: 'Box' },
-    { id: 'ballen', name: 'Ballen' }, { id: 'manden', name: 'Korfbalmanden' }
+    { id: 'ballen', name: 'Ballen' }, { id: 'manden', name: 'Korfbalmanden' },
+    { id: 'zinnen', name: 'Zinnen' }, { id: 'lamp', name: 'Lamp' }, { id: 'muziekbox', name: 'Muziekbox' }
   ];
   const GEAR_FOR = {
+    been: [],
+    stok: ['ballen', 'stokken'],
+    touw: ['touwtjes'],
+    mat: ['matten'],
+    pion: ['pionnen', 'hoepel'],
+    zin: ['pen', 'papier', 'zinnen', 'pionnen'],
+    koekoek: ['lamp'],
+    curl: ['touw', 'blokje', 'tennisbal', 'medicijnbal', 'pionnen', 'hoepel'],
+    vilt: ['viltjes', 'pionnen'],
+    dans: ['muziekbox', 'hoepel'],
+    ballon: ['ballon', 'knikker', 'hoepel'],
+    race: ['hoepel'],
+    tellen: ['telefoon'],
+    pong: ['manden', 'handballen', 'pionnen']
+  };
+  const OLD_GEAR = {
     been: [],
     stok: ['handballen', 'stokken'],
     touw: ['touwtjes'],
@@ -542,20 +623,20 @@
     koekoek: ['zaklamp']
   };
   const PROGRAM = [
-    { id: 'been', name: 'Op 1 been', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik wie gaat zitten. De laatste is 1e.' },
-    { id: 'stok', name: 'Bal op stokken', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Bal naar de overkant, alleen met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Het eerste is 1e.' },
-    { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Blijf springen. Stop je, dan ben je af. Tik wie gaat zitten. De laatste is 1e.' },
-    { id: 'mat', name: 'Oversteken op matten', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Twee matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Het eerste is 1e.' },
-    { id: 'pion', name: 'Pion op je hand', participantType: 'solo', mode: 'elim', aboutMin: 5, hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
-    { id: 'zin', name: 'Zin doorgeven', participantType: 'group', mode: 'points', aboutMin: 10, hint: 'Twee rondes. Fluister de zin door. Het laatste teamlid schrijft hem op. Vul daarna de punten van het team in.' },
-    { id: 'vilt', name: 'Viltjes werpen', participantType: 'solo', mode: 'points', aboutMin: 10, hint: 'Naam op het viltje. Over de helft, op de kleur die wordt geroepen. Vul daarna de punten in.' },
-    { id: 'curl', name: 'Curling', participantType: 'group', mode: 'points', aboutMin: 10, hint: 'Touw 1, blok 2, medicijnbal 3, tennisbal 4. Twee rondes. Vul het totaal van het team in.' },
-    { id: 'ballon', name: 'Ballon in de hoepel', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
-    { id: 'dans', name: 'Hoepeldans', participantType: 'solo', mode: 'elim', aboutMin: 10, hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik wie af is. De laatste is 1e.' },
-    { id: 'tellen', name: '2:30 tellen', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. Vul die tijd in. Dichtst bij 2:30 wint.' },
-    { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Het eerste is 1e.' },
-    { id: 'pong', name: 'Korfbalmand pong', participantType: 'group', mode: 'points', aboutMin: 15, hint: 'Elk team alleen. Zoveel mogelijk ballen in de manden. Vul het totaal in.' },
-    { id: 'koekoek', name: 'Anna Maria Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, hint: 'Donker. Iedereen kruipt. Bij “Anna Maria Koekoek” stilstaan. Wie beweegt is af. Tik wie af is. De laatste is 1e.' }
+    { id: 'been', name: 'Op 1 been staan', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Niks nodig.', hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'stok', name: 'Bal op stokken dragen', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 5, pack: '5 ballen en 30 stokken.', hint: 'Bal naar de overkant met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: '30 springtouwen.', hint: 'Blijf springen. Stop je, dan ben je af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'mat', name: '2 matten zaal oversteken', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '12 matten. Elke groep gebruikt er 2.', hint: 'Elke groep steekt de zaal over met 2 matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Het eerste is 1e.' },
+    { id: 'pion', name: 'Pion balanceren op hand', participantType: 'solo', mode: 'elim', aboutMin: 5, pack: '30 pionnen en 30 hoepels.', hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'zin', name: 'Zin doorgeven en opschrijven', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Pen, papier, de zinnen en 10 pionnen.', hint: 'Fluister de zin door. Het laatste teamlid schrijft hem op. Vul daarna de punten van het team in.' },
+    { id: 'koekoek', name: 'Annemarie Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, pack: 'Alleen de lamp.', hint: 'Donker. Iedereen kruipt. Bij “Annemarie Koekoek” stilstaan. Wie beweegt is af. Tik wie af is. De laatste is 1e.' },
+    { id: 'curl', name: 'Curling met 6 voorwerpen', participantType: 'group', mode: 'points', aboutMin: 10, lanes: 5, pack: 'Van elk 5: touw, blokje, tennisbal, medicijnbal, pion en hoepel.', hint: 'Zes voorwerpen: touw, blokje, tennisbal, medicijnbal, pion en hoepel. Vul het totaal van het team in.' },
+    { id: 'vilt', name: 'Viltjes werpen', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Viltjes met de groepsnaam, en 6 pionnen om het midden.', hint: 'Viltje met de groepsnaam. Over de helft, op de kleur die wordt geroepen. Vul daarna de punten van het team in.' },
+    { id: 'dans', name: 'Hoepeldans op muziek', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Muziekbox en 29 hoepels.', hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'ballon', name: 'Ballon hooghouden met knikker erin', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Ballonnen met een knikker erin. Ze liggen in 2 manden. En 30 hoepels.', hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '6 hoepels.', hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'tellen', name: '2,30 minuten tellen in je hoofd', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, pack: 'Niks meenemen. Tijd op de telefoon. Inge filmt.', hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. De tijd gaat op de telefoon, Inge filmt. Vul die tijd in. Dichtst bij 2:30 wint.' },
+    { id: 'pong', name: 'Korfbalmand pong', participantType: 'group', mode: 'points', aboutMin: 15, lanes: 1, pack: '6 korfbalmanden, 15 handballen en 2 pionnen als werplijn.', hint: 'Eén werplijn met 2 pionnen. Zoveel mogelijk handballen in de 6 manden. De teams gaan om de beurt. Vul het totaal in.' }
   ];
   const S = {
     players: [], groups: [], games: [], results: [], watches: {}, orders: {},
@@ -563,7 +644,7 @@
     selectedPlayerId: null, renameGroupId: null, renameText: '', renamePlayerId: null, renamePlayerText: '',
     gameForm: null, score: null, undos: [], arm: null, armUntil: 0,
     unlocked: false, flash: '', flashBad: false, draftName: '', listText: null, restoreText: '', saveError: '', holdSave: false, find: '',
-    gear: [], gearSeeded: false, gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
+    gear: [], gearSeeded: false, programRev: 0, teamsRev: 0, backView: '', gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
     focusGroupId: null, askSplit: false, pendingCount: 0
   };
   let drag = null;
@@ -573,7 +654,9 @@
   let flashTimer = 0;
 
   function uid() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    try {
+      if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    } catch (e) {}
     return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
   }
   function esc(s) {
@@ -607,6 +690,8 @@
       orders: S.orders,
       gear: S.gear,
       gearSeeded: !!S.gearSeeded,
+      programRev: S.programRev || 0,
+      teamsRev: S.teamsRev || 0,
       activeGameId: S.activeGameId,
       groupTarget: S.groupTarget
     };
@@ -702,6 +787,8 @@
       return { id: String(g.id), name: String(g.name || '').trim() };
     }).filter(function (g) { return g.id && g.name; });
     S.gearSeeded = !!obj.gearSeeded;
+    S.programRev = Math.max(0, Number(obj.programRev) || 0);
+    S.teamsRev = Math.max(0, Number(obj.teamsRev) || 0);
     S.activeGameId = obj.activeGameId || null;
     S.groupTarget = clamp(obj.groupTarget || S.groups.length || 5, 1, 12);
     normalize();
@@ -763,7 +850,112 @@
     });
     S.gear = GEAR_ITEMS.map(function (g) { return { id: g.id, name: g.name }; });
     S.gearSeeded = true;
+    S.programRev = 3;
     S.activeGameId = S.games[0].id;
+  }
+  function sheetGame(id) {
+    for (let i = 0; i < PROGRAM.length; i++) if (PROGRAM[i].id === id) return PROGRAM[i];
+    return null;
+  }
+  function sameGear(a, b) {
+    a = a || [];
+    b = b || [];
+    return a.length === b.length && a.every(function (id, i) { return id === b[i]; });
+  }
+  function committeeOrder(ids) {
+    const rank = {};
+    PROGRAM.forEach(function (g, i) { rank[g.id] = i; });
+    const known = PROGRAM.map(function (g) { return g.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
+    const extra = ids.filter(function (id) { return rank[id] == null; });
+    return known.concat(extra);
+  }
+  function syncProgram() {
+    if (!S.games.length || (S.programRev || 0) >= 3) return;
+    GEAR_ITEMS.forEach(function (item) {
+      const have = S.gear.find(function (g) { return g.id === item.id; });
+      if (!have) S.gear.push({ id: item.id, name: item.name });
+      else have.name = item.name;
+    });
+    S.games.forEach(function (g) {
+      const src = sheetGame(g.id);
+      if (!src) return;
+      g.name = src.name;
+      g.hint = src.hint;
+      g.dark = !!src.dark;
+      g.aboutMin = src.aboutMin;
+      g.targetSec = src.targetSec || 0;
+      if (g.mode !== src.mode) {
+        g.mode = src.mode;
+        g.scoreType = src.mode === 'closest' ? 'time' : 'points';
+        g.sort = src.mode === 'closest' ? 'low' : 'high';
+      }
+      if (g.participantType !== src.participantType) g.participantType = src.participantType;
+      const gear = (GEAR_FOR[g.id] || []).slice();
+      if (!g.gearIds.length || sameGear(g.gearIds, OLD_GEAR[g.id]) || sameGear(g.gearIds, gear)) g.gearIds = gear;
+    });
+    const ids = S.games.map(function (g) { return g.id; });
+    const ordered = committeeOrder(ids);
+    const byId = {};
+    S.games.forEach(function (g) { byId[g.id] = g; });
+    S.games = ordered.map(function (id, i) {
+      const g = byId[id];
+      if (g) g.order = i;
+      return g;
+    }).filter(Boolean);
+    S.programRev = 3;
+    normalize();
+    save();
+  }
+  function nameKey(name) {
+    const key = String(name || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    if (key === 'brandon' || key === 'brendon') return 'brendon';
+    return key;
+  }
+  function ensurePlayer(name) {
+    const key = nameKey(name);
+    let p = S.players.find(function (pl) { return nameKey(pl.name) === key; });
+    if (!p) {
+      p = { id: uid(), name: name };
+      S.players.push(p);
+      return p;
+    }
+    if (key === 'brendon' && p.name !== 'Brendon') p.name = 'Brendon';
+    return p;
+  }
+  function applySheetTeams() {
+    if ((S.teamsRev || 0) >= 1) return;
+    ROSTER.forEach(ensurePlayer);
+    const used = {};
+    const nextGroups = TEAMS.map(function (team) {
+      const existing = S.groups.find(function (g) {
+        const gn = nameKey(g.name);
+        const tn = nameKey(team.name);
+        return gn === tn || gn === tn.split(' ')[0];
+      });
+      const ids = team.names.map(function (name) {
+        const p = ensurePlayer(name);
+        used[p.id] = 1;
+        return p.id;
+      });
+      return { id: existing ? existing.id : uid(), name: team.name, playerIds: ids, out: existing ? !!existing.out : false };
+    });
+    const kept = S.groups.filter(function (g) {
+      return !nextGroups.some(function (n) { return n.id === g.id; }) && groupHasScore(g.id);
+    }).map(function (g) {
+      return {
+        id: g.id,
+        name: g.name,
+        playerIds: (g.playerIds || []).filter(function (id) { return !used[id]; }),
+        out: !!g.out
+      };
+    });
+    S.groups = nextGroups.concat(kept);
+    S.groupTarget = 5;
+    S.askSplit = false;
+    S.teamsRev = 1;
+    if (!groupById(S.focusGroupId) && S.groups[0]) S.focusGroupId = S.groups[0].id;
+    normalize();
+    save();
   }
   function ensureGear() {
     if (S.gearSeeded) return;
@@ -956,12 +1148,32 @@
       if (map[row.id]) map[row.id].pts += row.medal;
     });
   }
-  function overallAll(type) {
+  function soloFeedsTeam(game) {
+    return !!(game && game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') && countsOnStand(game));
+  }
+  function addTeamFromPlayers(map) {
+    S.games.forEach(function (g) {
+      if (!soloFeedsTeam(g)) return;
+      S.results.forEach(function (r) {
+        if (r.gameId !== g.id || r.status !== 'done') return;
+        const gid = groupIdOfPlayer(r.participantId);
+        if (!gid || gid === 'none' || !map[gid]) return;
+        map[gid].pts += Math.max(0, Number(r.points) || 0);
+      });
+    });
+  }
+  function standMap(type) {
     const people = type === 'group' ? S.groups : S.players;
-    const games = S.games.filter(function (g) { return g.participantType === type; });
     const map = {};
     people.forEach(function (p) { map[p.id] = { id: p.id, name: p.name, pts: 0, sub: standSub(p, type), out: !!p.out }; });
-    games.forEach(function (g) { addStandPoints(g, map); });
+    S.games.forEach(function (g) {
+      if (g.participantType === type) addStandPoints(g, map);
+    });
+    if (type === 'group') addTeamFromPlayers(map);
+    return map;
+  }
+  function overallAll(type) {
+    const map = standMap(type);
     const rows = Object.keys(map).map(function (k) { return map[k]; });
     rows.sort(function (a, b) { return b.pts - a.pts || a.name.localeCompare(b.name, 'nl'); });
     let rank = 0;
@@ -972,11 +1184,7 @@
     return rows;
   }
   function overallTop(type) {
-    const people = type === 'group' ? S.groups : S.players;
-    const games = S.games.filter(function (g) { return g.participantType === type; });
-    const map = {};
-    people.forEach(function (p) { map[p.id] = { id: p.id, name: p.name, pts: 0, sub: standSub(p, type), out: !!p.out }; });
-    games.forEach(function (g) { addStandPoints(g, map); });
+    const map = standMap(type);
     const scored = Object.keys(map).map(function (k) { return map[k]; }).filter(function (x) { return x.pts > 0; });
     scored.sort(function (a, b) { return b.pts - a.pts || a.name.localeCompare(b.name, 'nl'); });
     let rank = 0;
@@ -1046,7 +1254,7 @@
   function ringBox(n, seats, center, extra) {
     return '<div class="ring' + (extra ? ' ' + extra : '') + '" style="--seat:' + seatSize(n) + '%">' + seats + '<div class="ring-center">' + center + '</div></div>';
   }
-  function parallelChoices(n) {
+  function parallelChoices(n, game) {
     const opts = [{ n: 1, text: '1 tegelijk', sub: n + (n === 1 ? ' ronde' : ' rondes') + ', om de beurt' }];
     if (n >= 4) {
       const rounds = Math.ceil(n / 2);
@@ -1058,14 +1266,33 @@
       const rest = n % 3;
       opts.push({ n: 3, text: '3 tegelijk', sub: rest ? (rounds + ' rondes, laatste ronde ' + rest + (rest === 1 ? ' groep' : ' groepen')) : (rounds + ' rondes') });
     }
-    if (n > 1) opts.push({ n: n, text: 'Alle ' + n, sub: 'één ronde, allemaal tegelijk' });
+    const src = game && sheetGame(game.id);
+    const lanes = src && src.lanes;
+    if (lanes > 1 && lanes < n && !opts.some(function (o) { return o.n === lanes; })) {
+      const rounds = Math.ceil(n / lanes);
+      const rest = n % lanes;
+      opts.push({
+        n: lanes,
+        text: lanes + ' tegelijk',
+        sub: rest ? (rounds + ' rondes, laatste ronde ' + rest + (rest === 1 ? ' groep' : ' groepen')) : (rounds + ' rondes')
+      });
+    }
+    if (n > 1 && !opts.some(function (o) { return o.n === n; })) opts.push({ n: n, text: 'Alle ' + n, sub: 'één ronde, allemaal tegelijk' });
+    opts.sort(function (a, b) { return a.n - b.n; });
     return opts;
   }
   function suggestedParallel(game, n) {
-    const hint = ((game && game.hint) || '') + ' ' + ((game && game.name) || '');
-    if (/alleen/i.test(hint)) return 1;
-    if (/twee matten/i.test(hint) || (game && game.id === 'mat')) return Math.min(2, n);
-    return 0;
+    const src = game && sheetGame(game.id);
+    const lanes = src && src.lanes;
+    if (!lanes) return 0;
+    if (lanes === 1) return 1;
+    if (lanes >= n) return n;
+    return lanes;
+  }
+  function packHtml(game) {
+    const src = game && sheetGame(game.id);
+    if (!src || !src.pack) return '';
+    return '<p class="gearline"><b>Pak klaar</b> ' + esc(src.pack) + '</p>';
   }
   function armed(key, note) {
     if (S.arm === key && Date.now() < S.armUntil) { S.arm = null; S.armNote = ''; return true; }
@@ -1995,6 +2222,7 @@
       return;
     }
     if (view === 'action' && !S.games.length) view = 'players';
+    if (view !== S.view) S.backView = S.view;
     S.view = view;
     S.modal = null;
     S.gameForm = null;
@@ -2006,6 +2234,11 @@
     if (S.saveError) return '<div class="err">' + esc(S.saveError) + '</div>';
     if (!S.flash) return '';
     return '<div class="flash' + (S.flashBad ? ' bad' : '') + '">' + esc(S.flash) + '</div>';
+  }
+  function backBtn(fallback) {
+    const dest = (S.backView && VIEWS[S.backView] && S.backView !== S.view) ? S.backView : (fallback || '');
+    if (!dest || dest === S.view || !VIEWS[dest]) return '';
+    return '<button class="backtop" type="button" data-act="goto" data-view="' + esc(dest) + '">← TERUG</button>';
   }
   function playBtn() {
     if (!S.games.length) return '';
@@ -2092,7 +2325,13 @@
       const center = focus
         ? '<div class="ring-ico">' + groupIcon(focus.name) + '</div><p class="ring-label">' + esc(focus.name) + '</p>'
         : '<p class="ring-label">Tik een groep</p>';
-      circle = '<div class="group-layout"><div class="group-ring">' + ringBox(S.groups.length, seats, center, 'ring-groups') + '</div><div class="group-names">';
+      let looseHtml = '';
+      if (loose.length) {
+        const looseHere = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
+          ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER BIJ LOS</button>' : '';
+        looseHtml = '<div class="loosebox"><p class="loose-title">NOG NIET IN EEN TEAM · ' + loose.length + '</p><p class="hint">Tik een naam, dan Hier bij de groep.</p>' + looseHere + chips(loose.map(function (p) { return p.id; })) + '</div>';
+      }
+      circle = '<div class="group-layout"><div class="group-ring">' + ringBox(S.groups.length, seats, center, 'ring-groups') + '</div><div class="group-names">' + looseHtml;
       if (focus) {
         if (S.renameGroupId === focus.id) {
           circle += '<div class="stack" style="margin-top:8px"><input class="field" id="renameInput" value="' + esc(S.renameText) + '"><button class="go" type="button" data-act="save-rename" data-id="' + esc(focus.id) + '">KLAAR</button></div>';
@@ -2105,21 +2344,14 @@
             '<button class="danger" type="button" data-act="ask-del" data-what="group" data-id="' + esc(focus.id) + '">GROEP WEG</button></div>';
         }
       }
-      if (loose.length) {
-        const looseHere = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
-          ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER BIJ LOS</button>' : '';
-        circle += '<p class="hint">Nog los</p>' + looseHere + chips(loose.map(function (p) { return p.id; }));
-      }
       circle += tools + '</div></div>';
     }
     return undoBar() + '<div class="scroll' + (ask && circle ? ' ask-open' : '') + '">' + flashHtml() +
       question +
       (ask ? '' : '<h1>Groepen</h1>') +
-      '<p class="hint">' + S.players.length + ' spelers. ' + esc(splitText(S.players.length, S.groups.length || clamp(S.groupTarget, 1, 12))) + (circle
-        ? (S.selectedPlayerId
-          ? (' Gekozen: ' + esc((playerById(S.selectedPlayerId) || {}).name || '') + '.')
-          : ' Tik een icoon.')
-        : ' Kies 5 of 6.') + '</p>' +
+      '<p class="hint">' + (circle
+        ? (S.groups.length + (S.groups.length === 1 ? ' team. ' : ' teams. ') + (loose.length ? (loose.length + ' nog niet ingedeeld.') : 'Iedereen zit in een team.') + (S.selectedPlayerId ? (' Gekozen: ' + esc((playerById(S.selectedPlayerId) || {}).name || '') + '.') : ''))
+        : (S.players.length + ' spelers. ' + esc(splitText(S.players.length, S.groups.length || clamp(S.groupTarget, 1, 12))) + ' Kies 5 of 6.')) + '</p>' +
       circle +
       (circle ? '' : tools) +
       (S.groups.length > 8 ? '<div class="board">' + cols + '</div>' : '') +
@@ -2163,10 +2395,8 @@
   }
   function computeAdvice() {
     if (S.games.length < 2) return null;
-    const finale = S.games.find(function (g) { return g.id === 'koekoek'; }) || S.games.find(function (g) { return g.dark; }) || null;
-    const pool = S.games.filter(function (g) { return !finale || g.id !== finale.id; });
-    const solos = pool.filter(function (g) { return g.participantType === 'solo'; });
-    const groups = pool.filter(function (g) { return g.participantType !== 'solo'; });
+    const solos = S.games.filter(function (g) { return g.participantType === 'solo'; });
+    const groups = S.games.filter(function (g) { return g.participantType !== 'solo'; });
     if (!solos.length || !groups.length || solos.length > 12 || groups.length > 12) return null;
     const useCount = {};
     S.games.forEach(function (g) {
@@ -2202,8 +2432,7 @@
           const mask = side === 's' ? maskS : maskG;
           if (mask & (1 << i)) continue;
           const game = list[i];
-          let c = st.cost + takeOut(st.game, game);
-          if (finale && step === steps - 1) c += takeOut(game, finale);
+          const c = st.cost + takeOut(st.game, game);
           const nS = side === 's' ? (maskS | (1 << i)) : maskS;
           const nG = side === 'g' ? (maskG | (1 << i)) : maskG;
           const nk = nS + ':' + nG + ':' + game.id;
@@ -2232,7 +2461,6 @@
       key = p.prev;
     }
     ids.reverse();
-    if (finale) ids.push(finale.id);
     const byId = {};
     S.games.forEach(function (g) { byId[g.id] = g; });
     const ordered = ids.map(function (id) { return byId[id]; }).filter(Boolean);
@@ -2240,7 +2468,7 @@
     if (!notes.length) return null;
     for (let i = 1; i < ordered.length; i++) {
       if (ordered[i].participantType === ordered[i - 1].participantType) {
-        notes.push(ordered[i - 1].name + ' en ' + ordered[i].name + ' staan achter elkaar. Het aantal solo\'s en groepen laat dat niet anders. Koekoek blijft laatste, in het donker.');
+        notes.push(ordered[i - 1].name + ' en ' + ordered[i].name + ' staan achter elkaar. Het aantal solo\'s en groepen laat dat niet anders.');
         break;
       }
     }
@@ -2309,11 +2537,13 @@
           (reuse ? '<p class="sub">Al bekend. Tik plus om het ook hier te gebruiken.</p><div class="reuse">' + reuse + '</div>' : '') +
           '<button class="go" type="button" data-act="save-gear" data-id="' + esc(g.id) + '">SPEL OPSLAAN</button>';
       }
+      const src = sheetGame(g.id);
+      const packNote = src && src.pack ? '<p class="hint">' + esc(src.pack) + '</p>' : '';
       return '<article class="gcard"><div class="row">' + up +
         '<div class="grow label"><span class="nm">' + (i + 1) + '. ' + esc(g.name) + '</span><span class="sub">' + (g.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(g)) + '</span></div>' +
-        down + '</div>' + gearBlock + editor + '</article>';
+        down + '</div>' + packNote + gearBlock + editor + '</article>';
     }).join('');
-    return '<div class="scroll">' + flashHtml() + '<h1>Programma</h1><p class="hint">Zet een spel omhoog of omlaag. Benodigdheden komen uit de notities. Een nieuwe benodigdheid kun je daarna ook bij een ander spel kiezen.</p>' +
+    return '<div class="scroll">' + flashHtml() + '<h1>Programma</h1><p class="hint">Dit is de volgorde van de middag. Zet een spel omhoog of omlaag als het toch anders moet.</p>' +
       cards + adviceBlock() + '<div style="height:10px"></div><button class="go" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></div>';
   }
   function viewBackup() {
@@ -2342,7 +2572,7 @@
     let next = '';
     if (heatsOn(game)) {
       const still = heat ? heatStill(game, heat).length : 0;
-      const label = still > 1 ? armLabel('heat-skip-' + game.id, 'DEZE GROEP NOG BEZIG', 'TOCH VOLGENDE GROEP') : 'VOLGENDE GROEP';
+      const label = still > 1 ? armLabel('heat-skip-' + game.id, 'NOG BEZIG', 'TOCH VOLGENDE') : 'VOLGENDE';
       next = '<button class="go" type="button" data-act="heat-next">' + label + '</button>';
     } else if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) {
       const all = roster(game);
@@ -2363,6 +2593,10 @@
       (game.signalSec ? '<p class="maxtime">Max ' + formatSec(game.signalSec) + '</p>' : '') +
       clock + liveNote + '<div class="stack">' + run + next + '</div></section>';
   }
+  function skipBtn(game) {
+    const hot = S.arm === 'skip-' + game.id && Date.now() < S.armUntil;
+    return '<button class="' + (hot ? 'danger' : 'quiet') + '" type="button" data-act="skip-game">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button>';
+  }
   function viewAction() {
     const game = activeGame();
     const bubbles = S.games.map(function (g, i) {
@@ -2371,28 +2605,30 @@
       const mark = g.skipped ? '–' : (done ? '✓' : String(i + 1));
       return '<button type="button" class="bubble' + (on ? ' active' : '') + (done ? ' done' : '') + '" data-act="pick-game" data-id="' + esc(g.id) + '">' + mark + '</button>';
     }).join('');
+    const gi = S.games.findIndex(function (g) { return game && g.id === game.id; });
+    const now = game ? '<p class="now">' + (gi + 1) + ' · ' + esc(game.name) + '</p>' : '';
     if (!game) {
       return '<div class="scroll">' + flashHtml() + '<h1>Eerst een spel maken</h1><button class="go" type="button" data-act="goto" data-view="players">BEGIN MET AANMELDEN</button></div>';
     }
     if (game.skipped) {
-      return '<header><div class="bubbles">' + bubbles + '</div></header>' + undoBar() + '<div class="scroll">' + flashHtml() +
+      return '<header><div class="bubbles">' + bubbles + '</div>' + now + '</header>' + undoBar() + '<div class="scroll">' + flashHtml() +
         '<h1>' + esc(game.name) + '</h1><p class="hint">Dit spel gaat niet door. Niemand krijgt hier punten voor. Wat al ingevuld was, blijft bewaard tot je het toch speelt.</p>' +
         standPeek() +
         '<button class="go" type="button" data-act="unskip-game">' + armLabel('unskip-' + game.id, 'TOCH SPELEN', 'ZEKER WEER SPELEN?') + '</button></div>' +
         '<footer><button class="purp" type="button" data-act="goto-free" data-view="stand">🏆 STAND</button><button class="calm" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button><button class="calm" type="button" data-act="goto-free" data-view="players">🙋 SPELERS</button><button class="calm" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button></footer>';
     }
     const foot = '<footer><button class="purp" type="button" data-act="goto-free" data-view="stand">🏆 STAND</button><button class="calm" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button><button class="calm" type="button" data-act="goto-free" data-view="players">🙋 SPELERS</button><button class="calm" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button></footer>';
-    const head = '<header><div class="bubbles">' + bubbles + '</div></header>' + undoBar();
+    const head = '<header><div class="bubbles">' + bubbles + '</div>' + now + '</header>' + undoBar();
     if (game.participantType === 'group' && !game.parallel) {
       const nGroups = roster(game).length;
       if (nGroups >= 2) {
         const sug = suggestedParallel(game, nGroups);
-        const buttons = parallelChoices(nGroups).map(function (opt) {
+        const buttons = parallelChoices(nGroups, game).map(function (opt) {
           const hot = sug === opt.n;
           return '<button class="' + (hot ? 'go' : 'pump') + ' choice" type="button" data-act="set-parallel" data-n="' + opt.n + '">' +
             (hot ? 'DIT PAST · ' : '') + esc(opt.text) + '<span class="sub">' + esc(opt.sub) + '</span></button>';
         }).join('');
-        return head + '<div class="scroll">' + flashHtml() + '<h1>' + esc(game.name) + '</h1><p class="hint">Er zijn ' + nGroups + ' groepen. Hoeveel gaan er tegelijk?</p>' +
+        return head + '<div class="scroll">' + flashHtml() + '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="hint">Er zijn ' + nGroups + ' groepen. Hoeveel gaan er tegelijk?</p>' +
           (game.hint ? '<p class="hint">' + esc(game.hint) + '</p>' : '') + '<div class="stack">' + buttons + '</div></div>' + foot;
       }
     }
@@ -2405,9 +2641,9 @@
         small = Math.min(small, h.playerIds.length);
       });
       const sizeTxt = big === small ? ('elke groep ' + big) : (small + ' tot ' + big + ' per groep');
-      return head + '<div class="scroll">' + flashHtml() + '<h1>' + esc(game.name) + '</h1><p class="hint">' + plan.length + ' groepen, ' + sizeTxt + '. In een rondje om de klok past een groep. Allemaal tegelijk wordt een lange lijst.</p><div class="stack">' +
-        '<button class="go choice" type="button" data-act="set-heat" data-mode="group">PER GROEP<span class="sub">Rondje van ongeveer ' + big + ' namen om de klok</span></button>' +
-        '<button class="pump choice" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK<span class="sub">Iedereen in één lijst</span></button></div></div>' + foot;
+      return head + '<div class="scroll">' + flashHtml() + (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') + '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="hint">' + plan.length + ' groepen, ' + sizeTxt + '. Hoe spelen we?</p><div class="stack">' +
+        '<button class="go choice" type="button" data-act="set-heat" data-mode="group">PER GROEP<span class="sub">Eigen top 3. Die punten gaan naar het team.</span></button>' +
+        '<button class="pump choice" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK<span class="sub">Eén top 3 voor de zaal. Punten gaan naar hun team.</span></button></div></div>' + foot;
     }
     const parts = peopleNow(game).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'nl'); });
     const ordering = game.mode === 'elim' || game.mode === 'finish';
@@ -2473,16 +2709,16 @@
     const progress = ordering
       ? (game.mode === 'finish' ? '<b>' + done.length + '</b> van ' + parts.length + ' klaar' : '<b>' + todo.length + '</b> nog in het spel')
       : '<b>' + done.length + '</b> van ' + parts.length + ' geweest';
-    const about = game.aboutMin ? '<p class="hint">Ongeveer ' + game.aboutMin + ' minuten. Groepen kunnen om de beurt, gebruik dan volgende ronde.</p>' : '';
-    const gearNames = (game.gearIds || []).map(gearName).filter(Boolean);
-    const gearLine = gearNames.length ? '<p class="gearline"><b>Benodigdheden</b> ' + esc(gearNames.join(' · ')) + '</p>' : '';
+    const about = game.aboutMin ? '<p class="hint">Ongeveer ' + game.aboutMin + ' minuten.</p>' : '';
     const side = (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
-      '<h1>' + esc(game.name) + '</h1><p class="rule">' + (game.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(game)) + '</p>' +
-      '<p class="hint">' + esc(game.hint || '') + '</p>' + about + gearLine +
+      '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="rule">' + (game.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(game)) + '</p>' +
+      '<p class="hint">' + esc(game.hint || '') + '</p>' +
+      (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') ? '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>' : '') +
+      about +
       '<p class="progress">' + progress + '</p>' +
       standPeek() +
       watchCard(game) +
-      '<button class="calm" type="button" data-act="skip-game" style="margin-top:8px">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button>';
+      skipBtn(game);
     const leavers = participants(game).filter(function (p) { return isOutId(p.id); });
     const leaverBox = leavers.length ? '<div class="leavers"><p class="hint">Gestopt, doen niet meer mee. Tik om terug te halen.</p>' + leavers.map(function (p) {
       return '<button class="calm slim" type="button" data-act="ask-out" data-what="' + (game.participantType === 'group' ? 'group' : 'player') + '" data-id="' + esc(p.id) + '">' + esc(p.name) + ' · WEER MEE</button>';
@@ -2526,28 +2762,55 @@
       const icons = heatsOn(game) ? ('<div class="heats">' + heatPlan(game).map(function (h) {
         const cur = currentHeat(game);
         const on = cur && cur.id === h.id ? ' on' : '';
-        return '<button type="button" class="calm' + on + '" data-act="heat-pick" data-id="' + esc(h.id) + '">' + groupIcon(h.name) + ' ' + esc(h.name) + (heatDone(game, h) ? ' ✓' : '') + '</button>';
+        const loose = !h.id;
+        const label = loose ? ('NOG LOS · ' + h.playerIds.length) : (groupIcon(h.name) + ' ' + h.name);
+        return '<button type="button" class="calm' + on + (loose ? ' loose' : '') + '" data-act="heat-pick" data-id="' + esc(h.id) + '">' + esc(label) + (heatDone(game, h) ? ' ✓' : '') + '</button>';
       }).join('') + '</div>') : '';
       const fresh = !order.length && !S.results.some(function (r) { return r.gameId === game.id; });
       const anders = fresh && game.participantType === 'group' && game.parallel
         ? '<button class="calm" type="button" data-act="clear-parallel">ANDERS</button>'
         : (fresh && heatsOn(game) ? '<button class="calm" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK</button>' : '');
-      return head + '<div class="scroll">' + flashHtml() + tipHtml() + other +
+      return head + '<div class="scroll ring-screen"><div class="ring-copy">' + flashHtml() + tipHtml() + other +
         (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
-        '<h1>' + esc(game.name) + '</h1>' + gearLine + icons + ringBox(ringSource.length, seats, watchCard(game)) +
-        '<p class="hint">Tik in het rondje. De klok blijft lopen. Verkeerde tik? De rode knop bovenaan.</p>' +
+        '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + icons +
+        (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') ? '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>' : '') +
         '<div class="stack">' + anders +
-        '<button class="calm" type="button" data-act="skip-game">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button></div></div>' + foot;
+        skipBtn(game) + '</div></div>' +
+        '<div class="ring-slot">' + ringBox(ringSource.length, seats, watchCard(game)) + '</div></div>' + foot;
     }
     return head + '<div class="scroll">' + flashHtml() + tipHtml() + other +
       '<div class="play"><div class="play-side">' + side + '</div><div class="play-main' + (parts.length ? ' with-find' : '') + '">' + main + '</div></div></div>' + foot;
   }
+  function teamSoloLine(game, groupId) {
+    if (game.skipped) return { name: game.name, text: 'gaat niet door · telt niet mee' };
+    const g = groupById(groupId);
+    const bits = [];
+    let pts = 0;
+    let any = false;
+    ((g && g.playerIds) || []).forEach(function (pid) {
+      const r = resultOf(game.id, pid);
+      if (!r || r.status !== 'done') return;
+      any = true;
+      const p = Math.max(0, Number(r.points) || 0);
+      pts += p;
+      if (p === 3 || p === 2 || p === 1) bits.push(whoName(pid) + ' ' + (p === 3 ? '1e' : p === 2 ? '2e' : '3e'));
+    });
+    if (!any) return { name: game.name, text: 'nog niet gespeeld' };
+    const who = bits.length ? bits.join(', ') + ' · ' : '';
+    return { name: game.name, text: who + pts + (pts === 1 ? ' punt' : ' punten') + ' voor het team' };
+  }
   function standLines(type, id) {
-    return S.games.filter(function (g) { return g.participantType === type; }).map(function (g) {
-      if (g.skipped) return { name: g.name, text: 'gaat niet door · telt niet mee' };
+    const lines = [];
+    S.games.forEach(function (g) {
+      if (type === 'group' && g.participantType === 'solo' && (g.mode === 'elim' || g.mode === 'finish')) {
+        lines.push(teamSoloLine(g, id));
+        return;
+      }
+      if (g.participantType !== type) return;
+      if (g.skipped) { lines.push({ name: g.name, text: 'gaat niet door · telt niet mee' }); return; }
       const r = resultOf(g.id, id);
-      if (!r) return { name: g.name, text: 'nog niet gespeeld' };
-      if (r.status === 'absent') return { name: g.name, text: 'afwezig · telt niet mee' };
+      if (!r) { lines.push({ name: g.name, text: 'nog niet gespeeld' }); return; }
+      if (r.status === 'absent') { lines.push({ name: g.name, text: 'afwezig · telt niet mee' }); return; }
       const row = gameRanking(g).find(function (x) { return x.id === id; });
       const medal = row ? row.medal : 0;
       const place = medal === 3 ? '1e' : medal === 2 ? '2e' : medal === 1 ? '3e' : 'geen podium';
@@ -2556,30 +2819,34 @@
       const tail = counted
         ? (medal ? (medal + (medal === 1 ? ' punt' : ' punten')) : '0 punten')
         : 'telt nog niet, dit spel is nog niet af';
-      return { name: g.name, text: detail + ' · ' + tail };
+      lines.push({ name: g.name, text: detail + ' · ' + tail });
     });
+    return lines;
   }
   function boardRow(r, type) {
     const cls = r.pts > 0 ? (r.rank === 1 ? '' : r.rank === 2 ? 'p2' : r.rank === 3 ? 'p3' : '') : '';
     const place = r.pts > 0 ? '<div class="place ' + cls + '">' + r.rank + '</div>' : '<div class="place" style="background:#333;color:#fff">–</div>';
-    const mark = (r.out ? ' isout' : '') + (r.pts > 0 ? '' : ' zero');
+    const team = type === 'group' ? ' team' : '';
+    const mark = (r.out ? ' isout' : '') + (r.pts > 0 || type === 'group' ? '' : ' zero') + team;
     return '<button type="button" class="podium' + mark + '" data-act="stand-open" data-what="' + type + '" data-id="' + esc(r.id) + '">' + place + '<div><div class="stand-name">' + (type === 'group' ? '<span class="ico-inline">' + groupIcon(r.name) + '</span> ' : '') + esc(r.name) + '</div><div class="sub">' + r.pts + (r.pts === 1 ? ' punt' : ' punten') + (r.sub ? ' · ' + esc(r.sub) : '') + '</div></div></button>';
+  }
+  function nameCloud(rows) {
+    return '<div class="namecloud">' + rows.map(function (r) {
+      return '<button type="button" class="cloud' + (r.out ? ' isout' : '') + '" data-act="stand-open" data-what="solo" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button>';
+    }).join('') + '</div>';
   }
   function board(type, title) {
     const rows = overallAll(type);
     const hot = rows.filter(function (r) { return r.pts > 0; });
     const cold = rows.filter(function (r) { return r.pts === 0; });
-    const games = S.games.filter(function (g) { return g.participantType === type; });
-    const live = games.filter(function (g) { return countsOnStand(g) && gameRanking(g).length; }).length;
-    const skipped = games.filter(function (g) { return g.skipped; }).length;
-    const word = type === 'group' ? 'groepsspel' : 'solospel';
-    const stats = games.length + ' ' + word + (games.length === 1 ? '' : 'len') + ' · ' + live + ' tellen mee' + (skipped ? ' · ' + skipped + ' gaat niet door' : '');
     const leaders = hot.filter(function (r) { return r.rank === 1; }).map(function (r) { return r.name; });
-    const lead = leaders.length ? '<p class="hint">Nu voor: ' + esc(leaders.join(' en ')) + '</p>' : '<p class="hint">Nog niemand met punten.</p>';
+    const lead = leaders.length ? '<p class="lead">Voor: ' + esc(leaders.join(' en ')) + '</p>' : '';
     const hotHtml = hot.length ? hot.map(function (r) { return boardRow(r, type); }).join('') : '';
-    const coldHtml = cold.length ? '<p class="hint">Nog 0 punten (' + cold.length + ')</p>' + cold.map(function (r) { return boardRow(r, type); }).join('') : '';
+    const coldHtml = !cold.length ? '' : (type === 'group'
+      ? cold.map(function (r) { return boardRow(r, type); }).join('')
+      : (hot.length ? '<p class="hint">Nog zonder punten</p>' : '') + nameCloud(cold));
     const empty = !rows.length ? '<p class="hint">' + (type === 'group' ? 'Nog geen groepen.' : 'Nog geen spelers.') + '</p>' : '';
-    return '<section><h2>' + title + '</h2><p class="hint">' + stats + '</p>' + lead + empty + hotHtml + coldHtml + '</section>';
+    return '<section><h2>' + title + '</h2>' + lead + empty + hotHtml + coldHtml + '</section>';
   }
   function standPeek() {
     function bit(type, word) {
@@ -2591,7 +2858,8 @@
   }
   function viewStand() {
     return undoBar() + '<div class="scroll">' + flashHtml() +
-      '<h1>Stand</h1><p class="hint">Twee borden: groepen en solo, apart. 1e = 3, 2e = 2, 3e = 1. Gelijkspel deelt de plek. Wie stopt houdt de punten. Een spel dat niet doorgaat telt niet. Tik een naam voor de spellen.</p>' +
+      backBtn('action') +
+      '<h1>Stand</h1><p class="hint">Tik een team of een naam voor de spellen.</p>' +
       '<div class="stand-grid">' + board('group', '👥 Groepen') + board('solo', '🙋 Spelers') + '</div></div>' +
       '<footer><button class="go wide" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></footer>';
   }
@@ -2650,7 +2918,7 @@
       const lines = standLines(m.what === 'group' ? 'group' : 'solo', m.id).map(function (line) {
         return '<div class="line"><span>' + esc(line.name) + '</span><span class="res">' + esc(line.text) + '</span></div>';
       }).join('');
-      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1>' + esc(name) + '</h1>' +
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><button class="backtop" type="button" data-act="close-modal">← TERUG</button><h1>' + esc(name) + '</h1>' +
         (kids ? '<p class="hint">' + esc(kids) + '</p>' : '') + note +
         '<div class="gameblock">' + (lines || '<p class="hint">Geen spellen.</p>') + '</div>' +
         '<div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">DICHT</button></div></div></div>';
@@ -2964,7 +3232,17 @@
       }
       return;
     }
-    if (act === 'pick-game') { S.activeGameId = t.dataset.id; S.view = 'action'; S.find = ''; save(); render(); return; }
+    if (act === 'pick-game') {
+      const nextId = t.dataset.id;
+      const switched = nextId !== S.activeGameId;
+      S.activeGameId = nextId;
+      S.view = 'action';
+      S.find = '';
+      save();
+      render();
+      if (switched) scrollNodes().forEach(function (n) { n.scrollTop = 0; });
+      return;
+    }
     if (act === 'open-found') { openFound(); return; }
     if (act === 'open-score') { openScore(t.dataset.id); return; }
     if (act === 'order-tap') { tapOrder(t.dataset.id); return; }
@@ -3255,6 +3533,7 @@
   let hold = null;
   let holdTimer = 0;
   let holdFired = false;
+  let press = null;
   function clearHold() {
     clearTimeout(holdTimer);
     holdTimer = 0;
@@ -3279,6 +3558,10 @@
         openOutSheet(h.what, h.id);
       }, 650);
     }
+    const pressEl = e.target.closest('button, [data-act]');
+    press = (pressEl && !pressEl.closest('input, textarea'))
+      ? { el: pressEl, x: e.clientX, y: e.clientY, id: e.pointerId }
+      : null;
     const chip = e.target.closest('.chip');
     if (!chip || S.view !== 'groups' || S.modal) return;
     if (e.button && e.button !== 0) return;
@@ -3300,9 +3583,16 @@
   document.addEventListener('pointerup', function (e) {
     const fired = holdFired;
     clearHold();
-    if (fired) {
-      holdFired = false;
-      setTimeout(function () { suppressClick = false; }, 0);
+    const p = (press && e.pointerId === press.id) ? press : null;
+    if (p) press = null;
+    if (fired) holdFired = false;
+    else if (p && p.el.isConnected && !p.el.classList.contains('chip')) {
+      const moved = Math.hypot(e.clientX - p.x, e.clientY - p.y) > 24;
+      if (!moved && p.el.closest('[data-act]')) {
+        suppressClick = true;
+        const target = (e.target && p.el.contains(e.target)) ? e.target : p.el;
+        onClick({ target: target, currentTarget: document, preventDefault: function () {} });
+      }
     }
     if (!drag || e.pointerId !== drag.pointerId) return;
     const d = drag;
@@ -3323,6 +3613,7 @@
   });
   document.addEventListener('pointercancel', function () {
     clearHold();
+    press = null;
     drag = null;
     document.body.classList.remove('dragging');
     hideGhost();
@@ -3409,8 +3700,19 @@
     const adv = orderAdvice();
     eq(!!adv, true, 'advice');
     eq(adv.games[0].participantType, 'solo', 'advice start');
-    eq(adv.games[adv.games.length - 1].id, 'koekoek', 'advice end');
+    eq(adv.games.length, S.games.length, 'advice all');
+    eq(adv.games.some(function (g) { return g.id === 'koekoek'; }), true, 'advice has koekoek');
     eq(adv.notes.length > 0, true, 'advice notes');
+    eq(PROGRAM.map(function (g) { return g.id; }).join(','), 'been,stok,touw,mat,pion,zin,koekoek,curl,vilt,dans,ballon,race,tellen,pong', 'blad');
+    eq(PROGRAM[6].name, 'Annemarie Koekoek', 'annemarie');
+    eq(PROGRAM.filter(function (g) { return g.id === 'vilt'; })[0].participantType, 'group', 'vilt groep');
+    eq(PROGRAM.filter(function (g) { return g.id === 'curl'; })[0].pack.indexOf('hoepel') > 0, true, 'curl zes');
+    eq(PROGRAM.filter(function (g) { return g.id === 'vilt'; })[0].pack.indexOf('lijn') < 0, true, 'geen lijnen');
+    eq(PROGRAM.filter(function (g) { return g.id === 'been'; })[0].pack, 'Niks nodig.', 'niks');
+    const oldOrder = ['been', 'stok', 'touw', 'mat', 'pion', 'zin', 'vilt', 'curl', 'ballon', 'dans', 'tellen', 'race', 'pong', 'koekoek'];
+    eq(committeeOrder(oldOrder).join(','), 'been,stok,touw,mat,pion,zin,koekoek,curl,vilt,dans,ballon,race,tellen,pong', 'oude volgorde');
+    eq(committeeOrder(['koekoek', 'been']).join(','), 'been,koekoek', 'blad wint');
+    eq(committeeOrder(oldOrder.concat(['extra'])).slice(-1)[0], 'extra', 'extra spel blijft');
     eq(groupIcon('Heksen'), '🧙', 'icon heks');
     eq(groupIcon('Spoken'), '👻', 'icon spook');
     eq(groupIcon('Vleermuizen'), '🦇', 'icon vleermuis');
@@ -3422,13 +3724,25 @@
     eq(cleanNameLine('Hannah (5 euro)'), 'Hannah', 'euro weg');
     eq(namesFromList('Martijn M\nMartijn F\nMartijn M').join('|'), 'Martijn M|Martijn F', 'dubbel in lijst');
     eq(ROSTER.length, 34, 'lijst 34');
+    eq(S.groups.filter(function (g) { return TEAMS.some(function (t) { return t.name === g.name; }); }).length, 5, 'vijf teams');
+    eq(S.groups.find(function (g) { return g.name === 'Heksen klein'; }).playerIds.length, 6, 'heksen 6');
+    eq(S.groups.find(function (g) { return g.name === 'Spoken'; }).playerIds.length, 5, 'spoken 5');
+    eq(S.groups.find(function (g) { return g.name === 'Vleermuizen groot'; }).playerIds.length, 6, 'vleermuizen 6');
+    eq(!!S.players.find(function (p) { return p.name === 'Brendon'; }), true, 'brendon');
+    eq(S.groups.some(function (g) { return g.playerIds.some(function (id) { const p = playerById(id); return p && p.name === 'Mariska'; }); }), false, 'mariska los');
     eq(readStored('{'), null, 'kapotte tekst');
     eq(readStored('[]'), null, 'geen lijst');
     eq(!!readStored('{"players":[]}'), true, 'goede tekst');
     eq(parallelChoices(6).map(function (o) { return o.n; }).join(','), '1,2,3,6', 'parallel 6');
     eq(parallelChoices(5).map(function (o) { return o.n; }).join(','), '1,2,3,5', 'parallel 5');
-    eq(suggestedParallel({ id: 'mat', hint: 'Twee matten.', name: 'Mat' }, 6), 2, 'twee matten');
-    eq(suggestedParallel({ id: 'pong', hint: 'Elk team alleen.', name: 'Pong' }, 5), 1, 'alleen');
+    eq(suggestedParallel({ id: 'mat' }, 6), 6, '12 matten');
+    eq(suggestedParallel({ id: 'stok' }, 6), 5, '5 ballen');
+    eq(suggestedParallel({ id: 'pong' }, 6), 1, 'een werplijn');
+    eq(suggestedParallel({ id: 'race' }, 5), 5, '6 hoepels');
+    eq(suggestedParallel({ id: 'zin' }, 6), 0, 'zin geen baan');
+    eq(parallelChoices(6, { id: 'stok' }).map(function (o) { return o.n; }).join(','), '1,2,3,5,6', '5 ballen past');
+    eq(packHtml({ id: 'dans' }).indexOf('29 hoepels') > 0, true, 'pak dans');
+    eq(packHtml({ id: 'eigen' }), '', 'geen verzonnen pak');
     const probe = S.players[0];
     if (probe) {
       const wasOut = !!probe.out;
@@ -3468,6 +3782,43 @@
       S.results = keepResults;
       S.games.forEach(function (g, i) { g.skipped = keepSkip[i]; });
     }
+    const keepPeople = S.players.slice();
+    const keepTeams = S.groups.slice();
+    const beenGame = S.games.find(function (g) { return g.id === 'been'; });
+    const beenSkip = beenGame ? !!beenGame.skipped : false;
+    try {
+      S.players = S.players.concat([
+        { id: 'tp-a', name: 'Test A' },
+        { id: 'tp-b', name: 'Test B' },
+        { id: 'tp-c', name: 'Test C' },
+        { id: 'tp-d', name: 'Test D' }
+      ]);
+      S.groups = S.groups.concat([
+        { id: 'tg-1', name: 'Testpompoenen', playerIds: ['tp-a', 'tp-b', 'tp-c'] },
+        { id: 'tg-2', name: 'Testheksen', playerIds: ['tp-d'] }
+      ]);
+      S.results = S.results.concat([
+        { id: 'tr-a', gameId: 'been', participantId: 'tp-a', status: 'done', points: 3, timeSec: null },
+        { id: 'tr-b', gameId: 'been', participantId: 'tp-b', status: 'done', points: 2, timeSec: null },
+        { id: 'tr-c', gameId: 'been', participantId: 'tp-c', status: 'done', points: 1, timeSec: null },
+        { id: 'tr-d', gameId: 'been', participantId: 'tp-d', status: 'done', points: 0, timeSec: null }
+      ]);
+      eq(overallAll('group').find(function (r) { return r.id === 'tg-1'; }).pts, 6, 'team krijgt 3+2+1');
+      eq(overallAll('group').find(function (r) { return r.id === 'tg-2'; }).pts, 0, 'ander team krijgt niks');
+      eq(overallAll('solo').find(function (r) { return r.id === 'tp-a'; }).pts, 3, 'speler houdt 3');
+      const line = standLines('group', 'tg-1').find(function (row) { return row.name.indexOf('been') >= 0; });
+      eq(!!line && line.text.indexOf('Test A 1e') >= 0 && line.text.indexOf('6 punten') >= 0, true, 'team ziet de top 3');
+      if (beenGame) {
+        beenGame.skipped = true;
+        eq(overallAll('group').find(function (r) { return r.id === 'tg-1'; }).pts, 0, 'overgeslagen solo telt niet voor team');
+        beenGame.skipped = false;
+      }
+    } finally {
+      S.players = keepPeople;
+      S.groups = keepTeams;
+      S.results = keepResults;
+      if (beenGame) beenGame.skipped = beenSkip;
+    }
     const before = S.undos.length;
     pushUndo({ kind: 'rename', what: 'player', id: 'nobody', prev: 'x', label: 'test' });
     eq(S.undos.length, before + 1, 'undo stack');
@@ -3479,6 +3830,8 @@
   load();
   seedProgram();
   ensureGear();
+  syncProgram();
+  applySheetTeams();
   S.view = bootView();
   if (!S.activeGameId && S.games[0]) S.activeGameId = S.games[0].id;
   render();
