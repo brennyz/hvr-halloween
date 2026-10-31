@@ -651,9 +651,9 @@
   };
   const PROGRAM = [
     { id: 'been', name: 'Op 1 been staan', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Niks nodig.', hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik de 3e, dan de 2e, dan de 1e.' },
-    { id: 'stok', name: 'Bal op stokken dragen', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 5, pack: '5 ballen en 30 stokken.', hint: 'Bal naar de overkant met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'stok', name: 'Bal op stokken dragen', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 5, pack: '5 ballen en 30 stokken.', hint: 'Bal naar de overkant met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Eerste tik = 3 punten, tweede = 2, derde = 1.' },
     { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: '30 springtouwen.', hint: 'Blijf springen. Stop je, dan ben je af. Tik de 3e, dan de 2e, dan de 1e.' },
-    { id: 'mat', name: '2 matten zaal oversteken', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '12 matten. Elke groep gebruikt er 2.', hint: 'Elke groep steekt de zaal over met 2 matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Het eerste is 1e.' },
+    { id: 'mat', name: '2 matten zaal oversteken', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '12 matten. Elke groep gebruikt er 2.', hint: 'Elke groep steekt de zaal over met 2 matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Eerste tik = 3 punten, tweede = 2, derde = 1.' },
     { id: 'pion', name: 'Pion balanceren op hand', participantType: 'solo', mode: 'elim', aboutMin: 5, pack: '30 pionnen en 30 hoepels.', hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'zin', name: 'Zin doorgeven en opschrijven', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Pen, papier, de zinnen en 10 pionnen.', hint: 'Fluister de zin door. Het laatste teamlid schrijft hem op. Het blaadje geeft geen puntentelling. Tik het team en vul het totaal in.' },
     { id: 'koekoek', name: 'Annemarie Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, pack: 'Alleen de lamp.', hint: 'Donker. Iedereen kruipt. Bij “Annemarie Koekoek” stilstaan. Wie beweegt is af. Tik de 3e, dan de 2e, dan de 1e.' },
@@ -661,7 +661,7 @@
     { id: 'vilt', name: 'Viltjes werpen', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Viltjes met de groepsnaam, en 6 pionnen om het midden.', hint: 'Viltje met de groepsnaam. Over de helft, op de kleur die wordt geroepen. Vul daarna de punten van het team in.' },
     { id: 'dans', name: 'Hoepeldans op muziek', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Muziekbox en 29 hoepels.', hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'ballon', name: 'Ballon hooghouden met knikker erin', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Ballonnen met een knikker erin. Ze liggen in 2 manden. En 30 hoepels.', hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
-    { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '6 hoepels.', hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Het eerste is 1e.' },
+    { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '6 hoepels.', hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Eerste tik = 3 punten, tweede = 2, derde = 1.' },
     { id: 'tellen', name: '2,30 minuten tellen in je hoofd', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, pack: 'Niks meenemen. Tijd op de telefoon. Inge filmt.', hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. Inge filmt. Tik daarna de 3e, dan de 2e, dan de 1e. De rest niet.' },
     { id: 'pong', name: 'Korfbalmand pong', participantType: 'group', mode: 'points', aboutMin: 15, lanes: 1, pack: '6 korfbalmanden, 15 handballen en 2 pionnen als werplijn.', hint: 'Eén werplijn met 2 pionnen. Zoveel mogelijk handballen in de 6 manden. De teams gaan om de beurt. Vul het totaal in.' }
   ];
@@ -1114,7 +1114,7 @@
   }
   function ruleText(g) {
     if (g.mode === 'elim') return 'Tik 3e, dan 2e, dan 1e';
-    if (g.mode === 'finish') return 'Eerste klaar is 1e';
+    if (g.mode === 'finish') return 'Eerste tik is 1e · 3 punten';
     if (g.mode === 'closest') return 'Tik 3e, dan 2e, dan 1e';
     if (g.scoreType === 'points') return g.sort === 'high' ? 'Meeste punten wint' : 'Minste punten wint';
     return g.sort === 'low' ? 'Snelste tijd wint' : 'Langste tijd wint';
@@ -1132,7 +1132,8 @@
     return place === 1 ? 3 : place === 2 ? 2 : place === 3 ? 1 : 0;
   }
   function stepTitle(place, first) {
-    return (first ? 'Selecteer de ' : 'Selecteer nu de ') + place + 'e plek';
+    const pts = pointsForPlace(place);
+    return (first ? 'Selecteer de ' : 'Selecteer nu de ') + place + 'e plek · ' + pts + (pts === 1 ? ' punt' : ' punten');
   }
   function picksIn(order, members) {
     return (order || []).filter(function (id) { return members.indexOf(id) >= 0; });
@@ -1166,7 +1167,7 @@
   function podiumHeadline(game, people) {
     const members = (people || []).map(function (p) { return p.id; });
     const pool = { heat: heatsOn(game) ? currentHeat(game) : null, members: members };
-    if (!members.length) return 'Selecteer de 3e plek';
+    if (!members.length) return stepTitle(3, true);
     if (pool.heat && heatDone(game, pool.heat)) return 'Top 3 staat';
     if (!pool.heat && podiumLocked(game)) return 'Top 3 staat';
     const step = podiumStep(game, pool);
@@ -1177,7 +1178,17 @@
     if (!game) return '';
     if (isPodium(game) && game.mode === 'closest') return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · op het spelersbord</p>';
     if (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish')) return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>';
+    if (game.participantType === 'group' && game.mode === 'finish') return '<p class="scoreline">1e = 3 punten · 2e = 2 · 3e = 1</p>';
     return '';
+  }
+  function finishHead(game) {
+    if (!game || game.mode !== 'finish') return '';
+    if (isWaveGame(game)) return 'Snelste tijd is 1e · 3 punten';
+    const n = orderOf(game).length;
+    if (n <= 0) return 'Tik de 1e · 3 punten';
+    if (n === 1) return 'Tik de 2e · 2 punten';
+    if (n === 2) return 'Tik de 3e · 1 punt';
+    return 'Top 3 staat. De rest is 0.';
   }
   function placeWord(n) { return n + 'e'; }
   function resultLabel(game, r) {
@@ -2982,7 +2993,11 @@
         if (ordering && game.mode === 'elim' && todo.length === 1 && p.id === todo[0].id && order.length) return '1e';
         return '';
       }
-      if (game.mode === 'finish') return placeWord(order.indexOf(p.id) + 1);
+      if (game.mode === 'finish') {
+        const n = order.indexOf(p.id) + 1;
+        const pts = pointsForPlace(n);
+        return pts ? (placeWord(n) + ' · ' + pts) : placeWord(n);
+      }
       if (todo.length === 1) {
         const i = order.indexOf(p.id);
         if (i === order.length - 1) return '2e';
@@ -3014,9 +3029,11 @@
     const rightTitle = ordering ? (game.mode === 'finish' ? '✅ KLAAR (' + done.length + ')' : '✅ AF (' + done.length + ')') : '✅ AL GEWEEST (' + done.length + ')';
     const progress = isPodium(game)
       ? '<b>' + esc(podiumHeadline(game, parts)) + '</b>'
+      : (game.mode === 'finish'
+      ? '<b>' + esc(finishHead(game)) + '</b>'
       : (ordering
-      ? (game.mode === 'finish' ? '<b>' + done.length + '</b> van ' + parts.length + ' klaar' : '<b>' + todo.length + '</b> nog in het spel')
-      : '<b>' + done.length + '</b> van ' + parts.length + ' geweest');
+      ? ('<b>' + todo.length + '</b> nog in het spel')
+      : '<b>' + done.length + '</b> van ' + parts.length + ' geweest'));
     const about = game.aboutMin ? '<p class="hint">Ongeveer ' + game.aboutMin + ' minuten.</p>' : '';
     const side = (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
       '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="rule">' + (game.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(game)) + '</p>' +
@@ -3090,7 +3107,7 @@
       return head + '<div class="scroll ring-screen"><div class="ring-copy">' + flashHtml() + tipHtml() + other +
         (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
         '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + icons +
-        (isPodium(game) ? '<p class="stephead">' + esc(podiumHeadline(game, ringSource)) + '</p><p class="hint">Tik een naam. Dan vraag ik of het klopt.</p>' : '') +
+        (isPodium(game) ? '<p class="stephead">' + esc(podiumHeadline(game, ringSource)) + '</p><p class="hint">Tik een naam. Dan vraag ik of het klopt.</p>' : (game.mode === 'finish' ? '<p class="stephead">' + esc(finishHead(game)) + '</p>' : '')) +
         podiumScoreLine(game) +
         '<div class="stack">' + anders +
         skipBtn(game) + '</div></div>' +
@@ -3188,9 +3205,11 @@
     if (m.kind === 'place-ask') {
       const name = whoName(m.pid);
       const g = groupNameOfPlayer(m.pid);
-      return '<div class="modal-back"><div class="sheet tipbubble" data-stop="1"><p class="hint" style="text-align:center">' + m.place + 'e plek</p><h1 style="text-align:center">' + nameIco(m.pid) + esc(name) + '</h1>' +
+      const pts = pointsForPlace(m.place);
+      const ptsTxt = pts + (pts === 1 ? ' punt' : ' punten');
+      return '<div class="modal-back"><div class="sheet tipbubble" data-stop="1"><p class="hint" style="text-align:center">' + m.place + 'e plek · ' + ptsTxt + '</p><h1 style="text-align:center">' + nameIco(m.pid) + esc(name) + '</h1>' +
         (g ? '<p class="hint" style="text-align:center">' + groupIcon(g) + ' ' + esc(g) + '</p>' : '') +
-        '<p class="ask">Is ' + esc(name) + ' echt ' + m.place + 'e?</p>' +
+        '<p class="ask">Is ' + esc(name) + ' echt ' + m.place + 'e? Dat is ' + ptsTxt + '.</p>' +
         '<div class="yesno"><button class="go" type="button" data-act="place-yes">JA</button><button class="danger" type="button" data-act="place-no">NEE</button></div></div></div>';
     }
     if (m.kind === 'podium') {
@@ -3200,7 +3219,8 @@
       for (let place = 1; place <= 3; place++) {
         const i = steps.indexOf(place);
         if (i < 0 || !ids[i]) continue;
-        lines.push('<p class="podium-row"><b>' + place + 'e</b> ' + nameIco(ids[i]) + esc(whoName(ids[i])) + ' · ' + pointsForPlace(place) + '</p>');
+        const pts = pointsForPlace(place);
+        lines.push('<p class="podium-row"><b>' + place + 'e</b> ' + nameIco(ids[i]) + esc(whoName(ids[i])) + ' · ' + pts + (pts === 1 ? ' punt' : ' punten') + '</p>');
       }
       const where = m.team
         ? (m.heatName ? (esc(m.heatName) + '. Die punten gaan naar het team.') : 'Die punten gaan naar hun team.')
@@ -4318,9 +4338,9 @@
       S.slateWord = '';
       save();
     }
-    eq(stepTitle(3, true), 'Selecteer de 3e plek', 'kop 3e');
-    eq(stepTitle(2, false), 'Selecteer nu de 2e plek', 'kop 2e');
-    eq(stepTitle(1, false), 'Selecteer nu de 1e plek', 'kop 1e');
+    eq(stepTitle(3, true), 'Selecteer de 3e plek · 1 punt', 'kop 3e');
+    eq(stepTitle(2, false), 'Selecteer nu de 2e plek · 2 punten', 'kop 2e');
+    eq(stepTitle(1, false), 'Selecteer nu de 1e plek · 3 punten', 'kop 1e');
     eq(podiumSteps(6).join(','), '3,2,1', 'stappen');
     eq(podiumSteps(2).join(','), '2,1', 'twee plekken');
     eq(pointsForPlace(3), 1, '3e is 1 punt');
