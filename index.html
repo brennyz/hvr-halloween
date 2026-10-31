@@ -351,6 +351,7 @@
   .namecloud button.cloud.isout { opacity: 0.45; }
   .loosebox { background: #3a2208; border: 3px solid var(--orange); border-radius: 16px; padding: 10px; margin: 0 0 12px; }
   .loosebox .loose-title { margin: 0 0 8px; font-size: 1.35rem; font-weight: 900; color: var(--orange); }
+  .slatebox { margin-top: 28px; padding-top: 16px; border-top: 3px solid var(--red); }
   .gearline { background: #3a2208; border-radius: 14px; padding: 12px 14px; font-size: 1.4rem; font-weight: 800; line-height: 1.3; }
   .gearline b { color: var(--orange); }
   .advice { margin-top: 18px; padding-top: 12px; border-top: 3px solid #333; }
@@ -645,7 +646,7 @@
     gameForm: null, score: null, undos: [], arm: null, armUntil: 0,
     unlocked: false, flash: '', flashBad: false, draftName: '', listText: null, restoreText: '', saveError: '', holdSave: false, find: '',
     gear: [], gearSeeded: false, programRev: 0, teamsRev: 0, backView: '', gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
-    focusGroupId: null, askSplit: false, pendingCount: 0
+    focusGroupId: null, askSplit: false, pendingCount: 0, slateWord: ''
   };
   let drag = null;
   let suppressClick = false;
@@ -2549,7 +2550,8 @@
   function viewBackup() {
     return '<div class="scroll">' + flashHtml() + '<h1>💾 Backup</h1><p class="hint">Bewaar een bestand, of kopieer de tekst. Op een andere iPad kies je dat bestand of plak je de tekst. Alles blijft ook op dit toestel.</p>' +
       '<div class="stack"><button class="go" type="button" data-act="save-file">BEWAAR BESTAND</button><button class="pump" type="button" data-act="copy-backup">KOPIEER TEKST</button><button class="calm" type="button" data-act="pick-file">KIES BACKUPBESTAND</button><input id="backupFile" class="filepick" type="file" accept=".json,.txt,application/json,text/plain"><button class="pump" type="button" data-act="ask-restore">PLAK TEKST TERUG</button>' +
-      '<button class="calm" type="button" data-act="goto" data-view="settings">TERUG</button>' + playBtn() + '</div></div>';
+      '<button class="calm" type="button" data-act="goto" data-view="settings">TERUG</button>' + playBtn() + '</div>' +
+      '<div class="slatebox"><p class="hint">Na het testen alles wissen. De namen van de lijst en de vijf teams komen terug. Punten zijn weg. Twee stappen, en je moet SCHOON typen.</p><button class="danger" type="button" data-act="ask-slate">TEST WISSEN</button></div></div>';
   }
   function viewSettings() {
     return '<div class="scroll">' + flashHtml() + '<h1>⚙️ Instellingen</h1><div class="stack">' +
@@ -2557,7 +2559,8 @@
       '<button class="pump" type="button" data-act="goto-free" data-view="groups">👥 GROEPEN</button>' +
       '<button class="purp" type="button" data-act="goto-free" data-view="games">📋 PROGRAMMA</button>' +
       '<button class="calm" type="button" data-act="goto-free" data-view="backup">💾 BACKUP</button>' +
-      playBtn() + '</div><p class="saved">Staat op dit toestel. Weggaan wist niets.</p></div>';
+      playBtn() +
+      '<div class="slatebox"><p class="hint">Na het testen alles wissen. De namen van de lijst en de vijf teams komen terug. Punten zijn weg. Twee stappen, en je moet SCHOON typen.</p><button class="danger" type="button" data-act="ask-slate">TEST WISSEN</button></div></div><p class="saved">Staat op dit toestel. Weggaan wist niets.</p></div>';
   }
   function watchCard(game) {
     const w = ensureWatch(game.id);
@@ -2937,6 +2940,12 @@
     }
     if (m.kind === 'restore') {
       return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>Backup terugzetten</h1><p>Dit vervangt alles op dit toestel.</p><textarea class="field" id="restoreBox" style="min-height:160px" placeholder="Plak hier de backup">' + esc(S.restoreText) + '</textarea><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="do-restore">JA, VERVANG ALLES</button></div></div></div>';
+    }
+    if (m.kind === 'slate-ask') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>Stap 1 van 2</h1><p>De test gaat weg: punten, klokken, wie eruit is, en verschoven spellen. Terug komen de namen van de lijst en de vijf teams van het blaadje.</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="slate-next">DOOR NAAR STAP 2</button></div></div></div>';
+    }
+    if (m.kind === 'slate-word') {
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet danger-sheet" data-stop="1"><h1>Stap 2 van 2</h1><p>Typ het woord SCHOON. Zonder dat woord gebeurt er niks.</p><input class="field" id="slateWord" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="SCHOON" value="' + esc(S.slateWord || '') + '"><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="calm" type="button" data-act="do-slate">TYP EERST SCHOON</button></div></div></div>';
     }
     return '';
   }
@@ -3343,12 +3352,22 @@
     }
     if (act === 'ask-restore') { S.restoreText = ''; S.modal = { kind: 'restore' }; render(); return; }
     if (act === 'do-restore') { doRestore(); return; }
+    if (act === 'ask-slate') { S.slateWord = ''; S.modal = { kind: 'slate-ask' }; render(); return; }
+    if (act === 'slate-next') {
+      S.slateWord = '';
+      S.modal = { kind: 'slate-word' };
+      render();
+      const word = document.getElementById('slateWord');
+      if (word) word.focus();
+      return;
+    }
+    if (act === 'do-slate') { doSlate(); return; }
   }
   function onBackdrop(e) {
     const back = e.target.closest('.modal-back');
     if (!back || e.target !== back) return;
     if (S.modal && S.modal.kind === 'backup-text') { S.modal = null; render(); return; }
-    if (S.modal && (S.modal.kind === 'score' || S.modal.kind === 'confirm-del' || S.modal.kind === 'drop-groups' || S.modal.kind === 'restore' || S.modal.kind === 'unlock' || S.modal.kind === 'out' || S.modal.kind === 'breakdown')) {
+    if (S.modal && (S.modal.kind === 'score' || S.modal.kind === 'confirm-del' || S.modal.kind === 'drop-groups' || S.modal.kind === 'restore' || S.modal.kind === 'unlock' || S.modal.kind === 'out' || S.modal.kind === 'breakdown' || S.modal.kind === 'slate-ask' || S.modal.kind === 'slate-word')) {
       S.modal = null;
       S.score = null;
       render();
@@ -3379,6 +3398,61 @@
     a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     flash('BESTAND KLAAR. KIJK BIJ DOWNLOADS.');
+  }
+  function freshSlate() {
+    S.players = [];
+    S.groups = [];
+    S.games = [];
+    S.results = [];
+    S.watches = {};
+    S.orders = {};
+    S.undos = [];
+    S.gear = [];
+    S.gearSeeded = false;
+    S.programRev = 0;
+    S.teamsRev = 0;
+    S.activeGameId = null;
+    S.groupTarget = 5;
+    S.selectedPlayerId = null;
+    S.renameGroupId = null;
+    S.renameText = '';
+    S.renamePlayerId = null;
+    S.renamePlayerText = '';
+    S.gameForm = null;
+    S.score = null;
+    S.arm = null;
+    S.armUntil = 0;
+    S.modal = null;
+    S.draftName = '';
+    S.listText = null;
+    S.restoreText = '';
+    S.find = '';
+    S.gearOpen = null;
+    S.gearDraft = '';
+    S.adviceOpen = false;
+    S.focusGear = false;
+    S.focusGroupId = null;
+    S.askSplit = false;
+    S.pendingCount = 0;
+    S.slateWord = '';
+    S.backView = '';
+    seedProgram();
+    ensureGear();
+    applySheetTeams();
+    S.view = 'action';
+    if (!S.activeGameId && S.games[0]) S.activeGameId = S.games[0].id;
+    save();
+    flash('SCHOON. KLAAR OM TE BEGINNEN.');
+  }
+  function doSlate() {
+    const field = document.getElementById('slateWord');
+    const word = ((field && field.value) || S.slateWord || '').trim().toLowerCase();
+    if (word !== 'schoon') {
+      flash('TYP EERST HET WOORD SCHOON', true);
+      S.modal = { kind: 'slate-word' };
+      return;
+    }
+    freshSlate();
   }
   function doRestore() {
     const raw = S.restoreText || '';
@@ -3476,6 +3550,15 @@
     if (e.target.id === 'gameName' && S.gameForm) S.gameForm.name = e.target.value;
     if (e.target.id === 'renameInput') S.renameText = e.target.value;
     if (e.target.id === 'restoreBox') S.restoreText = e.target.value;
+    if (e.target.id === 'slateWord') {
+      S.slateWord = e.target.value;
+      const btn = document.querySelector('[data-act="do-slate"]');
+      const ok = S.slateWord.trim().toLowerCase() === 'schoon';
+      if (btn) {
+        btn.className = ok ? 'danger' : 'calm';
+        btn.textContent = ok ? 'JA, MAAK SCHOON' : 'TYP EERST SCHOON';
+      }
+    }
     if (e.target.id === 'findName') {
       S.find = e.target.value;
       applyFindFilter();
@@ -3521,6 +3604,7 @@
       if (S.find) { S.find = ''; render(); }
       return;
     }
+    if (e.key === 'Enter' && e.target.id === 'slateWord') { e.preventDefault(); doSlate(); return; }
     if (e.key === 'Enter' && e.target.id === 'renameInput') {
       e.preventDefault();
       const btn = document.querySelector('[data-act="save-rename"]');
@@ -3823,6 +3907,33 @@
     pushUndo({ kind: 'rename', what: 'player', id: 'nobody', prev: 'x', label: 'test' });
     eq(S.undos.length, before + 1, 'undo stack');
     S.undos.pop();
+    const snap = JSON.stringify(blob());
+    const view = S.view;
+    try {
+      S.results.push({ id: 'wipe-me', gameId: 'been', participantId: 'x', status: 'done', points: 9, timeSec: null });
+      S.teamsRev = 1;
+      S.slateWord = 'fout';
+      doSlate();
+      eq(S.results.some(function (r) { return r.id === 'wipe-me'; }), true, 'verkeerd woord wist niks');
+      S.slateWord = 'schoon';
+      freshSlate();
+      eq(S.results.length, 0, 'schoon wist punten');
+      eq(S.groups.length, 5, 'schoon heeft 5 teams');
+      const heksen = S.groups.find(function (g) { return g.name === 'Heksen klein'; });
+      const spoken = S.groups.find(function (g) { return g.name === 'Spoken'; });
+      eq(!!heksen && heksen.playerIds.length, 6, 'heksen klein heeft 6');
+      eq(!!spoken && spoken.playerIds.length, 5, 'spoken heeft 5');
+      eq(S.games[0] && S.games[0].id, 'been', 'schoon begint bij op 1 been');
+      eq(S.games.some(function (g) { return g.skipped || g.parallel; }), false, 'geen testvoortgang');
+      const loose = S.players.filter(function (p) { return !S.groups.some(function (g) { return g.playerIds.indexOf(p.id) >= 0; }); }).map(function (p) { return p.name; });
+      eq(loose.indexOf('Karin') >= 0 && loose.indexOf('Mariska') >= 0, true, 'karin en mariska blijven los');
+    } finally {
+      applyData(JSON.parse(snap));
+      S.view = view;
+      S.modal = null;
+      S.slateWord = '';
+      save();
+    }
     return 'ok';
   }
   window.capyTest = selfTest;
