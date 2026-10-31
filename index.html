@@ -345,6 +345,29 @@
   .now { margin: 4px 0 0; font-size: 1.45rem; font-weight: 900; color: var(--orange); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .lead { margin: 0 0 8px; font-size: 1.5rem; font-weight: 900; color: var(--orange); }
   .scoreline { margin: 0 0 8px; font-size: 1.25rem; font-weight: 900; color: #fff; line-height: 1.25; }
+  .stephead { margin: 0 0 6px; font-size: 1.85rem; font-weight: 900; color: var(--orange); line-height: 1.15; }
+  .sheet.tipbubble { width: min(480px, 100%); }
+  .sheet.tipbubble .ask { text-align: center; font-size: 1.5rem; font-weight: 900; margin: 0 0 12px; }
+  .yesno { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .yesno button { text-align: center; min-height: 76px; font-size: 1.8rem; }
+  .teamgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .teamcard { background: #1b1b1b; border-radius: 18px; padding: 8px; min-width: 0; }
+  .teamcard h2 { font-size: 1.2rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pair .person { margin: 0; min-height: 68px; font-size: 1.45rem; }
+  .pair .person.pick1 { background: var(--green); color: #141414; }
+  .pair .person.pick2 { background: #d7ff4a; color: #141414; }
+  .pair .person.pick3 { background: #ffe14a; color: #141414; }
+  .picked { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+  .picked span { background: #14300c; color: #d8ffc8; border-radius: 999px; padding: 8px 12px; font-weight: 900; font-size: 1.25rem; }
+  .mini-ico { font-size: 0.85em; margin-right: 4px; }
+  .xbar { display: flex; align-items: center; gap: 10px; }
+  .xbar-title { flex: 1; min-width: 0; font-size: 2rem; font-weight: 900; line-height: 1.05; }
+  button.xclose { width: 76px; min-width: 76px; max-width: 76px; min-height: 76px; flex: 0 0 76px; padding: 0; text-align: center; font-size: 2.6rem; line-height: 1; background: var(--orange); color: #141414; }
+  .roster-title { margin: 0 0 6px; font-size: 2rem; font-weight: 900; line-height: 1.05; }
+  .roster-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .roster-grid .chip { margin: 0; min-height: 72px; font-size: 1.55rem; display: flex; align-items: center; }
+  @media (max-width: 720px) { .teamgrid { grid-template-columns: 1fr; } }
   button.quiet { background: transparent; color: #c8c8c8; border: 0; min-height: 48px; font-size: 1.05rem; text-align: center; }
   .namecloud { display: flex; flex-wrap: wrap; gap: 8px; }
   .namecloud button.cloud { width: auto; min-height: 52px; padding: 8px 16px; border-radius: 999px; background: #2a2a2a; color: #fff; font-size: 1.45rem; }
@@ -368,8 +391,11 @@
   .undo-bar { flex: 0 0 auto; text-align: center; white-space: normal; }
   .undo-bar .sub { display: block; color: #fff; font-weight: 700; }
   .undo-bar.oops { background: var(--red); min-height: 84px; font-size: 1.35rem; line-height: 1.15; }
-  .heats { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 8px; -webkit-overflow-scrolling: touch; }
-  .heats button { width: auto; flex: 0 0 auto; min-height: 64px; padding: 8px 12px; }
+  .heats { display: flex; flex-wrap: wrap; gap: 8px; overflow: visible; margin: 0 0 8px; touch-action: manipulation; }
+  .heats button { width: auto; flex: 1 1 46%; max-width: none; min-height: 72px; padding: 8px 12px; white-space: normal; text-align: center; line-height: 1.15; touch-action: manipulation; }
+  .ring, .ring-seat { touch-action: manipulation; }
+  .ring-copy { touch-action: pan-y; }
+  .backbar { flex: 0 0 auto; }
   .heats button.on { background: var(--orange); color: #141414; border-color: var(--orange); }
   .topbar { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
   .topbar .brand { flex: 1; margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -429,7 +455,7 @@
   .ring-seat::before {
     content: "";
     position: absolute;
-    inset: -16px;
+    inset: -10px;
   }
   .ring-seat .ico { display: block; font-size: clamp(1.15rem, 2.4vh, 1.6rem); line-height: 1; }
   .ring-seat .seat-name {
@@ -458,7 +484,7 @@
   .stand-grid .sub { font-size: 1.25rem; opacity: 1; }
   .ico-inline { font-size: 1.4rem; }
   .heats { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 8px; -webkit-overflow-scrolling: touch; }
-  .heats button { width: auto; flex: 0 0 auto; min-height: 64px; max-width: 240px; padding: 8px 14px; font-size: 1.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .heats button { width: auto; flex: 1 1 46%; min-height: 72px; max-width: none; padding: 8px 14px; font-size: 1.25rem; white-space: normal; text-align: center; line-height: 1.15; touch-action: manipulation; }
   .heats button.on { background: var(--orange); color: #141414; border-color: var(--orange); }
   .heats button.loose { border-style: dashed; color: var(--orange); }
   .heats button.loose.on { color: #141414; border-style: solid; }
@@ -624,19 +650,19 @@
     koekoek: ['zaklamp']
   };
   const PROGRAM = [
-    { id: 'been', name: 'Op 1 been staan', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Niks nodig.', hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'been', name: 'Op 1 been staan', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Niks nodig.', hint: 'Hak tegen je bil. Huppen of je been neer = af. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'stok', name: 'Bal op stokken dragen', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 5, pack: '5 ballen en 30 stokken.', hint: 'Bal naar de overkant met de stokken. Valt hij, terug naar de start. Tik het team dat klaar is. Het eerste is 1e.' },
-    { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: '30 springtouwen.', hint: 'Blijf springen. Stop je, dan ben je af. Tik wie gaat zitten. De laatste is 1e.' },
+    { id: 'touw', name: 'Touwtje springen', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: '30 springtouwen.', hint: 'Blijf springen. Stop je, dan ben je af. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'mat', name: '2 matten zaal oversteken', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '12 matten. Elke groep gebruikt er 2.', hint: 'Elke groep steekt de zaal over met 2 matten. De grond raken = terug naar de start. Tik het team dat aan de overkant is. Het eerste is 1e.' },
-    { id: 'pion', name: 'Pion balanceren op hand', participantType: 'solo', mode: 'elim', aboutMin: 5, pack: '30 pionnen en 30 hoepels.', hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
-    { id: 'zin', name: 'Zin doorgeven en opschrijven', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Pen, papier, de zinnen en 10 pionnen.', hint: 'Fluister de zin door. Het laatste teamlid schrijft hem op. Vul daarna de punten van het team in.' },
-    { id: 'koekoek', name: 'Annemarie Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, pack: 'Alleen de lamp.', hint: 'Donker. Iedereen kruipt. Bij “Annemarie Koekoek” stilstaan. Wie beweegt is af. Tik wie af is. De laatste is 1e.' },
+    { id: 'pion', name: 'Pion balanceren op hand', participantType: 'solo', mode: 'elim', aboutMin: 5, pack: '30 pionnen en 30 hoepels.', hint: 'Smalle kant van de pion op je vlakke hand, binnen de hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
+    { id: 'zin', name: 'Zin doorgeven en opschrijven', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Pen, papier, de zinnen en 10 pionnen.', hint: 'Fluister de zin door. Het laatste teamlid schrijft hem op. Het blaadje geeft geen puntentelling. Tik het team en vul het totaal in.' },
+    { id: 'koekoek', name: 'Annemarie Koekoek', participantType: 'solo', mode: 'elim', aboutMin: 15, dark: true, pack: 'Alleen de lamp.', hint: 'Donker. Iedereen kruipt. Bij “Annemarie Koekoek” stilstaan. Wie beweegt is af. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'curl', name: 'Curling met 6 voorwerpen', participantType: 'group', mode: 'points', aboutMin: 10, lanes: 5, pack: 'Van elk 5: touw, blokje, tennisbal, medicijnbal, pion en hoepel.', hint: 'Zes voorwerpen: touw, blokje, tennisbal, medicijnbal, pion en hoepel. Vul het totaal van het team in.' },
     { id: 'vilt', name: 'Viltjes werpen', participantType: 'group', mode: 'points', aboutMin: 10, pack: 'Viltjes met de groepsnaam, en 6 pionnen om het midden.', hint: 'Viltje met de groepsnaam. Over de helft, op de kleur die wordt geroepen. Vul daarna de punten van het team in.' },
-    { id: 'dans', name: 'Hoepeldans op muziek', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Muziekbox en 29 hoepels.', hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik wie af is. De laatste is 1e.' },
-    { id: 'ballon', name: 'Ballon hooghouden met knikker erin', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Ballonnen met een knikker erin. Ze liggen in 2 manden. En 30 hoepels.', hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik wie af is. De laatste is 1e.' },
+    { id: 'dans', name: 'Hoepeldans op muziek', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Muziekbox en 29 hoepels.', hint: 'Iedereen door elkaar. Muziek stopt, zoek een hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
+    { id: 'ballon', name: 'Ballon hooghouden met knikker erin', participantType: 'solo', mode: 'elim', aboutMin: 10, pack: 'Ballonnen met een knikker erin. Ze liggen in 2 manden. En 30 hoepels.', hint: 'Ballon met knikker hooghouden, binnen de hoepel. Tik de 3e, dan de 2e, dan de 1e.' },
     { id: 'race', name: 'Hoepelrace', participantType: 'group', mode: 'finish', aboutMin: 10, lanes: 6, pack: '6 hoepels.', hint: 'Handen op de schouders. Hoepel naar achteren en weer terug. Tik het team dat klaar is. Het eerste is 1e.' },
-    { id: 'tellen', name: '2,30 minuten tellen in je hoofd', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, pack: 'Niks meenemen. Tijd op de telefoon. Inge filmt.', hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. De tijd gaat op de telefoon, Inge filmt. Vul die tijd in. Dichtst bij 2:30 wint.' },
+    { id: 'tellen', name: '2,30 minuten tellen in je hoofd', participantType: 'solo', mode: 'closest', aboutMin: 3, targetSec: 150, pack: 'Niks meenemen. Tijd op de telefoon. Inge filmt.', hint: 'Ga zitten als je denkt dat er 2 minuten 30 om zijn. Inge filmt. Tik daarna de 3e, dan de 2e, dan de 1e. De rest niet.' },
     { id: 'pong', name: 'Korfbalmand pong', participantType: 'group', mode: 'points', aboutMin: 15, lanes: 1, pack: '6 korfbalmanden, 15 handballen en 2 pionnen als werplijn.', hint: 'Eén werplijn met 2 pionnen. Zoveel mogelijk handballen in de 6 manden. De teams gaan om de beurt. Vul het totaal in.' }
   ];
   const S = {
@@ -646,7 +672,7 @@
     gameForm: null, score: null, undos: [], arm: null, armUntil: 0,
     unlocked: false, flash: '', flashBad: false, draftName: '', listText: null, restoreText: '', saveError: '', holdSave: false, find: '',
     gear: [], gearSeeded: false, programRev: 0, teamsRev: 0, backView: '', gearOpen: null, gearDraft: '', adviceOpen: false, focusGear: false,
-    focusGroupId: null, askSplit: false, pendingCount: 0, slateWord: ''
+    focusGroupId: null, askSplit: false, pendingCount: 0, slateWord: '', teamFilter: '', showAdd: false
   };
   let drag = null;
   let suppressClick = false;
@@ -907,6 +933,16 @@
     normalize();
     save();
   }
+  function refreshSheetHints() {
+    let changed = false;
+    S.games.forEach(function (g) {
+      const src = sheetGame(g.id);
+      if (!src || !src.hint || g.hint === src.hint) return;
+      g.hint = src.hint;
+      changed = true;
+    });
+    if (changed) save();
+  }
   function nameKey(name) {
     const key = String(name || '').toLowerCase().replace(/\s+/g, ' ').trim();
     if (key === 'brandon' || key === 'brendon') return 'brendon';
@@ -1077,21 +1113,82 @@
     return Math.max(0, ms);
   }
   function ruleText(g) {
-    if (g.mode === 'elim') return 'Laatste blijft 1e';
+    if (g.mode === 'elim') return 'Tik 3e, dan 2e, dan 1e';
     if (g.mode === 'finish') return 'Eerste klaar is 1e';
-    if (g.mode === 'closest') return 'Dichtst bij 2:30 wint';
+    if (g.mode === 'closest') return 'Tik 3e, dan 2e, dan 1e';
     if (g.scoreType === 'points') return g.sort === 'high' ? 'Meeste punten wint' : 'Minste punten wint';
     return g.sort === 'low' ? 'Snelste tijd wint' : 'Langste tijd wint';
+  }
+  function isPodium(game) {
+    return !!(game && game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'closest'));
+  }
+  function podiumSteps(n) {
+    const need = n < 1 ? 0 : (n < 3 ? n : 3);
+    const steps = [];
+    for (let place = need; place >= 1; place--) steps.push(place);
+    return steps;
+  }
+  function pointsForPlace(place) {
+    return place === 1 ? 3 : place === 2 ? 2 : place === 3 ? 1 : 0;
+  }
+  function stepTitle(place, first) {
+    return (first ? 'Selecteer de ' : 'Selecteer nu de ') + place + 'e plek';
+  }
+  function picksIn(order, members) {
+    return (order || []).filter(function (id) { return members.indexOf(id) >= 0; });
+  }
+  function podiumStep(game, pool) {
+    const steps = podiumSteps(pool && pool.members ? pool.members.length : 0);
+    const picks = picksIn(orderOf(game), pool ? pool.members : []);
+    if (!steps.length || picks.length >= steps.length) return null;
+    return { place: steps[picks.length], first: picks.length === 0, steps: steps, picks: picks };
+  }
+  function podiumPool(game, pid) {
+    if (!game) return null;
+    if (heatsOn(game)) {
+      const plan = heatPlan(game);
+      let heat = pid ? plan.find(function (h) { return h.playerIds.indexOf(pid) >= 0; }) : null;
+      if (!heat) heat = currentHeat(game);
+      if (!heat) return null;
+      return { heat: heat, members: (heat.playerIds || []).filter(function (id) { return !isOutId(id); }) };
+    }
+    return { heat: null, members: roster(game).map(function (p) { return p.id; }) };
+  }
+  function podiumLocked(game) {
+    if (!game || heatsOn(game)) return false;
+    const people = roster(game);
+    if (!people.length) return false;
+    if (!people.every(function (p) { return !!resultOf(game.id, p.id); })) return false;
+    return S.results.some(function (r) {
+      return r.gameId === game.id && r.status === 'done' && (r.points === 1 || r.points === 2 || r.points === 3);
+    });
+  }
+  function podiumHeadline(game, people) {
+    const members = (people || []).map(function (p) { return p.id; });
+    const pool = { heat: heatsOn(game) ? currentHeat(game) : null, members: members };
+    if (!members.length) return 'Selecteer de 3e plek';
+    if (pool.heat && heatDone(game, pool.heat)) return 'Top 3 staat';
+    if (!pool.heat && podiumLocked(game)) return 'Top 3 staat';
+    const step = podiumStep(game, pool);
+    if (!step) return 'Top 3';
+    return stepTitle(step.place, step.first);
+  }
+  function podiumScoreLine(game) {
+    if (!game) return '';
+    if (isPodium(game) && game.mode === 'closest') return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · op het spelersbord</p>';
+    if (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish')) return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>';
+    return '';
   }
   function placeWord(n) { return n + 'e'; }
   function resultLabel(game, r) {
     if (!r) return '';
     if (r.status === 'absent') return 'AFWEZIG';
-    if (game.mode === 'elim' || game.mode === 'finish') {
+    if (game.mode === 'elim' || game.mode === 'finish' || (game.mode === 'closest' && (r.points === 1 || r.points === 2 || r.points === 3 || r.points === 0))) {
       if (r.points === 3) return '1e';
       if (r.points === 2) return '2e';
       if (r.points === 1) return '3e';
-      return game.mode === 'finish' ? 'klaar' : 'af';
+      if (game.mode === 'closest' && r.points === 0) return '–';
+      return game.mode === 'finish' ? 'klaar' : '–';
     }
     if (game.mode === 'closest') {
       const diff = Math.abs(Number(r.timeSec || 0) - Number(game.targetSec || 150));
@@ -1138,7 +1235,10 @@
   }
   function addStandPoints(game, map) {
     if (!countsOnStand(game)) return;
-    if (game.mode === 'elim' || game.mode === 'finish') {
+    const closestPodium = game.mode === 'closest' && S.results.some(function (r) {
+      return r.gameId === game.id && r.status === 'done' && (r.points === 1 || r.points === 2 || r.points === 3);
+    });
+    if (game.mode === 'elim' || game.mode === 'finish' || closestPodium) {
       S.results.forEach(function (r) {
         if (r.gameId !== game.id || r.status !== 'done') return;
         if (map[r.participantId]) map[r.participantId].pts += Math.max(0, Number(r.points) || 0);
@@ -1533,7 +1633,7 @@
       if (u.watch) applyWatchSnap(u.gameId, u.watch);
       const g = gameById(u.gameId);
       if (g && u.wave) applyWaveTimes(g);
-      else if (g && !u.heat) applyOrder(g);
+      else if (g && !u.heat && !isPodium(g)) applyOrder(g);
       else { save(); syncTimer(); }
     } else if (u.kind === 'wave') {
       const g = gameById(u.gameId);
@@ -1724,6 +1824,7 @@
     return roster(game).filter(function (p) { return order.indexOf(p.id) < 0; });
   }
   function applyOrder(game) {
+    if (!game || isPodium(game)) return;
     const order = orderOf(game);
     const still = stillIn(game);
     S.results = S.results.filter(function (r) { return r.gameId !== game.id; });
@@ -1857,23 +1958,149 @@
     if (!w || !w.marks || w.marks[pid] == null) return '';
     return formatSec(Math.round(Number(w.marks[pid]) / 1000));
   }
-  function commitHeat(game, heat) {
-    const members = heatMembers(game, heat);
-    const order = orderOf(game).filter(function (id) { return members.indexOf(id) >= 0; });
-    const still = members.filter(function (id) { return order.indexOf(id) < 0; });
-    if (still.length > 1) return false;
+  function writePodium(game, members, picks, steps) {
+    if (!game || !members) return false;
+    const places = steps || podiumSteps(members.length);
+    if (!picks || picks.length < places.length || !places.length) return false;
     S.results = S.results.filter(function (r) { return !(r.gameId === game.id && members.indexOf(r.participantId) >= 0); });
-    function put(pid, points) {
-      S.results.push({ id: uid(), gameId: game.id, participantId: pid, status: 'done', points: points, timeSec: null });
-    }
-    if (still.length === 1) {
-      put(still[0], 3);
-      if (order.length >= 1) put(order[order.length - 1], 2);
-      if (order.length >= 2) put(order[order.length - 2], 1);
-      order.slice(0, Math.max(0, order.length - 2)).forEach(function (id) { put(id, 0); });
-    }
-    S.orders[game.id] = orderOf(game).filter(function (id) { return members.indexOf(id) < 0; });
+    const placeOf = {};
+    picks.forEach(function (id, i) { if (i < places.length) placeOf[id] = places[i]; });
+    members.forEach(function (id) {
+      const place = placeOf[id] || 0;
+      const points = pointsForPlace(place);
+      let timeSec = null;
+      if (game.mode === 'closest') timeSec = place === 1 ? 150 : place === 2 ? 149 : place === 3 ? 148 : 0;
+      S.results.push({ id: uid(), gameId: game.id, participantId: id, status: 'done', points: points, timeSec: timeSec });
+    });
     return true;
+  }
+  function trimOops(gameId) {
+    while (S.undos.length) {
+      const u = S.undos[S.undos.length - 1];
+      if (u.kind === 'order' && u.gameId === gameId && u.oops) S.undos.pop();
+      else break;
+    }
+  }
+  function openPodiumReview(game, pool) {
+    if (!game || !pool) return;
+    const steps = podiumSteps(pool.members.length);
+    const picks = picksIn(orderOf(game), pool.members).slice(0, steps.length);
+    if (picks.length < steps.length) return;
+    S.modal = {
+      kind: 'podium',
+      gameId: game.id,
+      heatId: pool.heat ? pool.heat.id : null,
+      heatName: pool.heat ? pool.heat.name : '',
+      ids: picks.slice(),
+      steps: steps.slice(),
+      team: game.mode === 'elim'
+    };
+    save();
+    render();
+  }
+  function confirmPlace() {
+    const m = S.modal;
+    if (!m || m.kind !== 'place-ask') return;
+    const game = gameById(m.gameId);
+    const pool = game ? podiumPool(game, m.pid) : null;
+    if (!game || !pool || pool.members.indexOf(m.pid) < 0) { S.modal = null; render(); return; }
+    const prev = orderOf(game);
+    if (prev.indexOf(m.pid) < 0) {
+      const order = prev.slice();
+      order.push(m.pid);
+      S.orders[game.id] = order;
+      pushUndo({
+        kind: 'order', gameId: game.id, prev: prev, who: whoName(m.pid), oops: true,
+        heat: !!pool.heat, wave: false, watch: null,
+        label: whoName(m.pid) + ' is ' + m.place + 'e. Tik om dat terug te draaien.'
+      });
+    }
+    const steps = podiumSteps(pool.members.length);
+    const picks = picksIn(orderOf(game), pool.members);
+    if (picks.length >= steps.length && steps.length) {
+      openPodiumReview(game, pool);
+      return;
+    }
+    S.modal = null;
+    save();
+    render();
+  }
+  function confirmPodium() {
+    const m = S.modal;
+    if (!m || m.kind !== 'podium') return;
+    const game = gameById(m.gameId);
+    if (!game) { S.modal = null; render(); return; }
+    const ids = m.ids || [];
+    const steps = m.steps || [];
+    if (!ids.length || ids.length < steps.length) { flash('KIES EERST DE PLEKKEN', true); return; }
+    if (m.heatId != null && heatsOn(game)) {
+      const heat = heatPlan(game).find(function (h) { return h.id === m.heatId; }) || currentHeat(game);
+      if (!heat) { S.modal = null; render(); return; }
+      const members = heatMembers(game, heat);
+      const prevOrder = orderOf(game).filter(function (id) { return ids.indexOf(id) < 0; });
+      const prevResults = S.results.filter(function (r) { return r.gameId === game.id && members.indexOf(r.participantId) >= 0; }).map(function (r) { return JSON.parse(JSON.stringify(r)); });
+      const snap = game.stopwatch ? watchSnap(game.id) : null;
+      if (!writePodium(game, members, ids, steps)) { flash('KIES EERST DE PLEKKEN', true); return; }
+      S.orders[game.id] = orderOf(game).filter(function (id) { return members.indexOf(id) < 0; });
+      const next = advanceHeat(game);
+      trimOops(game.id);
+      pushUndo({
+        kind: 'heat', gameId: game.id, prevOrder: prevOrder, prevResults: prevResults,
+        memberIds: members.slice(), watch: snap, label: 'Top 3 van ' + heat.name + ' terug.'
+      });
+      S.modal = null;
+      save();
+      syncTimer();
+      flash(next ? ('VOLGENDE: ' + next.name) : 'ALLE GROEPEN GEWEEST');
+      return;
+    }
+    const members = roster(game).map(function (p) { return p.id; });
+    const prevOrder = orderOf(game).filter(function (id) { return ids.indexOf(id) < 0; });
+    const prevResults = S.results.filter(function (r) { return r.gameId === game.id; }).map(function (r) { return JSON.parse(JSON.stringify(r)); });
+    const snap = game.stopwatch ? watchSnap(game.id) : null;
+    if (!writePodium(game, members, ids, steps)) { flash('KIES EERST DE PLEKKEN', true); return; }
+    S.orders[game.id] = prevOrder;
+    trimOops(game.id);
+    pushUndo({
+      kind: 'heat', gameId: game.id, prevOrder: prevOrder, prevResults: prevResults,
+      memberIds: members.slice(), watch: snap, label: 'Top 3 terug.'
+    });
+    S.modal = null;
+    save();
+    flash('TOP 3 STAAT');
+  }
+  function redoPodium() {
+    const m = S.modal;
+    const game = m && gameById(m.gameId);
+    if (!game) { S.modal = null; render(); return; }
+    const ids = m.ids || [];
+    S.orders[game.id] = orderOf(game).filter(function (id) { return ids.indexOf(id) < 0; });
+    trimOops(game.id);
+    S.modal = null;
+    save();
+    flash('KIES OPNIEUW');
+  }
+  function tapPodium(game, pid) {
+    if (!game || !pid) return;
+    if (S.modal && (S.modal.kind === 'place-ask' || S.modal.kind === 'podium')) return;
+    const pool = podiumPool(game, pid);
+    if (!pool || pool.members.indexOf(pid) < 0) return;
+    if (!pool.members.length) { flash('GEEN NAMEN', true); return; }
+    if (pool.heat && heatDone(game, pool.heat)) { flash((pool.heat.name || 'Deze groep') + ' IS AL GEKOZEN'); return; }
+    if (!pool.heat && podiumLocked(game)) { flash('TOP 3 STAAT AL'); return; }
+    const picks = picksIn(orderOf(game), pool.members);
+    if (picks.indexOf(pid) >= 0) return;
+    const step = podiumStep(game, pool);
+    if (!step) { openPodiumReview(game, pool); return; }
+    S.modal = {
+      kind: 'place-ask',
+      gameId: game.id,
+      pid: pid,
+      place: step.place,
+      heatId: pool.heat ? pool.heat.id : null,
+      heatName: pool.heat ? pool.heat.name : ''
+    };
+    render();
   }
   function skipHeat(game, heat) {
     const members = heatMembers(game, heat);
@@ -1904,17 +2131,18 @@
     const heat = currentHeat(game);
     if (!heat) return;
     const members = heatMembers(game, heat);
-    const still = heatStill(game, heat);
     const prevOrder = orderOf(game);
     const prevResults = S.results.filter(function (r) { return r.gameId === game.id && members.indexOf(r.participantId) >= 0; }).map(function (r) { return JSON.parse(JSON.stringify(r)); });
     const snap = watchSnap(game.id);
     if (!heatDone(game, heat)) {
-      if (still.length > 1) {
-        if (!armed('heat-skip-' + game.id, 'Deze groep telt dan niet mee.')) return;
-        skipHeat(game, heat);
-      } else if (!commitHeat(game, heat) && still.length > 1) {
+      const steps = podiumSteps(members.length);
+      const picks = picksIn(prevOrder, members);
+      if (steps.length && picks.length >= steps.length) {
+        openPodiumReview(game, { heat: heat, members: members });
         return;
       }
+      if (!armed('heat-skip-' + game.id, 'Deze groep telt dan niet mee.')) return;
+      skipHeat(game, heat);
     }
     const next = advanceHeat(game);
     pushUndo({
@@ -2060,7 +2288,8 @@
   }
   function tapOrder(pid) {
     const game = activeGame();
-    if (!game || (game.mode !== 'elim' && game.mode !== 'finish')) return;
+    if (!game || (game.mode !== 'elim' && game.mode !== 'finish' && game.mode !== 'closest')) return;
+    if (isPodium(game)) { tapPodium(game, pid); return; }
     const heating = heatsOn(game);
     const wave = isWaveGame(game);
     const heat = heating ? currentHeat(game) : null;
@@ -2125,9 +2354,9 @@
     const obj = what === 'group' ? groupById(id) : playerById(id);
     if (!obj || !!obj.out === !!out) { S.modal = null; render(); return; }
     const openElim = S.games.filter(function (g) {
-      if (g.skipped || g.mode !== 'elim' || gameComplete(g)) return false;
-      if (what === 'player') return g.participantType === 'solo';
-      return g.participantType === 'group';
+      if (g.skipped || gameComplete(g)) return false;
+      if (what === 'player') return g.participantType === 'solo' && (g.mode === 'elim' || g.mode === 'closest');
+      return g.participantType === 'group' && g.mode === 'elim';
     });
     pushUndo({
       kind: 'out',
@@ -2143,7 +2372,11 @@
       label: obj.name + (out ? ' stopt ermee. Tik om weer mee te laten doen.' : ' doet weer mee. Tik om dat terug te draaien.')
     });
     obj.out = !!out;
-    if (out) openElim.forEach(function (g) { if (!heatsOn(g)) applyOrder(g); });
+    if (out && what === 'player') {
+      openElim.forEach(function (g) {
+        S.orders[g.id] = orderOf(g).filter(function (id) { return id !== obj.id; });
+      });
+    }
     S.modal = null;
     save();
     flash(out ? (obj.name + ' STOPT') : (obj.name + ' DOET WEER MEE'));
@@ -2236,10 +2469,20 @@
     if (!S.flash) return '';
     return '<div class="flash' + (S.flashBad ? ' bad' : '') + '">' + esc(S.flash) + '</div>';
   }
-  function backBtn(fallback) {
+  function backDest(fallback) {
     const dest = (S.backView && VIEWS[S.backView] && S.backView !== S.view) ? S.backView : (fallback || '');
     if (!dest || dest === S.view || !VIEWS[dest]) return '';
+    return dest;
+  }
+  function backBtn(fallback) {
+    const dest = backDest(fallback);
+    if (!dest) return '';
     return '<button class="backtop" type="button" data-act="goto" data-view="' + esc(dest) + '">← TERUG</button>';
+  }
+  function xBack(fallback) {
+    const dest = backDest(fallback || 'action');
+    if (!dest) return '';
+    return '<button class="xclose" type="button" data-act="goto" data-view="' + esc(dest) + '" aria-label="Terug">✕</button>';
   }
   function playBtn() {
     if (!S.games.length) return '';
@@ -2252,11 +2495,13 @@
         return '<div class="row"><input class="field grow" id="playerRename" placeholder="Naam" autocapitalize="words" autocomplete="off" enterkeyhint="done" value="' + esc(S.renamePlayerText) + '"><button class="side go" type="button" data-act="save-player-rename" data-id="' + esc(p.id) + '">KLAAR</button></div>';
       }
       const mark = p.try ? '<span class="sub">proef</span>' : '';
-      const stopped = p.out ? '<span class="sub">doet niet mee</span>' : mark;
+      const gname = groupNameOfPlayer(p.id);
+      const ico = gname ? '<span class="mini-ico">' + groupIcon(gname) + '</span>' : '';
+      const stopped = p.out ? '<span class="sub">doet niet mee</span>' : (p.try ? '<span class="sub">proef</span>' : (gname ? '<span class="sub">' + esc(gname) + '</span>' : mark));
       const stopBtn = p.out
         ? '<button class="side pump" type="button" data-act="ask-out" data-what="player" data-id="' + esc(p.id) + '">WEER MEE</button>'
         : '<button class="side calm" type="button" data-act="ask-out" data-what="player" data-id="' + esc(p.id) + '">STOPT</button>';
-      return '<div class="row"><button class="grow person" style="background:#333;color:#fff" type="button" data-hold="player" data-act="start-player-rename" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + esc(p.name) + '</span>' + stopped + '</span></button>' + stopBtn + '<button class="side danger" type="button" data-act="ask-del" data-what="player" data-id="' + esc(p.id) + '">WEG</button></div>';
+      return '<div class="row"><button class="grow person" style="background:#333;color:#fff" type="button" data-hold="player" data-act="start-player-rename" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + ico + esc(p.name) + '</span>' + stopped + '</span></button>' + stopBtn + '<button class="side danger" type="button" data-act="ask-del" data-what="player" data-id="' + esc(p.id) + '">WEG</button></div>';
     }).join('');
     const clearBlock = S.players.some(function (p) { return p.try; }) ? '<button class="danger" type="button" data-act="clear-try">' + armLabel('clear-try', 'OEFENNAMEN WEG', 'ZEKER OEFENNAMEN WEG?') + '</button>' : '';
     const typedName = (S.draftName || '').trim().replace(/\s+/g, ' ');
@@ -2270,7 +2515,7 @@
       '<button class="go" type="button" data-act="add-player">' + addLabel + '</button></div>' +
       '<textarea class="field" id="playerList" style="min-height:220px;margin-top:10px" placeholder="Plak een lijst, één naam per regel" autocapitalize="words" autocomplete="off" autocorrect="off" spellcheck="false">' + esc(listBoxText()) + '</textarea>' +
       '<button class="pump" type="button" data-act="add-list">LIJST TOEVOEGEN</button>' +
-      '<p class="hint">Eén naam per regel. (5,00) of 5 euro aan het eind laat hij weg. Een naam die er al staat slaat hij over.</p>' +
+      '<p class="hint">Eén naam per regel. Een naam die er al staat slaat hij over.</p>' +
       '<div class="stack" style="margin-top:10px">' + clearBlock + rows +
       '</div></div><footer><button class="purp" type="button" data-act="goto" data-view="groups">GROEPEN →</button><button class="calm" type="button" data-act="goto" data-view="backup">💾 BACKUP</button>' + playBtn() + '</footer>';
   }
@@ -2282,15 +2527,12 @@
         if (!p) return '';
         const sel = S.selectedPlayerId === p.id ? ' sel' : '';
         const outCls = p.out ? ' isout' : '';
-        return '<button type="button" class="chip' + sel + outCls + '" data-hold="player" data-id="' + esc(p.id) + '">' + esc(p.name) + (p.out ? ' · stopt' : '') + '</button>';
+        const gname = groupNameOfPlayer(p.id);
+        const ico = gname ? '<span class="mini-ico">' + groupIcon(gname) + '</span>' : '';
+        return '<button type="button" class="chip' + sel + outCls + '" data-hold="player" data-id="' + esc(p.id) + '">' + ico + esc(p.name) + (p.out ? ' · stopt' : '') + '</button>';
       }).join('');
     }
     let cols = '';
-    if (loose.length || S.selectedPlayerId) {
-      const here = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
-        ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER</button>' : '';
-      cols += '<section class="gcol loose" data-drop="none"><h2>👻 Nog los (' + loose.length + ')</h2>' + here + chips(loose.map(function (p) { return p.id; })) + '</section>';
-    }
     S.groups.forEach(function (g) {
       const here = (S.selectedPlayerId && g.playerIds.indexOf(S.selectedPlayerId) < 0)
         ? '<button class="pump" type="button" data-act="move-here" data-gid="' + esc(g.id) + '">HIER</button>' : '';
@@ -2310,9 +2552,9 @@
       return '<button class="pump choice" type="button" data-act="pick-count" data-n="' + num + '">' + armLabel('split-' + num, num + ' GROEPEN', 'ZEKER ' + num + ' GROEPEN?') + '<span class="sub">' + esc(splitText(nPlay, num)) + even + '</span></button>';
     }
     const question = ask
-      ? '<h1>' + (nPlay ? ('Jullie zijn met ' + nPlay) : 'Eerst namen') + '</h1><p class="hint">5 of 6 groepen. Het rijtje hieronder is precies dit aantal.</p><div class="stack">' + (nPlay ? countBtn(5) + countBtn(6) : '') + '</div>'
+      ? '<h1>' + (nPlay ? ('Jullie zijn met ' + nPlay) : 'Eerst namen') + '</h1><p class="hint">Het blaadje heeft 5 teams. Kies alleen hieronder als het toch anders moet.</p><div class="stack">' + (nPlay ? countBtn(5) + countBtn(6) : '') + '</div>'
       : '';
-    const switchBtn = hasAssignments() ? '<button class="calm" type="button" data-act="ask-split">' + (S.askSplit ? 'LAAT DE GROEPEN ZIEN' : '5 OF 6 ANDERS') + '</button>' : '';
+    const switchBtn = hasAssignments() ? '<button class="calm" type="button" data-act="ask-split">' + (S.askSplit ? 'LAAT DE GROEPEN ZIEN' : 'ANDERS INDELEN') + '</button>' : '';
     const tools = hasAssignments() ? '<div class="stack" style="margin:10px 0">' + switchBtn + '<button class="go" type="button" data-act="deal">' + dealText + '</button><button class="purp" type="button" data-act="add-group">GROEP ERAAN</button></div>' : '';
     let circle = '';
     if (hasAssignments() && S.groups.length >= 2 && S.groups.length <= 8) {
@@ -2326,20 +2568,23 @@
       const center = focus
         ? '<div class="ring-ico">' + groupIcon(focus.name) + '</div><p class="ring-label">' + esc(focus.name) + '</p>'
         : '<p class="ring-label">Tik een groep</p>';
-      let looseHtml = '';
-      if (loose.length) {
-        const looseHere = S.selectedPlayerId && loose.every(function (p) { return p.id !== S.selectedPlayerId; })
-          ? '<button class="pump" type="button" data-act="move-here" data-gid="none">HIER BIJ LOS</button>' : '';
-        looseHtml = '<div class="loosebox"><p class="loose-title">NOG NIET IN EEN TEAM · ' + loose.length + '</p><p class="hint">Tik een naam, dan Hier bij de groep.</p>' + looseHere + chips(loose.map(function (p) { return p.id; })) + '</div>';
-      }
-      circle = '<div class="group-layout"><div class="group-ring">' + ringBox(S.groups.length, seats, center, 'ring-groups') + '</div><div class="group-names">' + looseHtml;
+      circle = '<div class="group-layout"><div class="group-ring">' + ringBox(S.groups.length, seats, center, 'ring-groups') + '</div><div class="group-names">';
       if (focus) {
+        const moving = S.selectedPlayerId ? (' Tik een ander team om ' + esc((playerById(S.selectedPlayerId) || {}).name || 'de naam') + ' daarheen te zetten.') : '';
+        circle += '<p class="roster-title">' + groupIcon(focus.name) + ' ' + esc(focus.name) + '</p><p class="hint">' + focus.playerIds.length + ' in dit team.' + moving + '</p>';
         if (S.renameGroupId === focus.id) {
           circle += '<div class="stack" style="margin-top:8px"><input class="field" id="renameInput" value="' + esc(S.renameText) + '"><button class="go" type="button" data-act="save-rename" data-id="' + esc(focus.id) + '">KLAAR</button></div>';
         } else {
-          const here = (S.selectedPlayerId && focus.playerIds.indexOf(S.selectedPlayerId) < 0)
-            ? '<button class="pump" type="button" data-act="move-here" data-gid="' + esc(focus.id) + '">HIER</button>' : '';
-          circle += '<div class="stack" style="margin-top:8px"><p class="hint">Tik een naam en dan Hier bij een andere groep.</p>' + here + chips(focus.playerIds) +
+          const addBtn = loose.length
+            ? '<button class="pump" type="button" data-act="toggle-add">' + (S.showAdd ? 'KLAAR MET TOEVOEGEN' : 'IEMAND TOEVOEGEN') + '</button>'
+            : '';
+          const addList = S.showAdd && loose.length
+            ? '<div class="pair">' + loose.map(function (p) {
+              return '<button type="button" class="person" data-act="add-to-focus" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + esc(p.name) + '</span></span></button>';
+            }).join('') + '</div>'
+            : '';
+          circle += '<div class="roster-grid">' + chips(focus.playerIds) + '</div><div class="stack" style="margin-top:8px">' +
+            addBtn + addList +
             '<button class="calm" type="button" data-act="start-rename" data-id="' + esc(focus.id) + '">NAAM WIJZIGEN</button>' +
             '<button class="calm" type="button" data-act="ask-out" data-what="group" data-id="' + esc(focus.id) + '">' + (focus.out ? 'GROEP WEER MEE' : 'GROEP STOPT') + '</button>' +
             '<button class="danger" type="button" data-act="ask-del" data-what="group" data-id="' + esc(focus.id) + '">GROEP WEG</button></div>';
@@ -2351,8 +2596,8 @@
       question +
       (ask ? '' : '<h1>Groepen</h1>') +
       '<p class="hint">' + (circle
-        ? (S.groups.length + (S.groups.length === 1 ? ' team. ' : ' teams. ') + (loose.length ? (loose.length + ' nog niet ingedeeld.') : 'Iedereen zit in een team.') + (S.selectedPlayerId ? (' Gekozen: ' + esc((playerById(S.selectedPlayerId) || {}).name || '') + '.') : ''))
-        : (S.players.length + ' spelers. ' + esc(splitText(S.players.length, S.groups.length || clamp(S.groupTarget, 1, 12))) + ' Kies 5 of 6.')) + '</p>' +
+        ? (S.groups.length + ' teams. ' + (groupById(S.focusGroupId) ? (groupIcon(groupById(S.focusGroupId).name) + ' ' + esc(groupById(S.focusGroupId).name) + ', ' + groupById(S.focusGroupId).playerIds.length + ' in dit team.') : ''))
+        : (S.players.length + ' spelers. ' + esc(splitText(S.players.length, S.groups.length || clamp(S.groupTarget, 1, 12))) + ' Het blaadje heeft 5 teams.')) + '</p>' +
       circle +
       (circle ? '' : tools) +
       (S.groups.length > 8 ? '<div class="board">' + cols + '</div>' : '') +
@@ -2544,7 +2789,7 @@
         '<div class="grow label"><span class="nm">' + (i + 1) + '. ' + esc(g.name) + '</span><span class="sub">' + (g.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(g)) + '</span></div>' +
         down + '</div>' + packNote + gearBlock + editor + '</article>';
     }).join('');
-    return '<div class="scroll">' + flashHtml() + '<h1>Programma</h1><p class="hint">Dit is de volgorde van de middag. Zet een spel omhoog of omlaag als het toch anders moet.</p>' +
+    return '<div class="scroll">' + flashHtml() + '<p class="hint">Dit is de volgorde van de middag. Zet een spel omhoog of omlaag als het toch anders moet. Het kruisje gaat terug.</p>' +
       cards + adviceBlock() + '<div style="height:10px"></div><button class="go" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></div>';
   }
   function viewBackup() {
@@ -2574,8 +2819,8 @@
     const liveNote = (game.mode === 'elim' || game.mode === 'finish') ? '<p class="hint">Blijft lopen als je tikt.</p>' : '';
     let next = '';
     if (heatsOn(game)) {
-      const still = heat ? heatStill(game, heat).length : 0;
-      const label = still > 1 ? armLabel('heat-skip-' + game.id, 'NOG BEZIG', 'TOCH VOLGENDE') : 'VOLGENDE';
+      const doneHeat = heat && heatDone(game, heat);
+      const label = doneHeat ? 'VOLGENDE' : armLabel('heat-skip-' + game.id, 'NOG BEZIG', 'TOCH VOLGENDE');
       next = '<button class="go" type="button" data-act="heat-next">' + label + '</button>';
     } else if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) {
       const all = roster(game);
@@ -2599,6 +2844,63 @@
   function skipBtn(game) {
     const hot = S.arm === 'skip-' + game.id && Date.now() < S.armUntil;
     return '<button class="' + (hot ? 'danger' : 'quiet') + '" type="button" data-act="skip-game">' + armLabel('skip-' + game.id, 'DIT SPEL GAAT NIET DOOR', 'ZEKER? PUNTEN VAN DIT SPEL TELLEN DAN NIET') + '</button>';
+  }
+  function teamSections(people) {
+    const byId = {};
+    const buckets = [];
+    S.groups.forEach(function (g) {
+      const row = { id: g.id, name: g.name, people: [] };
+      byId[g.id] = row;
+      buckets.push(row);
+    });
+    const loose = { id: 'loose', name: 'Nog los', people: [] };
+    (people || []).forEach(function (p) {
+      const gid = groupIdOfPlayer(p.id);
+      if (byId[gid]) byId[gid].people.push(p);
+      else loose.people.push(p);
+    });
+    const sections = buckets.filter(function (b) { return b.people.length; });
+    if (loose.people.length) sections.push(loose);
+    return sections;
+  }
+  function nameIco(pid) {
+    const g = groupNameOfPlayer(pid);
+    if (!g) return '';
+    return '<span class="mini-ico">' + groupIcon(g) + '</span>';
+  }
+  function teamPickerHtml(game, people) {
+    const members = people.map(function (p) { return p.id; });
+    const steps = podiumSteps(members.length);
+    const picks = picksIn(orderOf(game), members);
+    const head = '<p class="stephead">' + esc(podiumHeadline(game, people)) + '</p><p class="hint">Tik een naam. Dan vraag ik of het klopt.</p>';
+    const strip = picks.map(function (id, i) {
+      return '<span>' + (steps[i] || '') + 'e ' + nameIco(id) + esc(whoName(id)) + '</span>';
+    }).join('');
+    const pickedBar = strip ? '<div class="picked">' + strip + '</div>' : '';
+    const sections = teamSections(people);
+    const shown = sections.filter(function (sec) { return !S.teamFilter || sec.id === S.teamFilter; });
+    const list = shown.length ? shown : sections;
+    const filters = sections.length > 1 ? ('<div class="heats">' +
+      '<button type="button" class="calm' + (S.teamFilter ? '' : ' on') + '" data-act="team-filter" data-id="">ALLE</button>' +
+      sections.map(function (sec) {
+        const on = S.teamFilter === sec.id ? ' on' : '';
+        const ico = sec.id === 'loose' ? '' : (groupIcon(sec.name) + ' ');
+        return '<button type="button" class="calm' + on + '" data-act="team-filter" data-id="' + esc(sec.id) + '">' + ico + esc(sec.name) + '</button>';
+      }).join('') + '</div>') : '';
+    const cards = list.map(function (sec) {
+      const btns = sec.people.map(function (p) {
+        const i = picks.indexOf(p.id);
+        const place = i >= 0 ? ((steps[i] || '') + 'e') : '';
+        const r = resultOf(game.id, p.id);
+        const lab = place || (r && r.status === 'done' ? resultLabel(game, r) : '');
+        const show = lab && lab !== '–';
+        const cls = place === '1e' ? ' pick1' : place === '2e' ? ' pick2' : place === '3e' ? ' pick3' : '';
+        return '<button type="button" class="person' + cls + '" data-act="order-tap" data-hold="player" data-id="' + esc(p.id) + '"><span class="who"><span class="nm">' + nameIco(p.id) + esc(p.name) + '</span></span>' + (show ? '<span class="res">' + esc(lab) + '</span>' : '') + '</button>';
+      }).join('');
+      const title = sec.id === 'loose' ? 'Nog los' : (groupIcon(sec.name) + ' ' + sec.name);
+      return '<section class="teamcard"><h2>' + esc(title) + '</h2><div class="pair">' + btns + '</div><p class="hint find-empty" hidden>Geen naam met die letters.</p></section>';
+    }).join('');
+    return head + pickedBar + filters + '<div class="teamgrid">' + cards + '</div>';
   }
   function viewAction() {
     const game = activeGame();
@@ -2644,7 +2946,7 @@
         small = Math.min(small, h.playerIds.length);
       });
       const sizeTxt = big === small ? ('elke groep ' + big) : (small + ' tot ' + big + ' per groep');
-      return head + '<div class="scroll">' + flashHtml() + (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') + '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="hint">' + plan.length + ' groepen, ' + sizeTxt + '. Hoe spelen we?</p><div class="stack">' +
+      return head + '<div class="scroll">' + flashHtml() + (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') + '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="hint">' + plan.length + ' groepen, ' + sizeTxt + '. Hoe spelen we? Daarna tik je de 3e, de 2e en de 1e.</p><div class="stack">' +
         '<button class="go choice" type="button" data-act="set-heat" data-mode="group">PER GROEP<span class="sub">Eigen top 3. Die punten gaan naar het team.</span></button>' +
         '<button class="pump choice" type="button" data-act="set-heat" data-mode="all">ALLEMAAL TEGELIJK<span class="sub">Eén top 3 voor de zaal. Punten gaan naar hun team.</span></button></div></div>' + foot;
     }
@@ -2707,16 +3009,19 @@
       : (!parts.length
       ? '<button class="pump" type="button" data-act="goto" data-view="' + (game.participantType === 'group' ? 'groups' : 'players') + '">' + (game.participantType === 'group' ? 'GEEN GROEPEN. MAAK ZE HIER.' : 'GEEN SPELERS. MELD ZE AAN.') + '</button>'
       : '');
+    const useTeams = isPodium(game) && !(heatsOn(game) && parts.length >= 2 && parts.length <= 8);
     const leftTitle = ordering ? (game.mode === 'finish' ? '🎃 NOG BEZIG (' + todo.length + ')' : '🎃 NOG IN HET SPEL (' + todo.length + ')') : '🎃 NOG DOEN (' + todo.length + ')';
     const rightTitle = ordering ? (game.mode === 'finish' ? '✅ KLAAR (' + done.length + ')' : '✅ AF (' + done.length + ')') : '✅ AL GEWEEST (' + done.length + ')';
-    const progress = ordering
+    const progress = isPodium(game)
+      ? '<b>' + esc(podiumHeadline(game, parts)) + '</b>'
+      : (ordering
       ? (game.mode === 'finish' ? '<b>' + done.length + '</b> van ' + parts.length + ' klaar' : '<b>' + todo.length + '</b> nog in het spel')
-      : '<b>' + done.length + '</b> van ' + parts.length + ' geweest';
+      : '<b>' + done.length + '</b> van ' + parts.length + ' geweest');
     const about = game.aboutMin ? '<p class="hint">Ongeveer ' + game.aboutMin + ' minuten.</p>' : '';
     const side = (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
       '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + '<p class="rule">' + (game.participantType === 'solo' ? 'Solo' : 'Groep') + ' · ' + esc(ruleText(game)) + '</p>' +
       '<p class="hint">' + esc(game.hint || '') + '</p>' +
-      (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') ? '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>' : '') +
+      podiumScoreLine(game) +
       about +
       '<p class="progress">' + progress + '</p>' +
       standPeek() +
@@ -2726,17 +3031,20 @@
     const leaverBox = leavers.length ? '<div class="leavers"><p class="hint">Gestopt, doen niet meer mee. Tik om terug te halen.</p>' + leavers.map(function (p) {
       return '<button class="calm slim" type="button" data-act="ask-out" data-what="' + (game.participantType === 'group' ? 'group' : 'player') + '" data-id="' + esc(p.id) + '">' + esc(p.name) + ' · WEER MEE</button>';
     }).join('') + '</div>' : '';
-    const main = emptyHint + findBox + leaverBox +
-      '<p class="hint">Foutje? Tik die naam nog een keer, of de rode knop bovenaan. Houd een naam ingedrukt als iemand stopt.</p>' +
+    const cols = '<p class="hint">Foutje? Tik die naam nog een keer, of de rode knop bovenaan. Houd een naam ingedrukt als iemand stopt.</p>' +
       '<div class="cols"><section class="col todo"><h2>' + leftTitle + '</h2>' + (todo.length ? todo.map(function (p) { return btn(p, 'todo'); }).join('') + '<p class="hint find-empty" hidden>Geen naam met die letters.</p>' : '<p class="hint">' + (ordering && game.mode === 'elim' ? 'Iedereen is af.' : 'Iedereen is geweest.') + '</p>') +
       '</section><section class="col donecol"><h2>' + rightTitle + '</h2>' + (done.length ? done.map(function (p) { return btn(p, 'done'); }).join('') + '<p class="hint find-empty" hidden>Geen naam met die letters.</p>' : '<p class="hint">Nog niemand.</p>') +
       '</section></div><p class="saved">Staat op dit toestel.</p>';
+    const main = emptyHint + findBox + leaverBox + (useTeams && parts.length ? teamPickerHtml(game, parts) : cols);
     const ringSource = (game.participantType === 'group' && game.parallel) ? roster(game).slice() : parts.slice();
     const showRing = ringSource.length >= 2 && ringSource.length <= 8 && (heatsOn(game) || (game.participantType === 'group' && !!game.parallel));
     if (showRing) {
+      const ringIds = ringSource.map(function (x) { return x.id; });
+      const ringSteps = isPodium(game) ? podiumSteps(ringIds.length) : [];
+      const ringPicks = isPodium(game) ? picksIn(order, ringIds) : [];
       const seats = ringSource.map(function (p, i) {
         let state = 'live';
-        let act = ordering ? 'order-tap' : 'open-score';
+        let act = isPodium(game) || ordering ? 'order-tap' : 'open-score';
         if (game.participantType === 'group' && game.parallel && game.parallel < roster(game).length) {
           const all = roster(game);
           const idx = all.findIndex(function (x) { return x.id === p.id; });
@@ -2746,10 +3054,16 @@
           if (done || theirWave < cur) state = 'sat';
           else if (theirWave > cur) { state = 'wait'; act = 'wave-wait'; }
           else state = 'live';
+        } else if (isPodium(game)) {
+          if (ringPicks.indexOf(p.id) >= 0 || resultOf(game.id, p.id)) state = 'sat';
         } else if (ordering && order.indexOf(p.id) >= 0) state = 'sat';
         else if (!ordering && resultOf(game.id, p.id)) state = 'sat';
         let sub = state === 'wait' ? 'wacht' : '';
-        if (state === 'sat') {
+        if (isPodium(game)) {
+          const pi = ringPicks.indexOf(p.id);
+          if (pi >= 0) sub = (ringSteps[pi] || '') + 'e';
+          else if (state === 'sat') sub = resultLabel(game, resultOf(game.id, p.id));
+        } else if (state === 'sat') {
           sub = ordering ? orderLabel(p, 'done') : resultLabel(game, resultOf(game.id, p.id));
           const t = markText(game, p.id);
           if (t) sub = (sub ? sub + ' · ' : '') + t;
@@ -2776,7 +3090,8 @@
       return head + '<div class="scroll ring-screen"><div class="ring-copy">' + flashHtml() + tipHtml() + other +
         (game.dark ? '<p class="darkbanner">Donker. Licht uit.</p>' : '') +
         '<h1>' + esc(game.name) + '</h1>' + packHtml(game) + icons +
-        (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') ? '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>' : '') +
+        (isPodium(game) ? '<p class="stephead">' + esc(podiumHeadline(game, ringSource)) + '</p><p class="hint">Tik een naam. Dan vraag ik of het klopt.</p>' : '') +
+        podiumScoreLine(game) +
         '<div class="stack">' + anders +
         skipBtn(game) + '</div></div>' +
         '<div class="ring-slot">' + ringBox(ringSource.length, seats, watchCard(game)) + '</div></div>' + foot;
@@ -2818,7 +3133,7 @@
       const medal = row ? row.medal : 0;
       const place = medal === 3 ? '1e' : medal === 2 ? '2e' : medal === 1 ? '3e' : 'geen podium';
       const counted = countsOnStand(g);
-      const detail = (g.mode === 'elim' || g.mode === 'finish') ? place : (resultLabel(g, r) + ' · ' + place);
+      const detail = (g.mode === 'elim' || g.mode === 'finish' || (g.mode === 'closest' && (r.points === 0 || r.points === 1 || r.points === 2 || r.points === 3))) ? place : (resultLabel(g, r) + ' · ' + place);
       const tail = counted
         ? (medal ? (medal + (medal === 1 ? ' punt' : ' punten')) : '0 punten')
         : 'telt nog niet, dit spel is nog niet af';
@@ -2831,11 +3146,12 @@
     const place = r.pts > 0 ? '<div class="place ' + cls + '">' + r.rank + '</div>' : '<div class="place" style="background:#333;color:#fff">–</div>';
     const team = type === 'group' ? ' team' : '';
     const mark = (r.out ? ' isout' : '') + (r.pts > 0 || type === 'group' ? '' : ' zero') + team;
-    return '<button type="button" class="podium' + mark + '" data-act="stand-open" data-what="' + type + '" data-id="' + esc(r.id) + '">' + place + '<div><div class="stand-name">' + (type === 'group' ? '<span class="ico-inline">' + groupIcon(r.name) + '</span> ' : '') + esc(r.name) + '</div><div class="sub">' + r.pts + (r.pts === 1 ? ' punt' : ' punten') + (r.sub ? ' · ' + esc(r.sub) : '') + '</div></div></button>';
+    const soloIco = type === 'solo' ? nameIco(r.id) : '';
+    return '<button type="button" class="podium' + mark + '" data-act="stand-open" data-what="' + type + '" data-id="' + esc(r.id) + '">' + place + '<div><div class="stand-name">' + (type === 'group' ? '<span class="ico-inline">' + groupIcon(r.name) + '</span> ' : soloIco) + esc(r.name) + '</div><div class="sub">' + r.pts + (r.pts === 1 ? ' punt' : ' punten') + (r.sub ? ' · ' + esc(r.sub) : '') + '</div></div></button>';
   }
   function nameCloud(rows) {
     return '<div class="namecloud">' + rows.map(function (r) {
-      return '<button type="button" class="cloud' + (r.out ? ' isout' : '') + '" data-act="stand-open" data-what="solo" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button>';
+      return '<button type="button" class="cloud' + (r.out ? ' isout' : '') + '" data-act="stand-open" data-what="solo" data-id="' + esc(r.id) + '">' + nameIco(r.id) + esc(r.name) + '</button>';
     }).join('') + '</div>';
   }
   function board(type, title) {
@@ -2861,7 +3177,6 @@
   }
   function viewStand() {
     return undoBar() + '<div class="scroll">' + flashHtml() +
-      backBtn('action') +
       '<h1>Stand</h1><p class="hint">Tik een team of een naam voor de spellen.</p>' +
       '<div class="stand-grid">' + board('group', '👥 Groepen') + board('solo', '🙋 Spelers') + '</div></div>' +
       '<footer><button class="go wide" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></footer>';
@@ -2870,8 +3185,33 @@
   function modalHtml() {
     const m = S.modal;
     if (!m) return '';
+    if (m.kind === 'place-ask') {
+      const name = whoName(m.pid);
+      const g = groupNameOfPlayer(m.pid);
+      return '<div class="modal-back"><div class="sheet tipbubble" data-stop="1"><p class="hint" style="text-align:center">' + m.place + 'e plek</p><h1 style="text-align:center">' + nameIco(m.pid) + esc(name) + '</h1>' +
+        (g ? '<p class="hint" style="text-align:center">' + groupIcon(g) + ' ' + esc(g) + '</p>' : '') +
+        '<p class="ask">Is ' + esc(name) + ' echt ' + m.place + 'e?</p>' +
+        '<div class="yesno"><button class="go" type="button" data-act="place-yes">JA</button><button class="danger" type="button" data-act="place-no">NEE</button></div></div></div>';
+    }
+    if (m.kind === 'podium') {
+      const steps = m.steps || [];
+      const ids = m.ids || [];
+      const lines = [];
+      for (let place = 1; place <= 3; place++) {
+        const i = steps.indexOf(place);
+        if (i < 0 || !ids[i]) continue;
+        lines.push('<p class="podium-row"><b>' + place + 'e</b> ' + nameIco(ids[i]) + esc(whoName(ids[i])) + ' · ' + pointsForPlace(place) + '</p>');
+      }
+      const where = m.team
+        ? (m.heatName ? (esc(m.heatName) + '. Die punten gaan naar het team.') : 'Die punten gaan naar hun team.')
+        : 'Dit komt op het spelersbord.';
+      return '<div class="modal-back"><div class="sheet tipbubble" data-stop="1"><h1 style="text-align:center">Top 3</h1>' +
+        lines.join('') + '<p class="hint" style="text-align:center">' + where + ' JA zet het vast. NEE is opnieuw.</p>' +
+        '<div class="yesno"><button class="go" type="button" data-act="podium-yes">JA</button><button class="danger" type="button" data-act="podium-no">NEE</button></div></div></div>';
+    }
     if (m.kind === 'score') {
-      const game = gameById(S.score.gameId);
+      const game = S.score ? gameById(S.score.gameId) : null;
+      if (!game) return '';
       const person = participants(game).find(function (p) { return p.id === S.score.participantId; });
       const name = person ? person.name : '';
       const sub = person && person.sub ? '<p class="sub" style="text-align:center">' + esc(person.sub) + '</p>' : '';
@@ -2896,7 +3236,7 @@
           '<div class="grid2" style="margin-top:8px"><div><p style="text-align:center">MIN TYPEN</p><input class="field score-type" id="scoreMin" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + S.score.min + '"></div><div><p style="text-align:center">SEC TYPEN</p><input class="field score-type" id="scoreSec" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + S.score.sec + '"></div></div><p class="keys">Enter slaat op. Esc sluit.</p>' +
           (game.stopwatch ? '<button class="purp" type="button" data-act="take-time" style="margin-top:8px">' + (running ? '⏹ STOP EN NEEM TIJD OVER' : '⏱️ NEEM TIJD OVER') + '</button>' : '');
       }
-      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1 style="text-align:center">' + esc(name) + '</h1>' + sub + nameNote + body +
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><button class="backtop" type="button" data-act="close-modal">← TERUG</button><h1 style="text-align:center">' + esc(name) + '</h1>' + sub + nameNote + body +
         '<div class="stack sheet-actions"><button class="go" type="button" data-act="save-score">' + saveLabel + '</button>' +
         '<button class="calm" type="button" data-act="save-absent">' + absentLabel + '</button>' +
         (existing ? '<button class="pump" type="button" data-act="save-clear">ZET TERUG NAAR NOG DOEN</button>' : '') +
@@ -2911,7 +3251,7 @@
           ? 'Deze groep doet niet meer mee aan de groepsspellen. De kinderen doen de solospellen nog wel, tenzij je die ook laat stoppen. Wat al gespeeld is, blijft staan.'
           : 'Geen nieuwe spellen meer voor de rest van de middag. Wat al gespeeld is, blijft staan. Een groepsspel blijft bij de groep.')
         : 'Dan doet die weer mee met de spellen die nog openstaan.';
-      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><h1>' + esc(name) + '</h1><p>' + text + '</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="confirm-out">' + (leaving ? 'JA, STOPT ERMEE' : 'JA, DOET WEER MEE') + '</button></div></div></div>';
+      return '<div class="modal-back" data-act="close-modal"><div class="sheet" data-stop="1"><button class="backtop" type="button" data-act="close-modal">← TERUG</button><h1>' + esc(name) + '</h1><p>' + text + '</p><div class="stack sheet-actions"><button class="go" type="button" data-act="close-modal">ANNULEER</button><button class="danger" type="button" data-act="confirm-out">' + (leaving ? 'JA, STOPT ERMEE' : 'JA, DOET WEER MEE') + '</button></div></div></div>';
     }
     if (m.kind === 'breakdown') {
       const obj = m.what === 'group' ? groupById(m.id) : playerById(m.id);
@@ -3000,7 +3340,7 @@
   }
   function applyFindFilter() {
     const q = (S.find || '').trim().toLowerCase();
-    document.querySelectorAll('.col').forEach(function (col) {
+    document.querySelectorAll('.col, .teamcard').forEach(function (col) {
       const people = col.querySelectorAll('.person');
       if (!people.length) return;
       let n = 0;
@@ -3012,6 +3352,7 @@
       });
       const empty = col.querySelector('.find-empty');
       if (empty) empty.hidden = n !== 0;
+      if (col.classList.contains('teamcard')) col.hidden = !!q && n === 0;
     });
   }
   function scrollNodes() {
@@ -3022,7 +3363,10 @@
     scrollNodes().forEach(function (n) { saved.push([n.className, n.scrollTop, n.scrollLeft]); });
     const map = { players: viewPlayers, groups: viewGroups, games: viewGames, backup: viewBackup, settings: viewSettings, stand: viewStand, action: viewAction };
     const fn = map[S.view] || viewAction;
-    document.getElementById('app').innerHTML = topBar() + fn() + modalHtml();
+    const back = S.view === 'action' ? '' : (S.view === 'games'
+      ? '<div class="backbar xbar">' + xBack('action') + '<span class="xbar-title">Programma</span></div>'
+      : '<div class="backbar">' + backBtn('action') + '</div>');
+    document.getElementById('app').innerHTML = topBar() + back + fn() + modalHtml();
     const next = scrollNodes();
     saved.forEach(function (row, i) {
       const n = next[i];
@@ -3135,6 +3479,7 @@
     if (t.dataset.stop) return;
     const act = t.dataset.act;
     if (act === 'close-modal') {
+      if (S.modal && (S.modal.kind === 'podium' || S.modal.kind === 'place-ask')) return;
       if (e.target.closest('[data-stop]') && e.target !== t && !t.classList.contains('modal-back') && act === 'close-modal' && t.dataset.act === 'close-modal') {
         /* button inside sheet */
       }
@@ -3247,6 +3592,7 @@
       S.activeGameId = nextId;
       S.view = 'action';
       S.find = '';
+      S.teamFilter = '';
       save();
       render();
       if (switched) scrollNodes().forEach(function (n) { n.scrollTop = 0; });
@@ -3255,6 +3601,13 @@
     if (act === 'open-found') { openFound(); return; }
     if (act === 'open-score') { openScore(t.dataset.id); return; }
     if (act === 'order-tap') { tapOrder(t.dataset.id); return; }
+    if (act === 'place-yes') { confirmPlace(); return; }
+    if (act === 'place-no') { S.modal = null; render(); return; }
+    if (act === 'podium-yes') { confirmPodium(); return; }
+    if (act === 'podium-no') { redoPodium(); return; }
+    if (act === 'team-filter') { S.teamFilter = t.dataset.id || ''; render(); return; }
+    if (act === 'toggle-add') { S.showAdd = !S.showAdd; render(); return; }
+    if (act === 'add-to-focus') { if (S.focusGroupId) movePlayer(t.dataset.id, S.focusGroupId); return; }
     if (act === 'score-delta') {
       if (S.arm === 'score-check') S.arm = null;
       S.score.points = (Number(S.score.points) || 0) + Number(t.dataset.delta);
@@ -3278,7 +3631,18 @@
     if (act === 'pick-count') { commitGroups(Number(t.dataset.n)); return; }
     if (act === 'ask-split') { S.askSplit = !S.askSplit; render(); return; }
     if (act === 'fullscreen') { toggleFullscreen(); return; }
-    if (act === 'focus-group') { S.focusGroupId = t.dataset.id; render(); return; }
+    if (act === 'focus-group') {
+      const id = t.dataset.id;
+      if (S.selectedPlayerId && groupIdOfPlayer(S.selectedPlayerId) !== id) {
+        S.focusGroupId = id;
+        S.showAdd = false;
+        movePlayer(S.selectedPlayerId, id);
+        return;
+      }
+      S.focusGroupId = id;
+      render();
+      return;
+    }
     if (act === 'set-parallel') {
       const game = activeGame();
       if (!game) return;
@@ -3589,7 +3953,7 @@
       || parts.find(function (p) { return !resultOf(game.id, p.id); })
       || parts[0];
     if (!next) return;
-    if (game.mode === 'elim' || game.mode === 'finish') tapOrder(next.id);
+    if (game.mode === 'elim' || game.mode === 'finish' || game.mode === 'closest') tapOrder(next.id);
     else openScore(next.id);
   }
   document.addEventListener('keydown', function (e) {
@@ -3600,6 +3964,8 @@
     if (e.key === 'Enter' && e.target.id === 'findName') { e.preventDefault(); openFound(); return; }
     if (e.key === 'Enter' && S.modal && S.modal.kind === 'score' && (e.target.id === 'scorePoints' || e.target.id === 'scoreMin' || e.target.id === 'scoreSec')) { e.preventDefault(); saveScore('done'); return; }
     if (e.key === 'Escape') {
+      if (S.modal && S.modal.kind === 'podium') return;
+      if (S.modal && S.modal.kind === 'place-ask') { S.modal = null; render(); return; }
       if (S.modal) { S.modal = null; S.score = null; render(); return; }
       if (S.find) { S.find = ''; render(); }
       return;
@@ -3643,9 +4009,12 @@
       }, 650);
     }
     const pressEl = e.target.closest('button, [data-act]');
-    press = (pressEl && !pressEl.closest('input, textarea'))
-      ? { el: pressEl, x: e.clientX, y: e.clientY, id: e.pointerId }
+    press = (pressEl && !pressEl.closest('input, textarea') && !(e.button && e.button !== 0))
+      ? { el: pressEl, x: e.clientX, y: e.clientY, lastX: e.clientX, lastY: e.clientY, id: e.pointerId }
       : null;
+    if (press && (pressEl.classList.contains('ring-seat') || pressEl.closest('.heats'))) {
+      try { pressEl.setPointerCapture(e.pointerId); } catch (err) {}
+    }
     const chip = e.target.closest('.chip');
     if (!chip || S.view !== 'groups' || S.modal) return;
     if (e.button && e.button !== 0) return;
@@ -3655,7 +4024,16 @@
       try { chip.setPointerCapture(e.pointerId); } catch (err) {}
     }
   });
+  function stickyTap(el) {
+    return !!(el && (el.classList.contains('ring-seat') || el.closest('.heats')));
+  }
+  function firePress(p) {
+    if (!p || !p.el.isConnected || p.el.classList.contains('chip') || !p.el.closest('[data-act]')) return;
+    suppressClick = true;
+    onClick({ target: p.el, currentTarget: document, preventDefault: function () {} });
+  }
   document.addEventListener('pointermove', function (e) {
+    if (press && e.pointerId === press.id) { press.lastX = e.clientX; press.lastY = e.clientY; }
     if (hold && e.pointerId === hold.pointerId && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 14) clearHold();
     if (!drag || e.pointerId !== drag.pointerId || drag.pointerType !== 'mouse') return;
     if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 8) return;
@@ -3670,13 +4048,11 @@
     const p = (press && e.pointerId === press.id) ? press : null;
     if (p) press = null;
     if (fired) holdFired = false;
-    else if (p && p.el.isConnected && !p.el.classList.contains('chip')) {
-      const moved = Math.hypot(e.clientX - p.x, e.clientY - p.y) > 24;
-      if (!moved && p.el.closest('[data-act]')) {
-        suppressClick = true;
-        const target = (e.target && p.el.contains(e.target)) ? e.target : p.el;
-        onClick({ target: target, currentTarget: document, preventDefault: function () {} });
-      }
+    else if (p) {
+      const x = e.clientX || p.lastX || p.x;
+      const y = e.clientY || p.lastY || p.y;
+      const limit = stickyTap(p.el) ? 72 : 32;
+      if (Math.hypot(x - p.x, y - p.y) <= limit) firePress(p);
     }
     if (!drag || e.pointerId !== drag.pointerId) return;
     const d = drag;
@@ -3695,9 +4071,17 @@
       render();
     }
   });
-  document.addEventListener('pointercancel', function () {
+  document.addEventListener('pointercancel', function (e) {
+    const fired = holdFired;
+    const p = (press && e.pointerId === press.id) ? press : null;
     clearHold();
-    press = null;
+    if (p) press = null;
+    if (!fired && p && stickyTap(p.el)) {
+      const x = p.lastX == null ? p.x : p.lastX;
+      const y = p.lastY == null ? p.y : p.lastY;
+      if (Math.hypot(x - p.x, y - p.y) <= 72) firePress(p);
+    }
+    holdFired = false;
     drag = null;
     document.body.classList.remove('dragging');
     hideGhost();
@@ -3934,6 +4318,45 @@
       S.slateWord = '';
       save();
     }
+    eq(stepTitle(3, true), 'Selecteer de 3e plek', 'kop 3e');
+    eq(stepTitle(2, false), 'Selecteer nu de 2e plek', 'kop 2e');
+    eq(stepTitle(1, false), 'Selecteer nu de 1e plek', 'kop 1e');
+    eq(podiumSteps(6).join(','), '3,2,1', 'stappen');
+    eq(podiumSteps(2).join(','), '2,1', 'twee plekken');
+    eq(pointsForPlace(3), 1, '3e is 1 punt');
+    eq(pointsForPlace(1), 3, '1e is 3 punten');
+    const keepO = JSON.stringify(S.orders);
+    const keepR = JSON.stringify(S.results);
+    try {
+      const been = S.games.find(function (g) { return g.id === 'been'; });
+      const people = been ? roster(been) : [];
+      if (been && people.length >= 4) {
+        const members = people.map(function (p) { return p.id; });
+        const steps = podiumSteps(members.length);
+        const picks = [members[2], members[1], members[0]];
+        eq(writePodium(been, members, picks, steps), true, 'podium opgeslagen');
+        eq(resultOf(been.id, picks[0]).points, 1, 'eerst gekozen is 3e');
+        eq(resultOf(been.id, picks[1]).points, 2, 'daarna is 2e');
+        eq(resultOf(been.id, picks[2]).points, 3, 'laatst gekozen is 1e');
+        eq(resultOf(been.id, members[3]).points, 0, 'de rest niet aftikken');
+        eq(gameComplete(been), true, 'been klaar');
+      }
+      const tellen = S.games.find(function (g) { return g.id === 'tellen'; });
+      const tel = tellen ? roster(tellen) : [];
+      if (tellen && tel.length >= 3) {
+        const members = tel.map(function (p) { return p.id; });
+        const steps = podiumSteps(members.length);
+        eq(writePodium(tellen, members, [members[0], members[1], members[2]], steps), true, 'tellen podium');
+        eq(resultOf(tellen.id, members[2]).points, 3, 'tellen 1e');
+        eq(soloFeedsTeam(tellen), false, 'tellen niet naar team');
+        eq(gameComplete(tellen), true, 'tellen klaar');
+      }
+    } finally {
+      S.orders = JSON.parse(keepO);
+      S.results = JSON.parse(keepR);
+      S.modal = null;
+      save();
+    }
     return 'ok';
   }
   window.capyTest = selfTest;
@@ -3943,6 +4366,7 @@
   ensureGear();
   syncProgram();
   applySheetTeams();
+  refreshSheetHints();
   S.view = bootView();
   if (!S.activeGameId && S.games[0]) S.activeGameId = S.games[0].id;
   render();
