@@ -2552,7 +2552,7 @@
       return '<button class="pump choice" type="button" data-act="pick-count" data-n="' + num + '">' + armLabel('split-' + num, num + ' GROEPEN', 'ZEKER ' + num + ' GROEPEN?') + '<span class="sub">' + esc(splitText(nPlay, num)) + even + '</span></button>';
     }
     const question = ask
-      ? '<h1>' + (nPlay ? ('Jullie zijn met ' + nPlay) : 'Eerst namen') + '</h1><p class="hint">Het blaadje heeft 5 teams. Kies alleen hieronder als het toch anders moet.</p><div class="stack">' + (nPlay ? countBtn(5) + countBtn(6) : '') + '</div>'
+      ? '<h1>' + (nPlay ? ('Jullie zijn met ' + nPlay) : 'Eerst namen') + '</h1><p class="hint">Het zijn 5 teams: Heksen klein, Pompoenen, Skeletten, Spoken en Vleermuizen groot.</p><div class="stack">' + (!hasAssignments() && nPlay ? countBtn(5) : '') + '</div>'
       : '';
     const switchBtn = hasAssignments() ? '<button class="calm" type="button" data-act="ask-split">' + (S.askSplit ? 'LAAT DE GROEPEN ZIEN' : 'ANDERS INDELEN') + '</button>' : '';
     const tools = hasAssignments() ? '<div class="stack" style="margin:10px 0">' + switchBtn + '<button class="go" type="button" data-act="deal">' + dealText + '</button><button class="purp" type="button" data-act="add-group">GROEP ERAAN</button></div>' : '';
