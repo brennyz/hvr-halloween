@@ -1,4 +1,4 @@
-const CACHE = 'hvr-halloween-8';
+const CACHE = 'hvr-halloween-9';
 const FILES = [
   './',
   './index.html',

@@ -302,6 +302,8 @@
   button.podium.team .stand-name { white-space: normal; }
   button.podium.isout { box-shadow: inset 0 0 0 3px #666; }
   .stand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .bonus { margin-top: 22px; }
+  .bonus h2 { font-size: 1.2rem; }
   .stand-grid .place { width: 56px; height: 56px; font-size: 1.45rem; }
   .stand-grid h2 { font-size: 1.45rem; }
   @media (max-width: 699px) { .stand-grid { grid-template-columns: 1fr; } }
@@ -1176,8 +1178,7 @@
   }
   function podiumScoreLine(game) {
     if (!game) return '';
-    if (isPodium(game) && game.mode === 'closest') return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · op het spelersbord</p>';
-    if (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish')) return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>';
+    if (game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish' || game.mode === 'closest')) return '<p class="scoreline">1e = 3 · 2e = 2 · 3e = 1 · voor het team</p>';
     if (game.participantType === 'group' && game.mode === 'finish') return '<p class="scoreline">1e = 3 punten · 2e = 2 · 3e = 1</p>';
     return '';
   }
@@ -1261,7 +1262,7 @@
     });
   }
   function soloFeedsTeam(game) {
-    return !!(game && game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish') && countsOnStand(game));
+    return !!(game && game.participantType === 'solo' && (game.mode === 'elim' || game.mode === 'finish' || game.mode === 'closest') && countsOnStand(game));
   }
   function addTeamFromPlayers(map) {
     S.games.forEach(function (g) {
@@ -2004,7 +2005,7 @@
       heatName: pool.heat ? pool.heat.name : '',
       ids: picks.slice(),
       steps: steps.slice(),
-      team: game.mode === 'elim'
+      team: game.participantType === 'solo'
     };
     save();
     render();
@@ -3137,7 +3138,7 @@
   function standLines(type, id) {
     const lines = [];
     S.games.forEach(function (g) {
-      if (type === 'group' && g.participantType === 'solo' && (g.mode === 'elim' || g.mode === 'finish')) {
+      if (type === 'group' && g.participantType === 'solo' && (g.mode === 'elim' || g.mode === 'finish' || g.mode === 'closest')) {
         lines.push(teamSoloLine(g, id));
         return;
       }
@@ -3190,12 +3191,17 @@
       if (!top.length) return word + ' nog leeg';
       return word + ' ' + top.map(function (r) { return r.name; }).join(' & ') + ' ' + top[0].pts;
     }
-    return '<button class="purp slim" type="button" data-act="goto-free" data-view="stand">🏆 ' + esc(bit('group', 'Groepen')) + ' · ' + esc(bit('solo', 'Spelers')) + '</button>';
+    return '<button class="purp slim" type="button" data-act="goto-free" data-view="stand">🏆 ' + esc(bit('group', 'Teams')) + '</button>';
+  }
+  function bonusPlayers() {
+    const top = overallTop('solo');
+    const rows = top.length ? top.map(function (r) { return boardRow(r, 'solo'); }).join('') : '<p class="hint">Nog niemand.</p>';
+    return '<section class="bonus"><h2>Bonus · solo top 3</h2><p class="hint">De namen. Hun punten staan bij het team.</p>' + rows + '</section>';
   }
   function viewStand() {
     return undoBar() + '<div class="scroll">' + flashHtml() +
-      '<h1>Stand</h1><p class="hint">Tik een team of een naam voor de spellen.</p>' +
-      '<div class="stand-grid">' + board('group', '👥 Groepen') + board('solo', '🙋 Spelers') + '</div></div>' +
+      '<h1>Stand</h1><p class="hint">Alleen de teams tellen. Tik een team voor de spellen.</p>' +
+      board('group', '👥 Teams') + bonusPlayers() + '</div>' +
       '<footer><button class="go wide" type="button" data-act="goto" data-view="action">▶ TERUG NAAR HET SPEL</button></footer>';
   }
 
@@ -4368,7 +4374,9 @@
         const steps = podiumSteps(members.length);
         eq(writePodium(tellen, members, [members[0], members[1], members[2]], steps), true, 'tellen podium');
         eq(resultOf(tellen.id, members[2]).points, 3, 'tellen 1e');
-        eq(soloFeedsTeam(tellen), false, 'tellen niet naar team');
+        eq(soloFeedsTeam(tellen), true, 'tellen naar team');
+        const telTeam = groupIdOfPlayer(members[2]);
+        if (telTeam && telTeam !== 'none') eq(standMap('group')[telTeam].pts >= 3, true, 'tellen telt voor het team');
         eq(gameComplete(tellen), true, 'tellen klaar');
       }
     } finally {
